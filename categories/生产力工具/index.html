@@ -1,0 +1,463 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Category: 生产力工具 | ctyyy的博客</title><meta name="author" content="ctyyy"><meta name="copyright" content="ctyyy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Record myself">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ctyyy的博客">
+<meta property="og:url" content="https://bjwln.github.io/categories/%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="ctyyy的博客">
+<meta property="og:description" content="Record myself">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://bjwln.github.io/img/image.jpg">
+<meta property="article:author" content="ctyyy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bjwln.github.io/img/image.jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://bjwln.github.io/categories/%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Category: 生产力工具',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'category'
+}</script><link rel="stylesheet" href="/css/image-loading.css"><script src="/js/image-loading.js"></script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/images/sihuang.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ctyyy的博客</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div></div></nav><div id="page-site-info"><h1 id="site-title">生产力工具</h1></div></header><main class="layout" id="content-inner"><div id="category"><div class="article-sort-title">Category - 生产力工具</div><div class="article-sort"><div class="article-sort-item year">2026</div><div class="article-sort-item"><a class="article-sort-item-img" href="/2026/05/27/Claude%20Code/" title="Claude Code"><img src="/images/cc.jpg" alt="Claude Code" onerror="this.onerror=null;this.src='/img/404.jpg'"></a><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2026-05-27T02:43:00.000Z" title="Created 2026-05-27 10:43:00">2026-05-27</time></div><a class="article-sort-item-title" href="/2026/05/27/Claude%20Code/" title="Claude Code">Claude Code</a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ctyyy</div><div class="author-info-description">Record myself</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" href="https://github.com/xxxxxx" target="_blank" rel="noopener"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>Categories</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7/"><span class="card-category-list-name">生产力工具</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-widget-recent-posts" id="recent-posts" style="order: 5"><div class="item-headline"><i class="fas fa-newspaper"></i><span>最近文章</span></div><div class="item-content"><div class="item-content">
+  <div class="recent-posts-list" id="recent-posts-container">
+    <div class="loading-text">加载中...</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const container = document.getElementById('recent-posts-container');
+
+  function findPosts() {
+    const selectors = [
+      '#article-container',
+      '.recent-post-item',
+      'article.post',
+      '.post-item',
+      '#recent-posts article',
+      'main article',
+      '[class*="post-item"]',
+    ];
+    for (const sel of selectors) {
+      const items = document.querySelectorAll(sel);
+      if (items.length > 0) return items;
+    }
+    return [];
+  }
+
+  function getTitle(item) {
+    if (item.id === 'article-container') {
+      const h1 = item.querySelector('h1');
+      if (h1) return { text: h1.textContent.trim(), href: window.location.href };
+      const firstLink = item.querySelector('a');
+      if (firstLink) return { text: firstLink.textContent.trim(), href: window.location.href };
+      return null;
+    }
+    for (const sel of ['.post-title', 'h1 a', 'h2 a', 'h3 a', 'a[href*="/post"]', 'a[href*="/article"]']) {
+      const el = item.querySelector(sel);
+      if (el) return { text: el.textContent.trim(), href: el.href || el.closest('a')?.href };
+    }
+    const a = item.querySelector('a');
+    if (a) return { text: a.textContent.trim(), href: a.href };
+    return null;
+  }
+
+  function getDate(item) {
+    if (item.id === 'article-container') {
+      const time = item.querySelector('time[datetime]');
+      if (time) {
+        const d = new Date(time.getAttribute('datetime'));
+        if (!isNaN(d)) {
+          return `${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+        }
+      }
+      return '';
+    }
+    const time = item.querySelector('time[datetime]');
+    if (time) {
+      const d = new Date(time.getAttribute('datetime'));
+      if (!isNaN(d)) {
+        return `${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+      }
+    }
+    const a = item.querySelector('a[href*="/20"]');
+    if (a) {
+      const m = a.href.match(/\/(20\d{2})\/(\d{2})\/(\d{2})/);
+      if (m) return `${m[2]}-${m[3]}`;
+    }
+    return '';
+  }
+
+  function init() {
+    const posts = findPosts();
+    if (posts.length === 0) {
+      fetch('/archives/').then(r => r.text()).then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const items = doc.querySelectorAll('.archive-post, article, .post-item');
+        render(Array.from(items).slice(0, 5));
+      }).catch(() => container.innerHTML = '<div class="no-posts">暂无文章</div>');
+      return;
+    }
+    render(Array.from(posts).slice(0, 5));
+  }
+
+  function render(items) {
+    let html = '';
+    items.forEach(item => {
+      const title = getTitle(item);
+      if (!title || !title.text) return;
+      const date = getDate(item);
+      const isCurrentPage = title.href === window.location.href;
+      html += `
+        <a href="${title.href}" class="recent-post-simple ${isCurrentPage ? 'active' : ''}">
+          <span class="post-date">${date}</span>
+          <span class="post-title-text" title="${title.text.replace(/"/g,'&quot;')}">${title.text}</span>
+        </a>
+      `;
+    });
+    container.innerHTML = html || '<div class="no-posts">暂无文章</div>';
+  }
+
+  setTimeout(init, 100);
+})();
+</script>
+
+<style>
+  .recent-posts-list { display: flex; flex-direction: column; }
+  .recent-post-simple {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .recent-post-simple:hover {
+    background: var(--card-bg, #f5f5f5);
+  }
+  .recent-post-simple.active {
+    background: var(--theme-color, #3b82f6);
+    color: white;
+  }
+  .recent-post-simple.active .post-date,
+  .recent-post-simple.active .post-title-text {
+    color: white;
+  }
+  .recent-post-simple .post-date {
+    font-size: 12px;
+    color: var(--font-color, #666);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: monospace;
+  }
+  .recent-post-simple .post-title-text {
+    font-size: 14px;
+    color: var(--font-color, #333);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .recent-post-simple:hover .post-title-text {
+    color: var(--theme-color, #3b82f6);
+  }
+  .loading-text, .no-posts {
+    text-align: center;
+    padding: 20px;
+    color: var(--font-color, #999);
+    font-size: 13px;
+  }
+  [data-theme="dark"] .recent-post-simple:hover {
+    background: var(--card-bg, #2d3748);
+  }
+</style>
+</div></div><div class="card-widget card-widget-site-info" id="site-info-widget" style="order: 7"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="item-content"><div class="item-content">
+  <div class="my-info-grid" id="my-site-info-box">
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Article Count :</span>
+        <span class="my-info-num" data-my-count="post">加载中...</span>
+      </div>
+    </div>
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Run Time :</span>
+        <span class="my-info-num" data-my-count="runtime">计算中...</span>
+      </div>
+    </div>
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Final Update :</span>
+        <span class="my-info-num" data-my-count="update">加载中...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const myBox = document.getElementById('my-site-info-box');
+  if (!myBox) return;
+
+  const getNum = (type) => myBox.querySelector('[data-my-count="' + type + '"]');
+
+  function safeCountPosts() {
+    const trySelectors = [
+      '.recent-post-item',
+      'article.post',
+      '.post-item',
+      '#article-container'
+    ];
+    for (const sel of trySelectors) {
+      const nodes = document.querySelectorAll(sel);
+      if (nodes && nodes.length > 0) return nodes.length;
+    }
+    return null;
+  }
+
+  function setRuntime() {
+    const el = getNum('runtime');
+    if (!el) return;
+    const start = new Date('2026-05-24');
+    const now = new Date();
+    const days = Math.max(0, Math.floor((now - start) / 86400000));
+    el.textContent = days + ' 天';
+  }
+
+  function setLastUpdate() {
+    const el = getNum('update');
+    if (!el) return;
+    const times = document.querySelectorAll('time[datetime]');
+    for (const t of times) {
+      const d = new Date(t.getAttribute('datetime'));
+      if (!isNaN(d)) {
+        const mm = (d.getMonth()+1).toString().padStart(2,'0');
+        const dd = d.getDate().toString().padStart(2,'0');
+        el.textContent = mm + '-' + dd;
+        return;
+      }
+    }
+  }
+
+  function safeCountCategories() {
+    const trySelectors = [
+      '#aside-cat-list .card-category-list-item',
+      '.category-list-item',
+      'a[href*="/categories/"]'
+    ];
+    for (const sel of trySelectors) {
+      const nodes = document.querySelectorAll(sel);
+      if (nodes && nodes.length > 0) return nodes.length;
+    }
+    return null;
+  }
+
+  function run() {
+    const postEl = getNum('post');
+    if (postEl) {
+      const count = safeCountPosts();
+      if (count !== null) {
+        postEl.textContent = count;
+      } else {
+        setTimeout(function() {
+          const retry = safeCountPosts();
+          if (retry !== null) postEl.textContent = retry;
+          else postEl.textContent = '-';
+        }, 2000);
+      }
+    }
+
+    setRuntime();
+    setLastUpdate();
+
+    const catEl = getNum('category');
+    if (catEl) {
+      const count = safeCountCategories();
+      catEl.textContent = count !== null ? count : '-';
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(run, 500);
+  } else {
+    window.addEventListener('load', function() { setTimeout(run, 300); });
+  }
+})();
+</script>
+
+<style>
+#my-site-info-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+#my-site-info-box .my-info-item {
+  background: var(--card-bg, #f8f9fa);
+  border-radius: 10px;
+  padding: 5px 12px;
+  transition: all 0.3s;
+}
+#my-site-info-box .my-info-item:hover {
+  background: var(--card-bg-hover, #e9ecef);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+#my-site-info-box .my-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+#my-site-info-box .my-info-label {
+  font-size: 12px;
+  color: var(--font-color-secondary, #6c757d);
+  white-space: nowrap;
+}
+#my-site-info-box .my-info-num {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--font-color, #212529);
+  white-space: nowrap;
+}
+[data-theme="dark"] #my-site-info-box .my-info-item {
+  background: var(--card-bg, #2d3748);
+}
+[data-theme="dark"] #my-site-info-box .my-info-num {
+  color: var(--font-color, #e2e8f0);
+}
+</style>
+</div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ctyyy</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="请输入你要搜索的内容" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div></body></html>
