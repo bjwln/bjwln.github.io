@@ -236,25 +236,18 @@ body {
 }
 }
 
-/* 右侧工具栏固定显示 */
+/* 右侧工具栏 — 固定在右侧，隐藏时贴边，鼠标靠近或移动时弹出 */
 #rightside {
     position: fixed !important;
     right: 0 !important;
     left: auto !important;
-    bottom: 40px !important;
-    opacity: 0.3 !important;
-    transform: none !important;
-    z-index: 9999 !important;
-    transition: opacity 0.3s !important;
-}
-
-#rightside.rightside-show {
-    opacity: 0.3 !important;
-    transform: none !important;
-}
-
-#rightside:hover {
-    opacity: 1 !important;
+    top: 90px !important;
+    bottom: auto !important;
+    opacity: 0 !important;
+    transform: translateX(45px) !important;
+    z-index: 99999 !important;
+    transition: top 0.25s ease, transform 0.3s ease, opacity 0.3s ease !important;
+    pointer-events: none !important;
 }
 
 #rightside-config-hide,
@@ -274,6 +267,21 @@ body {
 
 #rightside > div > button {
     border-radius: 5px;
+}
+
+.search-dialog,
+#local-search .search-dialog,
+#algolia-search .search-dialog {
+    position: fixed !important;
+    top: 72px !important;
+    bottom: auto !important;
+    transform-origin: center top !important;
+}
+
+@media screen and (max-width: 768px) {
+    .search-dialog {
+        top: 0 !important;
+    }
 }
 
 /* 滚动条 */
