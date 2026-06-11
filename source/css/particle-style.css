@@ -1,0 +1,33 @@
+/* 荧光粒子效果样式 */
+.particle-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* 确保粒子在所有内容下方 */
+* {
+  position: relative;
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .particle-container {
+    pointer-events: none;
+  }
+}
+
+/* 粒子画布样式 */
+#particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

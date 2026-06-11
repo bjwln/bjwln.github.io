@@ -1,0 +1,167 @@
+bottom:
+  - class_name: card-widget-site-info
+    name: 网站信息
+    id_name: site-info-widget
+    icon: fas fa-chart-line
+    order: 7
+    html: |
+      <div class="item-content">
+        <div class="my-info-grid" id="my-site-info-box">
+          <div class="my-info-item">
+            <div class="my-info-row">
+              <span class="my-info-label">Article Count :</span>
+              <span class="my-info-num" data-my-count="post">加载中...</span>
+            </div>
+          </div>
+          <div class="my-info-item">
+            <div class="my-info-row">
+              <span class="my-info-label">Run Time :</span>
+              <span class="my-info-num" data-my-count="runtime">计算中...</span>
+            </div>
+          </div>
+          <div class="my-info-item">
+            <div class="my-info-row">
+              <span class="my-info-label">Final Update :</span>
+              <span class="my-info-num" data-my-count="update">加载中...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        'use strict';
+
+        const myBox = document.getElementById('my-site-info-box');
+        if (!myBox) return;
+
+        const getNum = (type) => myBox.querySelector('[data-my-count="' + type + '"]');
+
+        function safeCountPosts() {
+          if (typeof GLOBAL_CONFIG_SITE !== 'undefined' && typeof GLOBAL_CONFIG_SITE.sitePostCount === 'number') {
+            return GLOBAL_CONFIG_SITE.sitePostCount;
+          }
+          const trySelectors = [
+            '.recent-post-item',
+            'article.post',
+            '.post-item',
+            '#article-container'
+          ];
+          for (const sel of trySelectors) {
+            const nodes = document.querySelectorAll(sel);
+            if (nodes && nodes.length > 0) return nodes.length;
+          }
+          return null;
+        }
+
+        function setRuntime() {
+          const el = getNum('runtime');
+          if (!el) return;
+          const start = new Date('2026-05-24');
+          const now = new Date();
+          const days = Math.max(0, Math.floor((now - start) / 86400000));
+          el.textContent = days + ' 天';
+        }
+
+        function setLastUpdate() {
+          const el = getNum('update');
+          if (!el) return;
+          const times = document.querySelectorAll('time[datetime]');
+          for (const t of times) {
+            const d = new Date(t.getAttribute('datetime'));
+            if (!isNaN(d)) {
+              const mm = (d.getMonth()+1).toString().padStart(2,'0');
+              const dd = d.getDate().toString().padStart(2,'0');
+              el.textContent = mm + '-' + dd;
+              return;
+            }
+          }
+        }
+
+        function safeCountCategories() {
+          const trySelectors = [
+            '#aside-cat-list .card-category-list-item',
+            '.category-list-item',
+            'a[href*="/categories/"]'
+          ];
+          for (const sel of trySelectors) {
+            const nodes = document.querySelectorAll(sel);
+            if (nodes && nodes.length > 0) return nodes.length;
+          }
+          return null;
+        }
+
+        function run() {
+          const postEl = getNum('post');
+          if (postEl) {
+            const count = safeCountPosts();
+            if (count !== null) {
+              postEl.textContent = count;
+            } else {
+              setTimeout(function() {
+                const retry = safeCountPosts();
+                if (retry !== null) postEl.textContent = retry;
+                else postEl.textContent = '-';
+              }, 2000);
+            }
+          }
+
+          setRuntime();
+          setLastUpdate();
+
+          const catEl = getNum('category');
+          if (catEl) {
+            const count = safeCountCategories();
+            catEl.textContent = count !== null ? count : '-';
+          }
+        }
+
+        if (document.readyState === 'complete') {
+          setTimeout(run, 500);
+        } else {
+          window.addEventListener('load', function() { setTimeout(run, 300); });
+        }
+      })();
+      </script>
+
+      <style>
+      #my-site-info-box {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      #my-site-info-box .my-info-item {
+        background: var(--card-bg, #f8f9fa);
+        border-radius: 10px;
+        padding: 5px 12px;
+        transition: all 0.3s;
+      }
+      #my-site-info-box .my-info-item:hover {
+        background: var(--card-bg-hover, #e9ecef);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      #my-site-info-box .my-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 8px;
+      }
+      #my-site-info-box .my-info-label {
+        font-size: 12px;
+        color: var(--font-color-secondary, #6c757d);
+        white-space: nowrap;
+      }
+      #my-site-info-box .my-info-num {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--font-color, #212529);
+        white-space: nowrap;
+      }
+      [data-theme="dark"] #my-site-info-box .my-info-item {
+        background: var(--card-bg, #2d3748);
+      }
+      [data-theme="dark"] #my-site-info-box .my-info-num {
+        color: var(--font-color, #e2e8f0);
+      }
+      </style>

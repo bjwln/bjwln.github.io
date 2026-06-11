@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"G:\\\\hexo\\\\my-blog\\\\source\\\\images\")",
+      "Bash(hexo generate *)",
+      "Bash(node -e ' *)",
+      "Bash(mv *.png \"../../images/\")",
+      "Read(//g//**)",
+      "Bash(mkdir -p \"Claude Code\")",
+      "Bash(mv ../images/image-*.png \"Claude Code/\")",
+      "Bash(mv *.png ../../images/)",
+      "Bash(rmdir \"Claude Code\")",
+      "Bash(npx hexo *)",
+      "Bash(node -e \"hexo.theme.setModule\\('butterfly'\\); console.log\\('ok'\\)\")",
+      "Bash(npm install *)",
+      "WebSearch",
+      "Bash(./node_modules/.bin/hexo clean *)",
+      "Bash(node *)",
+      "Bash(yarn hexo *)",
+      "Bash(curl -s http://localhost:4000/2026/05/29/openclaw/)",
+      "Bash(curl *)",
+      "Bash(git config *)",
+      "WebFetch(domain:bjwln.github.io)",
+      "Bash(git ls-tree *)",
+      "Bash(hexo clean *)",
+      "Bash(hexo deploy *)"
+    ]
+  }
+}

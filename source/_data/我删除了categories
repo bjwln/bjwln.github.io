@@ -1,0 +1,9 @@
+#               <div class="my-info-item">
+                  <div class="my-info-row">
+                    <span class="my-info-label">Categories :</span>
+                    <span class="my-info-num" data-my-count="category">加载中...</span>
+                  </div>
+               </div>
+
+
+   以后想展示就再复制回去，在171行
