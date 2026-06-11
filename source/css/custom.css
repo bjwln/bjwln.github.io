@@ -269,18 +269,39 @@ body {
     border-radius: 5px;
 }
 
+#local-search,
+#algolia-search {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 0 !important;
+    z-index: 1000 !important;
+}
+
 .search-dialog,
 #local-search .search-dialog,
 #algolia-search .search-dialog {
     position: fixed !important;
     top: 72px !important;
+    left: 50% !important;
     bottom: auto !important;
+    margin-left: -300px !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow-y: auto !important;
     transform-origin: center top !important;
 }
 
 @media screen and (max-width: 768px) {
-    .search-dialog {
+    .search-dialog,
+    #local-search .search-dialog,
+    #algolia-search .search-dialog {
         top: 0 !important;
+        left: 0 !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
     }
 }
 
