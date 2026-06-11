@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>VoiceBox配音、音色克隆 | ctyyy的博客</title><meta name="author" content="ctyyy"><meta name="copyright" content="ctyyy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="Voicebox 由 Spacedrive 的开发者 Jamie Pine 主导，定位是”本地优先的 AI 语音工作室”。  它把整个语音 I&#x2F;O 链路一次性补齐了：   输出端：7 个 TTS 引擎 + 50+ 预设音色 + 声音克隆 + 23 种语言  输入端：全套 Whisper 转录 + 全局快捷键听写  集成层：REST API + 内置 MCP 服务器，Claude Code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VoiceBox配音、音色克隆">
+<meta property="og:url" content="https://bjwln.github.io/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/index.html">
+<meta property="og:site_name" content="ctyyy的博客">
+<meta property="og:description" content="Voicebox 由 Spacedrive 的开发者 Jamie Pine 主导，定位是”本地优先的 AI 语音工作室”。  它把整个语音 I&#x2F;O 链路一次性补齐了：   输出端：7 个 TTS 引擎 + 50+ 预设音色 + 声音克隆 + 23 种语言  输入端：全套 Whisper 转录 + 全局快捷键听写  集成层：REST API + 内置 MCP 服务器，Claude Code">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bjwln.github.io/images/voicecover.png">
+<meta property="article:published_time" content="2026-05-31T10:41:58.000Z">
+<meta property="article:modified_time" content="2026-06-01T03:57:33.926Z">
+<meta property="article:author" content="ctyyy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bjwln.github.io/images/voicecover.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "VoiceBox配音、音色克隆",
+  "url": "https://bjwln.github.io/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/",
+  "image": "https://bjwln.github.io/images/voicecover.png",
+  "datePublished": "2026-05-31T10:41:58.000Z",
+  "dateModified": "2026-06-01T03:57:33.926Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ctyyy",
+      "url": "https://bjwln.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://bjwln.github.io/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'VoiceBox配音、音色克隆',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post',
+  sitePostCount: 3
+}</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/particle-style.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/particles-css.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/particles-force.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/stars-style.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/image-loading.css"><script src="/js/image-loading.js"></script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBi7lqF-YXpStQlZQh651Bj2cJA_nfOQAC0g5rGzzBwERcKHhogFweZwEAAwIAA3kAAzsE.png);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/images/voicecover.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ctyyy的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">VoiceBox配音、音色克隆</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div></div></nav><div id="post-info"><h1 class="post-title">VoiceBox配音、音色克隆</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-31T10:41:58.000Z" title="发表于 2026-05-31 18:41:58">2026-05-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-01T03:57:33.926Z" title="更新于 2026-06-01 11:57:33">2026-06-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%A5%BD%E7%8E%A9%E7%9A%84%E6%8A%80%E6%9C%AF/">好玩的技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>Voicebox 由 Spacedrive 的开发者 Jamie Pine 主导，定位是”本地优先的 AI 语音工作室”。 </p>
+<p>它把整个语音 I&#x2F;O 链路一次性补齐了： </p>
+<ul>
+<li>输出端：7 个 TTS 引擎 + 50+ 预设音色 + 声音克隆 + 23 种语言 </li>
+<li>输入端：全套 Whisper 转录 + 全局快捷键听写 </li>
+<li>集成层：REST API + 内置 MCP 服务器，Claude Code、Cursor 这些智能体可以直接调用它说话</li>
+</ul>
+<h1 id="项目主页"><a href="#项目主页" class="headerlink" title="项目主页"></a>项目主页</h1><p><a target="_blank" rel="noopener" href="https://github.com/jamiepine/voicebox">https://github.com/jamiepine/voicebox</a></p>
+<p><img src="/images/image-20260531185601136.png" alt="image-20260531185601136"></p>
+<p><img src="/images/image-20260531193317795.png" alt="image-20260531193317795"></p>
+<p>左侧导航栏介绍</p>
+<p><img src="/images/image-20260531211101281.png" alt="image-20260531211101281"></p>
+<h1 id="加速方法"><a href="#加速方法" class="headerlink" title="加速方法"></a>加速方法</h1><p>加速Github和HuggingFace的修改DNS解析方法</p>
+<ol>
+<li>打开「设置」→「网络和 Internet」→「WLAN」或「以太网」，点击当前连接的网络。</li>
+<li>找到「IP 设置」，点击「编辑」。 </li>
+<li>选择「手动」，开启 IPv4。 </li>
+<li>首选 DNS 服务器： 223.5.5.5 备用 DNS 服务器： 223.6.6.6</li>
+</ol>
+<h1 id="模型调用"><a href="#模型调用" class="headerlink" title="模型调用"></a>模型调用</h1><p><img src="/images/image-20260601105128575.png" alt="image-20260601105128575"></p>
+<p><img src="/images/image-20260601105650013.png" alt="image-20260601105650013"></p>
+<p>软件连不上github下载不了cuda，可以用cpu跑，但是跑起来会慢一点。</p>
+<h1 id="生成语音"><a href="#生成语音" class="headerlink" title="生成语音"></a>生成语音</h1><p><img src="/images/image-20260601110636303.png" alt="image-20260601110636303"></p>
+<p><img src="/images/image-20260601110745297.png" alt="image-20260601110745297"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://bjwln.github.io">ctyyy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://bjwln.github.io/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/">https://bjwln.github.io/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://bjwln.github.io" target="_blank">ctyyy的博客</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/images/voicecover.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/05/30/openclaw/" title="OpenClaw"><img class="cover" src="https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjEFqGwd-MLzGQjkpsVDH8WKUB-PLHwACawxrG82J2UTWh-1iEklzUwEAAwIAA3gAAzsE.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">OpenClaw</div></div><div class="info-2"><div class="info-item-1">①安装wsl及其目的1wsl --install   OpenClaw 是 Linux 原生架构 OpenClaw 的核心模块（Gateway、Agent、Skills、Memory）依赖 Linux 特有的东西：  systemd — 管理后台服务启动，Windows 原生不支持 Linux 文件权限模型 — 技能包挂载、配置文件读写全靠这个 Linux 系统调用 — 浏览器自动化、Shell 命令执行等底层都是 Linux API  直接在 PowerShell 里裸装，大概率遇到编译报错、权限拒绝、依赖冲突三件套。  Docker Desktop 需要 WSL2（这是关键） Windows 上跑 OpenClaw 的主流方式是 Docker 容器，而 Docker Desktop for Windows 有两种后端：     WSL2 后端（推荐） 传统 Hyper-V 虚拟机    性能 接近原生 Linux 损耗明显   启动速度 秒级 慢，要启动完整 VM   文件互通 /mnt/c 直接访问 Windows 盘，localhost 直连 需要 SMB 共享，配置繁琐...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/image.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ctyyy</div><div class="author-info-description">Record myself</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" href="https://github.com/xxxxxx" target="_blank" rel="noopener"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%BB%E9%A1%B5"><span class="toc-number">1.</span> <span class="toc-text">项目主页</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A0%E9%80%9F%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">加速方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%B0%83%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">模型调用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E8%AF%AD%E9%9F%B3"><span class="toc-number">4.</span> <span class="toc-text">生成语音</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/" title="VoiceBox配音、音色克隆"><img src="/images/voicecover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VoiceBox配音、音色克隆"></a><div class="content"><a class="title" href="/2026/05/31/VoiceBox%E9%85%8D%E9%9F%B3%E3%80%81%E9%9F%B3%E8%89%B2%E5%85%8B%E9%9A%86/" title="VoiceBox配音、音色克隆">VoiceBox配音、音色克隆</a><time datetime="2026-05-31T10:41:58.000Z" title="发表于 2026-05-31 18:41:58">2026-05-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/05/30/openclaw/" title="OpenClaw"><img src="https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjEFqGwd-MLzGQjkpsVDH8WKUB-PLHwACawxrG82J2UTWh-1iEklzUwEAAwIAA3gAAzsE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OpenClaw"></a><div class="content"><a class="title" href="/2026/05/30/openclaw/" title="OpenClaw">OpenClaw</a><time datetime="2026-05-30T02:35:30.000Z" title="发表于 2026-05-30 10:35:30">2026-05-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/05/27/Claude%20Code/" title="Claude Code"><img src="/images/cc.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Claude Code"></a><div class="content"><a class="title" href="/2026/05/27/Claude%20Code/" title="Claude Code">Claude Code</a><time datetime="2026-05-27T02:43:00.000Z" title="发表于 2026-05-27 10:43:00">2026-05-27</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%A5%BD%E7%8E%A9%E7%9A%84%E6%8A%80%E6%9C%AF/"><span class="card-category-list-name">好玩的技术</span><span class="card-category-list-count">3</span></a></li>
+          </ul></div><div class="card-widget card-widget-site-info" id="site-info-widget" style="order: 7"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="item-content"><div class="item-content">
+  <div class="my-info-grid" id="my-site-info-box">
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Article Count :</span>
+        <span class="my-info-num" data-my-count="post">加载中...</span>
+      </div>
+    </div>
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Run Time :</span>
+        <span class="my-info-num" data-my-count="runtime">计算中...</span>
+      </div>
+    </div>
+    <div class="my-info-item">
+      <div class="my-info-row">
+        <span class="my-info-label">Final Update :</span>
+        <span class="my-info-num" data-my-count="update">加载中...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const myBox = document.getElementById('my-site-info-box');
+  if (!myBox) return;
+
+  const getNum = (type) => myBox.querySelector('[data-my-count="' + type + '"]');
+
+  function safeCountPosts() {
+    if (typeof GLOBAL_CONFIG_SITE !== 'undefined' && typeof GLOBAL_CONFIG_SITE.sitePostCount === 'number') {
+      return GLOBAL_CONFIG_SITE.sitePostCount;
+    }
+    const trySelectors = [
+      '.recent-post-item',
+      'article.post',
+      '.post-item',
+      '#article-container'
+    ];
+    for (const sel of trySelectors) {
+      const nodes = document.querySelectorAll(sel);
+      if (nodes && nodes.length > 0) return nodes.length;
+    }
+    return null;
+  }
+
+  function setRuntime() {
+    const el = getNum('runtime');
+    if (!el) return;
+    const start = new Date('2026-05-24');
+    const now = new Date();
+    const days = Math.max(0, Math.floor((now - start) / 86400000));
+    el.textContent = days + ' 天';
+  }
+
+  function setLastUpdate() {
+    const el = getNum('update');
+    if (!el) return;
+    const times = document.querySelectorAll('time[datetime]');
+    for (const t of times) {
+      const d = new Date(t.getAttribute('datetime'));
+      if (!isNaN(d)) {
+        const mm = (d.getMonth()+1).toString().padStart(2,'0');
+        const dd = d.getDate().toString().padStart(2,'0');
+        el.textContent = mm + '-' + dd;
+        return;
+      }
+    }
+  }
+
+  function safeCountCategories() {
+    const trySelectors = [
+      '#aside-cat-list .card-category-list-item',
+      '.category-list-item',
+      'a[href*="/categories/"]'
+    ];
+    for (const sel of trySelectors) {
+      const nodes = document.querySelectorAll(sel);
+      if (nodes && nodes.length > 0) return nodes.length;
+    }
+    return null;
+  }
+
+  function run() {
+    const postEl = getNum('post');
+    if (postEl) {
+      const count = safeCountPosts();
+      if (count !== null) {
+        postEl.textContent = count;
+      } else {
+        setTimeout(function() {
+          const retry = safeCountPosts();
+          if (retry !== null) postEl.textContent = retry;
+          else postEl.textContent = '-';
+        }, 2000);
+      }
+    }
+
+    setRuntime();
+    setLastUpdate();
+
+    const catEl = getNum('category');
+    if (catEl) {
+      const count = safeCountCategories();
+      catEl.textContent = count !== null ? count : '-';
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(run, 500);
+  } else {
+    window.addEventListener('load', function() { setTimeout(run, 300); });
+  }
+})();
+</script>
+
+<style>
+#my-site-info-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+#my-site-info-box .my-info-item {
+  background: var(--card-bg, #f8f9fa);
+  border-radius: 10px;
+  padding: 5px 12px;
+  transition: all 0.3s;
+}
+#my-site-info-box .my-info-item:hover {
+  background: var(--card-bg-hover, #e9ecef);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+#my-site-info-box .my-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+#my-site-info-box .my-info-label {
+  font-size: 12px;
+  color: var(--font-color-secondary, #6c757d);
+  white-space: nowrap;
+}
+#my-site-info-box .my-info-num {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--font-color, #212529);
+  white-space: nowrap;
+}
+[data-theme="dark"] #my-site-info-box .my-info-item {
+  background: var(--card-bg, #2d3748);
+}
+[data-theme="dark"] #my-site-info-box .my-info-num {
+  color: var(--font-color, #e2e8f0);
+}
+</style>
+</div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By ctyyy</span></div><div class="footer_custom_text">Have a good day.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script src="/js/particles-stars.js" defer></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="请输入你要搜索的内容" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div></body></html>

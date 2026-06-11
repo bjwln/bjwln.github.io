@@ -1,0 +1,147 @@
+/* CSS粒子效果 */
+.particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -9999;
+}
+
+/* 粒子动画 */
+@keyframes particle-float-1 {
+  0% {
+    left: -10px;
+    bottom: -10px;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    left: calc(100% + 10px);
+    bottom: calc(100% + 10px);
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes particle-float-2 {
+  0% {
+    left: -10px;
+    bottom: -10px;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    left: calc(100% + 10px);
+    bottom: calc(100% + 10px);
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes particle-float-3 {
+  0% {
+    left: -10px;
+    bottom: -10px;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    left: calc(100% + 10px);
+    bottom: calc(100% + 10px);
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+/* 创建多个粒子容器 */
+.particle-container-1,
+.particle-container-2,
+.particle-container-3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 单个粒子样式 */
+.particle-1 {
+  animation: particle-float-1 8s linear infinite;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  animation: particle-float-2 10s linear infinite;
+  animation-delay: 2s;
+}
+
+.particle-3 {
+  animation: particle-float-3 12s linear infinite;
+  animation-delay: 4s;
+}
+
+.particle-4 {
+  animation: particle-float-1 9s linear infinite;
+  animation-delay: 1s;
+}
+
+.particle-5 {
+  animation: particle-float-2 11s linear infinite;
+  animation-delay: 3s;
+}
+
+.particle-6 {
+  animation: particle-float-3 7s linear infinite;
+  animation-delay: 5s;
+}
+
+.particle-7 {
+  animation: particle-float-1 10s linear infinite;
+  animation-delay: 6s;
+}
+
+.particle-8 {
+  animation: particle-float-2 8s linear infinite;
+  animation-delay: 7s;
+}
+
+.particle-9 {
+  animation: particle-float-3 9s linear infinite;
+  animation-delay: 8s;
+}
+
+.particle-10 {
+  animation: particle-float-1 11s linear infinite;
+  animation-delay: 9s;
+}
