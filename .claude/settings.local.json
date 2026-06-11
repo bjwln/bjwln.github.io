@@ -23,7 +23,12 @@
       "WebFetch(domain:bjwln.github.io)",
       "Bash(git ls-tree *)",
       "Bash(hexo clean *)",
-      "Bash(hexo deploy *)"
+      "Bash(hexo deploy *)",
+      "Bash(npm run *)",
+      "Bash(mkdir -p __TRACKED_VAR__/claude-backups)",
+      "Bash(mv themes/butterfly/.git __TRACKED_VAR__/claude-backups/butterfly-git-backup-__CMDSUB_OUTPUT__)",
+      "Bash(git rm *)",
+      "Bash(git add *)"
     ]
   }
 }
