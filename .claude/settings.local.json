@@ -28,7 +28,13 @@
       "Bash(mkdir -p __TRACKED_VAR__/claude-backups)",
       "Bash(mv themes/butterfly/.git __TRACKED_VAR__/claude-backups/butterfly-git-backup-__CMDSUB_OUTPUT__)",
       "Bash(git rm *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(command -v chromium-cli)",
+      "Bash(command -v npx)",
+      "Bash(command -v node)",
+      "Bash(npx playwright *)",
+      "Bash(/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe *)",
+      "Bash(npm exec *)"
     ]
   }
 }

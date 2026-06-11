@@ -47,16 +47,15 @@
     window.__rightsideHideTimer = setTimeout(hideRightside, 1800)
   }
 
-  const fixSearchDialogPosition = () => {
-    const y = window.scrollY || document.documentElement.scrollTop
+  const fixSearchDialogPosition = y => {
     const fix = () => {
       const dialog = document.querySelector('#local-search .search-dialog, #algolia-search .search-dialog, .search-dialog')
       if (!dialog) return
 
-      dialog.style.position = 'fixed'
-      dialog.style.top = window.innerWidth <= 768 ? '0' : '72px'
-      dialog.style.bottom = 'auto'
-      dialog.style.maxHeight = window.innerWidth <= 768 ? '100vh' : 'calc(100vh - 96px)'
+      dialog.style.setProperty('position', 'fixed', 'important')
+      dialog.style.setProperty('top', window.innerWidth <= 768 ? '0' : '72px', 'important')
+      dialog.style.setProperty('bottom', 'auto', 'important')
+      dialog.style.setProperty('max-height', window.innerWidth <= 768 ? '100vh' : 'calc(100vh - 96px)', 'important')
       window.scrollTo(0, y)
     }
 
@@ -98,6 +97,9 @@
     hideRightside()
   })
   document.addEventListener('click', event => {
-    if (event.target.closest('#search-button .search')) fixSearchDialogPosition()
+    if (!event.target.closest('#search-button .search')) return
+
+    const y = window.scrollY || document.documentElement.scrollTop
+    fixSearchDialogPosition(y)
   }, true)
 })()
