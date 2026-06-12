@@ -9,8 +9,6 @@
       !=partial('includes/widget/card_author', {}, {cache: false})
       !=partial('includes/widget/card_announcement', {}, {cache: false})
       !=partial('includes/widget/card_top_self', {}, {cache: false})
-      if showToc
-        include ./card_post_toc.pug
       .sticky_layout
         if page.series
           include ./card_post_series.pug
@@ -20,6 +18,9 @@
         !=partial('includes/widget/card_categories', {}, {cache: false})
         !=partial('includes/widget/card_tags', {}, {cache: false})
         !=partial('includes/widget/card_archives', {}, {cache: false})
+        !=partial('includes/widget/card_webinfo', {}, {cache: false})
+        if showToc
+          include ./card_post_toc.pug
         !=partial('includes/widget/card_bottom_self', {}, {cache: false})
   else
     //- page
