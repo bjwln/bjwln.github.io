@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!($article && (isToc || isAnchor))) return
 
-    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors
+    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors, syncTocToAside
 
     if (isToc) {
       const $cardTocLayout = document.getElementById('card-toc')
@@ -545,6 +545,22 @@ document.addEventListener('DOMContentLoaded', () => {
           item = item.parentElement.closest('.toc-item')
         }
       }
+      syncTocToAside = () => {
+        const asideContent = document.getElementById('aside-content')
+        if (window.innerWidth <= 900 || !asideContent || document.documentElement.classList.contains('hide-aside')) {
+          $cardTocLayout.style.left = ''
+          $cardTocLayout.style.width = ''
+          return
+        }
+
+        const asideRect = asideContent.getBoundingClientRect()
+        const asideStyle = window.getComputedStyle(asideContent)
+        const left = asideRect.left + parseFloat(asideStyle.paddingLeft)
+        const width = asideRect.width - parseFloat(asideStyle.paddingLeft) - parseFloat(asideStyle.paddingRight)
+        $cardTocLayout.style.left = `${left}px`
+        $cardTocLayout.style.width = `${width}px`
+      }
+
       const rootToc = Array.from($cardToc.children).find(child => child.matches('ol.toc, ul.toc'))
       $cardToc.querySelectorAll('.toc-item').forEach(item => {
         const child = getTocChild(item)
@@ -606,6 +622,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      syncTocToAside()
+
       // 處理 hexo-blog-encrypt 事件
       $cardToc.style.display = 'block'
     }
@@ -627,7 +645,10 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHeaderPositions()
     btf.addEventListenerPjax(window, 'resize', btf.throttle(() => {
       updateHeaderPositions()
-      if (isToc) refreshExpandedTocHeights()
+      if (isToc) {
+        refreshExpandedTocHeights()
+        syncTocToAside()
+      }
     }, 200))
 
     const findHeadPosition = top => {

@@ -236,17 +236,11 @@
     +minWidth901()
       position: fixed
       top: 90px
-      right: 24px !important
       z-index: 100
-      width: clamp(240px, 22vw, 320px)
       max-height: calc(100vh - 120px)
       margin-bottom: 0
       overflow: hidden
       transition: top .3s
-
-      @media screen and (max-width: 1200px)
-        width: 240px
-        right: 12px !important
 
     +maxWidth900()
       position: fixed
@@ -438,6 +432,9 @@
 
 +minWidth900()
   html.hide-aside
+    #card-toc
+      display: none
+
     .layout
       justify-content: center
 
