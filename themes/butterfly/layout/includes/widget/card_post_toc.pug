@@ -12,3 +12,21 @@
     .toc-content.toc-div-class(class=tocExpandClass style="display:none")!=toc(page.origin, {list_number: tocNumber})
   else
     .toc-content(class=tocExpandClass)!=toc(page.content, {list_number: tocNumber})
+
+script.
+  (function(){
+    var toc = document.getElementById('card-toc');
+    var aside = document.getElementById('aside-content');
+    if(!toc || !aside) return;
+    function positionToc(){
+      var rect = aside.getBoundingClientRect();
+      if(rect.width <= 0) return;
+      toc.style.left = rect.left + 'px';
+      toc.style.width = rect.width + 'px';
+    }
+    positionToc();
+    window.addEventListener('resize', positionToc);
+    window.addEventListener('scroll', function(){
+      requestAnimationFrame(positionToc);
+    });
+  })();
