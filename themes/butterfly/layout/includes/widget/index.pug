@@ -18,8 +18,8 @@
         !=partial('includes/widget/card_tags', {}, {cache: false})
         !=partial('includes/widget/card_archives', {}, {cache: false})
         !=partial('includes/widget/card_bottom_self', {}, {cache: false})
-        if showToc
-          include ./card_post_toc.pug
+      if showToc
+        include ./card_post_toc.pug
   else
     //- page
     !=partial('includes/widget/card_author', {}, {cache: true})
