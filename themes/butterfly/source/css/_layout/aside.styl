@@ -2,6 +2,8 @@
   width: 26%
 
   +minWidth900()
+    align-self: stretch
+
     if hexo-config('aside.position') == 'right'
       padding-left: 15px
     else
@@ -80,6 +82,7 @@
       position: sticky
       position: -webkit-sticky
       top: 20px
+      min-height: 100%
       transition: top .3s
 
   .card-tag-cloud
@@ -234,15 +237,15 @@
   // toc
   #card-toc
     +minWidth901()
+      position: sticky
+      position: -webkit-sticky
+      top: 20px
       right: 0 !important
       z-index: 10
       align-self: flex-start
+      overflow: visible
       max-height: calc(100vh - 40px)
       transition: top .3s
-
-      &.toc-fixed
-        position: fixed
-        margin-top: 0
 
     +maxWidth900()
       position: fixed

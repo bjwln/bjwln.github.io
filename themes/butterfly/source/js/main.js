@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!($article && (isToc || isAnchor))) return
 
-    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors, updateFixedToc
+    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors
 
     if (isToc) {
       const $cardTocLayout = document.getElementById('card-toc')
@@ -545,44 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
           item = item.parentElement.closest('.toc-item')
         }
       }
-      const placeholder = document.createElement('div')
-      placeholder.className = 'toc-placeholder'
-      placeholder.style.display = 'none'
-      $cardTocLayout.parentNode.insertBefore(placeholder, $cardTocLayout)
-      updateFixedToc = () => {
-        if (window.innerWidth <= 900 || document.documentElement.classList.contains('hide-aside')) {
-          placeholder.style.display = 'none'
-          $cardTocLayout.classList.remove('toc-fixed')
-          $cardTocLayout.style.left = ''
-          $cardTocLayout.style.top = ''
-          $cardTocLayout.style.width = ''
-          return
-        }
-
-        const referenceEle = placeholder.style.display === 'none' ? $cardTocLayout : placeholder
-        const referenceRect = referenceEle.getBoundingClientRect()
-        const cardRect = $cardTocLayout.getBoundingClientRect()
-        const currentTop = window.scrollY || document.documentElement.scrollTop
-        const fixedTop = document.getElementById('page-header').classList.contains('nav-visible') || document.getElementById('page-header').classList.contains('fixed') ? 70 : 20
-        const shouldFix = currentTop + fixedTop > btf.getEleTop(referenceEle)
-
-        if (shouldFix) {
-          placeholder.style.display = 'block'
-          placeholder.style.height = `${cardRect.height}px`
-          placeholder.style.marginBottom = window.getComputedStyle($cardTocLayout).marginBottom
-          $cardTocLayout.classList.add('toc-fixed')
-          $cardTocLayout.style.left = `${referenceRect.left}px`
-          $cardTocLayout.style.top = `${fixedTop}px`
-          $cardTocLayout.style.width = `${referenceRect.width}px`
-        } else {
-          placeholder.style.display = 'none'
-          $cardTocLayout.classList.remove('toc-fixed')
-          $cardTocLayout.style.left = ''
-          $cardTocLayout.style.top = ''
-          $cardTocLayout.style.width = ''
-        }
-      }
-
       const rootToc = Array.from($cardToc.children).find(child => child.matches('ol.toc, ul.toc'))
       $cardToc.querySelectorAll('.toc-item').forEach(item => {
         const child = getTocChild(item)
@@ -609,7 +571,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const item = toggle.closest('.toc-item')
           setTocExpanded(item, !item.classList.contains('is-expanded'))
           refreshExpandedTocHeights()
-          updateFixedToc()
           return
         }
 
@@ -621,7 +582,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item && getTocChild(item)) {
           setTocExpanded(item, !item.classList.contains('is-expanded'))
           refreshExpandedTocHeights()
-          updateFixedToc()
         }
 
         const heading = document.getElementById(decodeURI(target.getAttribute('href')).replace('#', ''))
@@ -646,8 +606,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      updateFixedToc()
-
       // 處理 hexo-blog-encrypt 事件
       $cardToc.style.display = 'block'
     }
@@ -669,10 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHeaderPositions()
     btf.addEventListenerPjax(window, 'resize', btf.throttle(() => {
       updateHeaderPositions()
-      if (isToc) {
-        refreshExpandedTocHeights()
-        updateFixedToc()
-      }
+      if (isToc) refreshExpandedTocHeights()
     }, 200))
 
     const findHeadPosition = top => {
@@ -720,11 +675,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // main of scroll
     const tocScrollFn = btf.throttle(() => {
       const currentTop = window.scrollY || document.documentElement.scrollTop
-      if (isToc) {
-        updateFixedToc()
-        if (GLOBAL_CONFIG.percent.toc) {
-          $tocPercentage.textContent = btf.getScrollPercent(currentTop, $article)
-        }
+      if (isToc && GLOBAL_CONFIG.percent.toc) {
+        $tocPercentage.textContent = btf.getScrollPercent(currentTop, $article)
       }
       findHeadPosition(currentTop)
     }, 100)
