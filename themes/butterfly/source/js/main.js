@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!($article && (isToc || isAnchor))) return
 
-    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand
+    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors
 
     if (isToc) {
       const $cardTocLayout = document.getElementById('card-toc')
@@ -521,13 +521,71 @@ document.addEventListener('DOMContentLoaded', () => {
       $tocPercentage = $cardTocLayout.querySelector('.toc-percentage')
       isExpand = $cardToc.classList.contains('is-expand')
 
-      // toc元素點擊
+      const getTocChild = item => Array.from(item.children).find(child => child.classList.contains('toc-child'))
+      const setTocExpanded = (item, expanded) => {
+        const child = getTocChild(item)
+        if (!child) return
+
+        item.classList.toggle('is-expanded', expanded)
+        item.classList.toggle('is-collapsed', !expanded)
+        child.style.maxHeight = expanded ? `${child.scrollHeight}px` : '0px'
+        const toggle = Array.from(item.children).find(child => child.classList.contains('toc-toggle'))
+        if (toggle) toggle.setAttribute('aria-expanded', expanded)
+      }
+      refreshExpandedTocHeights = () => {
+        $cardToc.querySelectorAll('.toc-item.is-expanded > .toc-child').forEach(child => {
+          child.style.maxHeight = `${child.scrollHeight}px`
+        })
+      }
+      expandTocAncestors = link => {
+        const currentItem = link.closest('.toc-item')
+        let item = currentItem && currentItem.parentElement.closest('.toc-item')
+        while (item && $cardToc.contains(item)) {
+          setTocExpanded(item, true)
+          item = item.parentElement.closest('.toc-item')
+        }
+      }
+      const rootToc = Array.from($cardToc.children).find(child => child.matches('ol.toc, ul.toc'))
+      $cardToc.querySelectorAll('.toc-item').forEach(item => {
+        const child = getTocChild(item)
+        if (!child) return
+
+        item.classList.add('has-child')
+        if (!Array.from(item.children).some(child => child.classList.contains('toc-toggle'))) {
+          const toggle = document.createElement('button')
+          toggle.className = 'toc-toggle'
+          toggle.type = 'button'
+          toggle.setAttribute('aria-label', 'Toggle table of contents section')
+          toggle.innerHTML = '<i class="fas fa-angle-right"></i>'
+          item.insertBefore(toggle, child)
+        }
+
+        setTocExpanded(item, isExpand || item.parentElement === rootToc)
+      })
+
       const tocItemClickFn = e => {
+        const toggle = e.target.closest('.toc-toggle')
+        if (toggle) {
+          e.preventDefault()
+          e.stopPropagation()
+          const item = toggle.closest('.toc-item')
+          setTocExpanded(item, !item.classList.contains('is-expanded'))
+          refreshExpandedTocHeights()
+          return
+        }
+
         const target = e.target.closest('.toc-link')
         if (!target) return
 
         e.preventDefault()
-        btf.scrollToDest(btf.getEleTop(document.getElementById(decodeURI(target.getAttribute('href')).replace('#', ''))), 300)
+        const item = target.closest('.toc-item')
+        if (item && getTocChild(item)) {
+          setTocExpanded(item, !item.classList.contains('is-expanded'))
+          refreshExpandedTocHeights()
+        }
+
+        const heading = document.getElementById(decodeURI(target.getAttribute('href')).replace('#', ''))
+        if (heading) btf.scrollToDest(btf.getEleTop(heading), 300)
         if (window.innerWidth < 900) {
           $cardTocLayout.classList.remove('open')
         }
@@ -567,7 +625,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateHeaderPositions()
-    btf.addEventListenerPjax(window, 'resize', btf.throttle(updateHeaderPositions, 200))
+    btf.addEventListenerPjax(window, 'resize', btf.throttle(() => {
+      updateHeaderPositions()
+      if (isToc) refreshExpandedTocHeights()
+    }, 200))
 
     const findHeadPosition = top => {
       if (top === 0) return false
@@ -598,15 +659,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const currentActive = $tocLink[currentIndex]
           currentActive.classList.add('active')
 
-          setTimeout(() => autoScrollToc(currentActive), 0)
-
-          if (!isExpand) {
-            let parent = currentActive.parentNode
-            while (!parent.matches('.toc')) {
-              if (parent.matches('li')) parent.classList.add('active')
-              parent = parent.parentNode
-            }
+          let parent = currentActive.parentNode
+          while (parent && !parent.matches('.toc')) {
+            if (parent.matches('li')) parent.classList.add('active')
+            parent = parent.parentNode
           }
+
+          expandTocAncestors(currentActive)
+          refreshExpandedTocHeights()
+          setTimeout(() => autoScrollToc(currentActive), 0)
         }
       }
     }

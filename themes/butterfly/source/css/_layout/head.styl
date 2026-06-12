@@ -189,20 +189,26 @@
       transform: translate3d(0, 100%, 0)
 
     & + .layout
-      & > .aside-content > .sticky_layout
-        top: 70px
-        transition: top .5s
+      & > .aside-content
+        > .sticky_layout,
+        #card-toc
+          top: 70px
+          transition: top .5s
 
   &.fixed
     #nav
       position: fixed
 
     & + .layout
-      & > .aside-content > .sticky_layout
-        top: 70px
-        transition: top .5s
+      & > .aside-content
+        > .sticky_layout,
+        #card-toc
+          top: 70px
+          transition: top .5s
 
       #card-toc
+        max-height: calc(100vh - 90px)
+
         .toc-content
           max-height: calc(100vh - 170px)
 

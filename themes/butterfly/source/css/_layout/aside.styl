@@ -234,7 +234,14 @@
   // toc
   #card-toc
     +minWidth901()
+      position: sticky
+      position: -webkit-sticky
+      top: 20px
       right: 0 !important
+      z-index: 10
+      align-self: flex-start
+      max-height: calc(100vh - 40px)
+      transition: top .3s
 
     +maxWidth900()
       position: fixed
@@ -276,17 +283,48 @@
           padding-left: 10px
           border-left: 1px solid var(--dark-grey)
 
-      &:not(.is-expand)
+      .toc-child
+        overflow: hidden
+        max-height: 0
+        opacity: 0
+        visibility: hidden
+        transition: max-height .25s ease, opacity .2s ease, visibility .25s ease
+
+      .toc-item
+        position: relative
+
+        &.has-child
+          > .toc-link
+            padding-right: 28px
+
+        &.is-expanded
+          > .toc-child
+            opacity: 1
+            visibility: visible
+
+          > .toc-toggle
+            transform: rotate(90deg)
+
+      .toc-toggle
+        position: absolute
+        top: 4px
+        right: 2px
+        width: 20px
+        height: 20px
+        border: 0
+        padding: 0
+        background: transparent
+        color: var(--toc-link-color)
+        cursor: pointer
+        transition: transform .2s ease, color .2s ease
+
+        &:hover
+          color: $theme-color
+
+      &.is-expand
         .toc-child
-          display: none
-
-          +maxWidth900()
-            display: block !important
-
-        .toc-item
-          &.active
-            .toc-child
-              display: block
+          opacity: 1
+          visibility: visible
 
       ol,
       li
