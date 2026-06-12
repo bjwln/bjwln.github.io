@@ -243,6 +243,13 @@
       overflow: hidden
       transition: top .3s
 
+      &.toc-fixed
+        position: fixed
+        top: 20px
+        z-index: 100
+        max-height: calc(100vh - 40px)
+        overflow: hidden
+
     +maxWidth900()
       position: fixed
       right: 55px

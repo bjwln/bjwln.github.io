@@ -610,6 +610,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      // 目录固定定位：当滚动到即将滑出aside-content时，改为fixed定位
+      const tocFixedFn = btf.throttle(() => {
+        if (window.innerWidth < 900) return
+        const $asideContent = document.getElementById('aside-content')
+        const asideRect = $asideContent.getBoundingClientRect()
+        const tocRect = $cardTocLayout.getBoundingClientRect()
+
+        // 当 aside-content 顶部已经滚出视口，且 toc 即将被推出时，切换为 fixed
+        if (asideRect.top < 0 && tocRect.top < 20) {
+          $cardTocLayout.classList.add('toc-fixed')
+          $cardTocLayout.style.left = tocRect.left + 'px'
+          $cardTocLayout.style.width = tocRect.width + 'px'
+        } else {
+          $cardTocLayout.classList.remove('toc-fixed')
+          $cardTocLayout.style.left = ''
+          $cardTocLayout.style.width = ''
+        }
+      }, 100)
+
+      btf.addEventListenerPjax(window, 'scroll', tocFixedFn, { passive: true })
+
       syncTocToAside()
 
       // 處理 hexo-blog-encrypt 事件
@@ -636,6 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isToc) {
         refreshExpandedTocHeights()
         syncTocToAside()
+        tocFixedFn()
       }
     }, 200))
 
