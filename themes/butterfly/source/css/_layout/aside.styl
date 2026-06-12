@@ -77,8 +77,6 @@
 
   .sticky_layout
     +minWidth900()
-      position: sticky
-      position: -webkit-sticky
       top: 20px
       transition: top .3s
 
@@ -234,7 +232,8 @@
   // toc
   #card-toc
     +minWidth901()
-      position: fixed
+      position: sticky
+      position: -webkit-sticky
       top: 90px
       z-index: 100
       max-height: calc(100vh - 120px)
