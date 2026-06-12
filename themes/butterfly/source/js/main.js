@@ -546,7 +546,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       syncTocToAside = () => {
-        // TOC now uses position: sticky, no manual positioning needed
+        const asideContent = document.getElementById('aside-content')
+        if (window.innerWidth <= 900 || !asideContent || document.documentElement.classList.contains('hide-aside')) {
+          $cardTocLayout.style.left = ''
+          $cardTocLayout.style.width = ''
+          return
+        }
+
+        const asideRect = asideContent.getBoundingClientRect()
+        const asideStyle = window.getComputedStyle(asideContent)
+        const left = asideRect.left + parseFloat(asideStyle.paddingLeft)
+        const width = asideRect.width - parseFloat(asideStyle.paddingLeft) - parseFloat(asideStyle.paddingRight)
+        $cardTocLayout.style.left = `${left}px`
+        $cardTocLayout.style.width = `${width}px`
       }
 
       const rootToc = Array.from($cardToc.children).find(child => child.matches('ol.toc, ul.toc'))
