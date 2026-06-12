@@ -12,3 +12,47 @@
     .toc-content.toc-div-class(class=tocExpandClass style="display:none")!=toc(page.origin, {list_number: tocNumber})
   else
     .toc-content(class=tocExpandClass)!=toc(page.content, {list_number: tocNumber})
+
+  script.
+    (function() {
+      const tocEl = document.getElementById('card-toc-new');
+      if (!tocEl) return;
+
+      const asideContent = document.getElementById('aside-content');
+      if (!asideContent) return;
+
+      let isFixed = false;
+
+      function updateTocPosition() {
+        if (window.innerWidth < 900) {
+          if (isFixed) {
+            tocEl.style.cssText = '';
+            isFixed = false;
+          }
+          return;
+        }
+
+        const asideRect = asideContent.getBoundingClientRect();
+        const tocRect = tocEl.getBoundingClientRect();
+
+        // 当 aside-content 的顶部已经滚出视口，且目录还没到顶部时
+        if (asideRect.top < 0 && tocRect.top < 20) {
+          tocEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: ${tocRect.left}px;
+            width: ${tocRect.width}px;
+            z-index: 100;
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
+          `;
+          isFixed = true;
+        } else {
+          tocEl.style.cssText = '';
+          isFixed = false;
+        }
+      }
+
+      window.addEventListener('scroll', updateTocPosition, { passive: true });
+      window.addEventListener('resize', updateTocPosition);
+    })();
