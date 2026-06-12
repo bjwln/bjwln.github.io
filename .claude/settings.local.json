@@ -34,7 +34,8 @@
       "Bash(command -v node)",
       "Bash(npx playwright *)",
       "Bash(/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe *)",
-      "Bash(npm exec *)"
+      "Bash(npm exec *)",
+      "WebFetch(domain:localhost)"
     ]
   }
 }
