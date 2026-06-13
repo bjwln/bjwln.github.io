@@ -56,6 +56,92 @@ div
 
   != partial('includes/third-party/search/index', {}, { cache: true })
 
+  // 目录 fixed 吸附：JS 驱动 position:fixed，绕过 CSS position:sticky 的限制
+  script.
+    (() => {
+      const toc = document.getElementById('card-toc');
+      if (!toc || toc.closest('.sticky_layout')) return;
+      const aside = document.getElementById('aside-content');
+      if (!aside) return;
+
+      const spacer = document.createElement('div');
+      spacer.id = 'card-toc-spacer';
+      spacer.style.display = 'none';
+      toc.parentNode.insertBefore(spacer, toc);
+
+      let isFixed = false;
+      let fixedTop = 20;
+
+      function getTopOffset() {
+        const h = document.querySelector('#page-header');
+        const navFixed = h && (h.classList.contains('fixed') || h.classList.contains('nav-visible'));
+        return navFixed ? 90 : 20;
+      }
+
+      function applyFixed(offset) {
+        const rect = toc.getBoundingClientRect();
+        fixedTop = offset;
+        toc.style.setProperty('transition', 'none', 'important');
+        toc.style.setProperty('position', 'fixed', 'important');
+        toc.style.setProperty('top', offset + 'px', 'important');
+        toc.style.setProperty('left', rect.left + 'px', 'important');
+        toc.style.setProperty('width', rect.width + 'px', 'important');
+        toc.style.setProperty('z-index', '100', 'important');
+        spacer.style.display = 'block';
+        spacer.style.height = toc.offsetHeight + 'px';
+      }
+
+      function releaseFixed() {
+        toc.style.transition = '';
+        toc.style.position = '';
+        toc.style.top = '';
+        toc.style.left = '';
+        toc.style.width = '';
+        toc.style.zIndex = '';
+        spacer.style.display = 'none';
+      }
+
+      function update() {
+        const offset = getTopOffset();
+        if (!isFixed) {
+          const tocTop = toc.getBoundingClientRect().top;
+          if (tocTop <= offset) {
+            isFixed = true;
+            applyFixed(offset);
+          }
+        } else {
+          const spacerRect = spacer.getBoundingClientRect();
+          const tocRect = toc.getBoundingClientRect();
+          // 使用四舍五入避免浮点数精度问题
+          const spacerTop = Math.round(spacerRect.top);
+          const tocTop = Math.round(tocRect.top);
+          if (spacerTop > offset + 2) {
+            isFixed = false;
+            releaseFixed();
+          } else if (Math.abs(tocTop - fixedTop) > 1) {
+            toc.style.setProperty('top', fixedTop + 'px', 'important');
+          }
+        }
+      }
+
+      function onResize() {
+        if (!isFixed) return;
+        const r = aside.getBoundingClientRect();
+        toc.style.setProperty('left', r.left + 'px', 'important');
+        toc.style.setProperty('width', r.width + 'px', 'important');
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', onResize);
+
+      const header = document.querySelector('#page-header');
+      if (header) {
+        new MutationObserver(update).observe(header, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      update();
+    })()
+
   if theme.google_tag_manager && theme.google_tag_manager.tag_id
     noscript
       iframe(src=`${theme.google_tag_manager.domain ? theme.google_tag_manager.domain : 'https://www.googletagmanager.com'}/ns.html?id=${theme.google_tag_manager.tag_id}` height="0" width="0" style="display:none;visibility:hidden")

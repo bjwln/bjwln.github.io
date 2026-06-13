@@ -35,7 +35,8 @@
       "Bash(npx playwright *)",
       "Bash(/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe *)",
       "Bash(npm exec *)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(findstr /n \"theme:\" \"G:\\\\hexo\\\\my-blog\\\\_config.yml\")"
     ]
   }
 }

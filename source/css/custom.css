@@ -496,11 +496,8 @@ body {
     border-radius: 10px;
 }
 
-/* 文章页目录吸附定位：滑到顶部时固定不动 */
+/* 文章页目录：JS 控制 position:fixed，此处仅限制高度 */
 #aside-content > #card-toc.card-widget {
-    position: sticky !important;
-    position: -webkit-sticky !important;
-    top: 20px !important;
     z-index: 100 !important;
     max-height: calc(100vh - 40px) !important;
     overflow-y: auto !important;
