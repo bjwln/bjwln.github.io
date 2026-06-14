@@ -79,7 +79,7 @@ def dem02():
     print(f't1: {t1}')
 ```
 
-![](PyTorch/image-20260605101130635.png)
+![](image-20260605101130635.png)
 
 ### 幂运算：pow()、pow_()
 
@@ -384,11 +384,237 @@ print(tensor1[-1:, 1:4, 0:3].shape)
 
 ## 多维索引
 
+```python
+   t2 = torch.tensor([
+            [
+                [
+                    3, 
+                 	4, 
+                 	6, 
+                 	5
+                ],
+                
+                [
+                    8, 
+                    8, 
+                    8, 
+                    3
+                ],
+                
+                [4, 9, 6, 7]
+            ],
+
+            [
+                [2, 8, 8, 5],
+                [6, 4, 2, 2],
+                [2, 7, 9, 4]
+            ]
+    ])
+    # 需求1:获取0轴上的第1个数据.
+    print(t2[0,:,:])
+    # tensor([[3, 4, 6, 5],
+    #         [8, 8, 8, 3],
+    #         [4, 9, 6, 7]])
+    # 需求2:获取1轴上的第1个数据.
+    print(t2[:,0,:])
+    # tensor([[3, 4, 6, 5],
+    #         [2, 8, 8, 5]])
+    # 需求3:获取2轴上的第1个数据.
+    print(t2[:,:,0])
+    # tensor([[3, 8, 4],
+    #         [2, 6, 2]])
+    
+```
+
+![image-20260614103710271](image-20260614103710271.png)
+
+![](image-20260614103655112.png)
+
+索引操作` t2[:,:,0]` 的工作原理
+
+  当我们使用` t2[:,:,0]` 时：
+
+  - 第一个 : 表示保留所有层（2个层）
+  - 第二个 : 表示保留所有行（3行）
+  - 0 表示只选择第0列
+
+  所以这个操作实际上是：
+
+  - 从第0层：取第0列 → [3, 8, 4]
+  - 从第1层：取第0列 → [2, 6, 2]
+
 # 张量的形状操作
+
+## reshape 与 view(View不常用)
+
+接口：
+
+- `Tensor.reshape(*shape)`：在内存不连续时可返回副本
+- `Tensor.view(*shape)`：要求张量在内存中连续，否则需先调用 `contiguous()`
+
+功能：在元素总数不变的前提下调整形状。
+
+```python
+tensor1 = torch.randint(1, 9, (3, 5, 4))  # 共 60 个元素
+
+print(tensor1.reshape(6, 10))   # 形状 (6, 10)
+print(tensor1.reshape(3, -1))  # (3, 20)，-1 被推断为 20
+```
+
+
+
+## unsqueeze：增加大小为 1 的维
+
+接口：
+
+- `Tensor.unsqueeze(dim)`
+- `Tensor.unsqueeze_(dim)`
+
+功能：在指定位置插入一个大小为 1 的维度，常用于广播或与某些接口的维度要求对齐。一般在模型欠拟合的时候增加维度
+
+参数：
+
+- `dim`：插入的维度下标（支持负索引，-1 表示最后一维之后）。
+
+```python
+# 1. 定义2行3列的张量.
+    t1 = torch.randint(1, 10, size=(2, 3))
+    print(f't1: {t1}, shape: {t1.shape}')  # (2, 3)
+
+    # 2. 在0维上, 添加一个维度.
+    t2 = t1.unsqueeze(0)
+    print(f't2: {t2}, shape: {t2.shape}')  # (1, 2, 3)
+
+    # 3. 在1维上, 添加一个维度.
+    t3 = t1.unsqueeze(1)
+    print(f't3: {t3}, shape: {t3.shape}')  # (2, 1, 3) 由原来的两行三列矩阵变为两个一行三列的矩阵
+
+    # 4. 在2维上, 添加一个维度.
+    t4 = t1.unsqueeze(2)
+    print(f't4: {t4}, shape: {t4.shape}')  # (2, 3, 1)
+
+    # 5. 在3维上(不存在), 添加一个维度.
+    t5 = t1.unsqueeze(3)
+    print(f't5: {t5}, shape: {t5.shape}')  # (2, 3 , * , 1)  中间跳了一个*，报越界错误
+```
+
+## squeeze：删除大小为 1 的维
+
+接口：
+
+- `Tensor.squeeze(dim=None)`
+- `Tensor.squeeze_(dim=None)`
+
+功能：删除大小为 1 的维度。不传 `dim` 时删除所有大小为 1 的维；传 `dim` 时仅当该维为 1 才删除。
+
+参数：
+
+- `dim`：可选，指定要删除的维度下标。
+
+```python
+import torch
+tensor1 = torch.tensor([1, 2, 3, 4, 5])
+tensor1 = tensor1.unsqueeze_(dim=0)  # (1, 5)
+tensor1 = tensor1.unsqueeze_(dim=0)  # (1, 1, 5)
+print(tensor1.squeeze())  # (5,)，删除所有大小为 1 的维
+```
+
+## 交换维度
+
+接口：
+
+- `Tensor.transpose(dim0, dim1)`：交换两个指定维度
+- <span style="color:#FF00FF">`Tensor.permute(*dims)`：按给定顺序重排所有维度，可一次实现多维交换</span>
+
+参数：
+
+- `transpose(dim0, dim1)`：`dim0`、`dim1` 为要交换的两个维度下标（从 0 起）。
+- <span style="color:#FF00FF">`permute(*dims)`：`*dims` 为新的维度顺序，例如原形状 (2,3,6) 传入 (2,0,1) 得到 (6,2,3)。</span>
+
+```python
+ tensor1 = torch.randint(1, 9, (2, 3, 6))
+
+    # transpose：只交换第 1 维与第 2 维，结果形状 (2, 6, 3)
+    print(tensor1.transpose(1, 2))
+
+    # permute：按 (dim2, dim0, dim1) 重排，结果形状 (6, 2, 3)
+    print(tensor1.permute(2, 0, 1))       # 第0维的数据为dim2，第1维的数据为dim0，第2维的数据为dim1
+```
 
 
 
 # 张量的拼接操作
+
+## torch.cat
+
+接口：`torch.cat(tensors, dim=0, out=None)`
+
+功能：在指定维度上拼接多个张量，除 `dim` 外其余维度须相同。
+
+参数：
+
+- `tensors`：张量序列（list 或 tuple）
+- `dim`：沿该维拼接
+- `out`：可选输出张量
+
+```python
+    # 1. 创建两个张量.
+    t1 = torch.randint(1, 10, (2, 3))
+    print(f't1: {t1}, shape: {t1.shape}')
+
+    t2 = torch.randint(1, 10, (2, 3))
+    print(f't2: {t2}, shape: {t2.shape}')
+
+    # 2. 演示张量的拼接.
+    t3 = torch.cat(tensors=[t1, t2], dim=0)  # (2, 3) + (2, 3) = (4, 3)
+    print(f't3: {t3}, shape: {t3.shape}')
+```
+
+![image-20260614222751340](image-20260614222751340.png)
+
+## torch.stack
+
+接口：`torch.stack(tensors, dim=0, out=None)`
+
+功能：在新维度上堆叠多个张量，所有输入形状必须一致，结果多出一维。
+
+参数：
+
+- `tensors`：形状相同的张量序列
+- `dim`：插入的新维度位置
+- `out`：可选输出张量
+
+```python
+    # 1. 创建两个张量.
+    t1 = torch.tensor([[6,9,9],[2,8,7]])
+
+    t2 = torch.tensor([[8,5,8],[4,7,4]])
+    # 思路2: stack() 拼接张量, 可以是新维度, 但是无论新旧维度, 所有维度都必须保持一致.
+    t7 = torch.stack([t1, t2], dim=0)    # (2, 3) + (2, 3) = (2, 2, 3)
+    print(f't7: {t7}, shape: {t7.shape}')
+
+    t8 = torch.stack(tensors=[t1, t2], dim=1)    # (2, 3) + (2, 3) = (2, 2, 3)
+    print(f't8: {t8}, shape: {t8.shape}')
+    
+    t9 = torch.stack(tensors=[t1, t2], dim=2)  # (2, 3) + (2, 3) = (2, 3, 2)
+    print(f't9: {t9}, shape: {t9.shape}')
+```
+
+关于`t8`：
+
+![image-20260614223902264](image-20260614223902264.png)
+
+![image-20260614223851271](image-20260614223851271.png)
+
+关于`t9`：
+
+![image-20260614224332820](image-20260614224332820.png)
+
+<span style="color:#FF00FF">⭐这里的二维度相比于前面的维度，只是单个数字，故不用再加中括号</span>
+
+![image-20260614230021539](image-20260614230021539.png)
+
+![image-20260614230104952](image-20260614230104952.png)
 
 # 自动微分模块
 
