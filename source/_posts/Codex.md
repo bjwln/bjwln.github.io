@@ -2,7 +2,13 @@
 title: Codex
 date: 2026-06-15 15:03:43
 tags:
+categories: Tools
+cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjwlqMAhYr0WtDkEzS2sUfJtQ1nLE_QACIAxrG3UggUV20latvjMWjAEAAwIAA3gAAzwE.png
 ---
+
+Codex是2025年10月[OpenAI](https://baike.baidu.com/item/OpenAI/19758408?fromModule=lemma_inlink)公司开发的AI代码生成训练模型，基于[GPT-3](https://baike.baidu.com/item/GPT-3/63687636?fromModule=lemma_inlink)架构改进，专注于将自然语言指令转换为多种编程语言代码。该模型通过混合训练自然语言和公开代码数据构建，采用[Transformer](https://baike.baidu.com/item/Transformer/64429264?fromModule=lemma_inlink)架构并具备14KB代码记忆容量，支持[Python](https://baike.baidu.com/item/Python/407313?fromModule=lemma_inlink)、[JavaScript](https://baike.baidu.com/item/JavaScript/321142?fromModule=lemma_inlink)、[Java](https://baike.baidu.com/item/Java/85979?fromModule=lemma_inlink)等主流语言，作为[GitHub Copilot](https://baike.baidu.com/item/GitHub Copilot/57754203?fromModule=lemma_inlink)的技术基础，核心功能包括代码生成、补全优化及多语言翻译。2025年5月升级为云端软件工程代理后，新增并行处理代码编写、调试和测试功能，集成至[ChatGPT](https://baike.baidu.com/item/ChatGPT/62446358?fromModule=lemma_inlink)生态并向企业用户开放。同年6月通过ChatGPT Codex子系统实现多方案生成功能，允许用户为单一任务获取多个代码方案并自主选择最优解。
+
+![image-20260615222538979](image-20260615222538979.png)
 
 # 安装
 
@@ -32,7 +38,7 @@ https://openai.com/zh-Hans-CN/codex/（需要魔法）
 
 注意ChatGPT 账户限额，参考: https://chatgpt.com/zh-Hans-CN/pricing
 
-## 一些混淆点
+# 关于本地路由映射
 
 1. Codex 原生只认 OpenAI 的模型，显示的是 “本地兼容后的假象”
 
@@ -63,5 +69,55 @@ https://openai.com/zh-Hans-CN/codex/（需要魔法）
    - 开启本地路由映射后，CC-Switch 会在你的电脑上运行一个本地代理服务，把 Codex 发出的 `Responses API` 请求，转换成第三方 API 能识别的 `Chat Completions` 请求，再把返回结果转换回去，让 Codex 以为自己在和 OpenAI 交互
    - 但这个过程只是**协议层面的兼容**，并不会凭空让你拥有 CodingPlan 没开通的模型权限
 
-4. 同样CCswitch可以绕过codex登陆问题，不用魔法，不用手机号，不用支付
+# 可能会遇到的一些问题
+
+## 一直重新连接
+
+![image-20260615210046180](image-20260615210046180.png)
+
+问题原因：你开了魔法，codex未必一开始就走魔法，而是会尝试直接访问，try五次之后，再走代理。设置env的目的是让codex一开始就知道有这个配置，直接走代理即可。 也可以直接设置环境变量，一个道理。一个是用户级别的，一个是软件级别的
+
+解决方法：windows用户进c盘/用户/你的用户名/.codex 进入文件夹创建一个“.env”文件，然后把下面这段复制粘贴进去就解决了：
+
+HTTP_PROXY=http://127.0.0.1:7890 
+
+HTTPS_PROXY=http://127.0.0.1:7890 
+
+ALL_PROXY=http://127.0.0.1:7890 
+
+NO_PROXY=localhost,127.0.0.1
+
+魔法的端口可以在app内找到
+
+![image-20260615204722173](image-20260615204722173.png)
+
+二编：
+
+​	好像我得先进入命令窗口页面，然后我在可视化界面才能正常提问问题。。。
+
+​	![image-20260615211757766](image-20260615211757766.png)
+
+​	![image-20260615211812070](image-20260615211812070.png)
+
+三编：
+
+​	1min717万token还没命中率，这太逆天了。花token如流水，等以后真订阅codex再用这个软件吧。也可能是用的国内的大模型的原因。<span style="color:#FF00FF">可能真订阅了它的服务会更有生产力且性价比更高</span>
+
+​	![image-20260615214806022](image-20260615214806022.png)
+
+​	![image-20260615215015194](image-20260615215015194.png)
+
+四编：
+
+​	plus 20刀/月
+
+​	pro 200刀/月
+
+​	<span style="color:#FF00FF">cc是真的好用</span>
+
+## 手机验证码问题
+
+![image-20260615205123522](image-20260615205123522.png)
+
+目前主流的绕开验证码的方式全都失效了，唯一能用的就是接码平台了。但是接码平台的号码无法二次验证。很可能有二次验证的时候这个号就废了。看看以后会不会有更好的解决方法
 

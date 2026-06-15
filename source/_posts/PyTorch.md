@@ -3,7 +3,14 @@ title: PyTorch
 date: 2026-06-04 10:04:06
 tags:
 categories: 深度学习
+cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjxVqMAsk-_Twr0LCOsrln4gLg72rjAACLAxrG3UggUWroE8MiRIINAEAAwIAA3kAAzwE.png
 ---
+
+PyTorch是一个用于机器学习和深度学习的开源深度学习框架，由Facebook于2016年发布，其主要实现了自动微分功能，并引入动态计算图使模型建立更加灵活。Pytorch可分为前后端两个部分，前端是与用户直接交互的python API，后端是框架内部实现的部分，包括Autograd，它是一个自动微分引擎。
+
+Pytorch基于已有的张量库Torch开发，在PyTorch的早期版本中，使用的是Torch7，后来随着PyTorch的发展，逐渐演变成了PyTorch所使用的张量库。
+
+现如今，Pytorch已经成为开源机器学习系统中，在科研领域市场占有率最高的框架，其在AI顶会上的占比在2022年已达80％ 。
 
 # 张量的类型转换
 

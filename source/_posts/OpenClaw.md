@@ -2,7 +2,7 @@
 title: OpenClaw
 date: 2026-05-30 10:35:30
 tags:
-categories: 好玩的技术
+categories: Tools
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjEFqGwd-MLzGQjkpsVDH8WKUB-PLHwACawxrG82J2UTWh-1iEklzUwEAAwIAA3gAAzsE.png
 permalink: 2026/05/30/openclaw/
 ---

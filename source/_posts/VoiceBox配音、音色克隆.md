@@ -1,7 +1,7 @@
 ---
 title: VoiceBox配音、音色克隆
 date: 2026-05-31 18:41:58
-categories: 好玩的技术
+categories: Tools
 cover: /images/voicecover.png
 ---
 

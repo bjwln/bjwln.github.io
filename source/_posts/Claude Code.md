@@ -2,7 +2,7 @@
 title: Claude Code
 date: 2026-05-27 10:43:00
 tags:
-categories: 好玩的技术
+categories: Tools
 cover: /images/cc.jpg
 ---
 
