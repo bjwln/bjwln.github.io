@@ -723,6 +723,12 @@ google_tag_manager:
   domain:
 
 # --------------------------------------
+# Vercel Analytics
+# --------------------------------------
+# https://vercel.com/docs/concepts/analytics/quickstart
+vercel_analytics: true
+
+# --------------------------------------
 # Advertisement
 # --------------------------------------
 
