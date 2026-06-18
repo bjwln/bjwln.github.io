@@ -625,4 +625,72 @@ print(tensor1.squeeze())  # (5,)，删除所有大小为 1 的维
 
 # 自动微分模块
 
+训练时 PyTorch 会构建**计算图（computational graph）**，记录数据与运算，并通过内置的微分引擎 `torch.autograd` 在根节点调用 `backward()` 自动计算梯度。PyTorch 的 `backward()` 就是在计算图上自动做链式法则，从根节点（通常是损失）一路把梯度传回叶子节点（如权重、偏置）。
+
+![image-20260616222332398](image-20260616222332398.png)
+
+![image-20260616223707063](image-20260616223707063.png)
+
+```python
+ 	# 1. 定义变量，记录：初始的权重w(旧)
+    # 参1：初始值，参2：是否自动微分(求导)，参3：数据类型
+    w = torch.tensor(data=10, requires_grad=True, dtype=torch.float)
+
+    # 2. 定义loss变量，表示损失函数。
+    loss = 2 * w ** 2  # loss = 2w² → 求导：4w
+
+    # 3. 打印梯度函数类型(了解)
+    # print(f'梯度函数类型：{type(loss.grad_fn)}')    # <class 'MulBackward0'>
+    # print(loss.sum())
+
+    # 4. 计算梯度，梯度 = 损失函数的导数，计算完毕后，会记录到 w.grad属性中。
+    # loss.sum().backward()      # 保证loss是1个标量。
+    loss.backward()  # 这里因为y本身就是标量，可以不写sum()
+
+    # 5. 代入 权重更新公式：W新 = W旧 - 学习率 * 梯度
+    w.data = w.data - 0.01 * w.grad
+
+    # 6. 打印最终结果。
+    print(f'更新后的权重：{w}')  # 9.6
+```
+
+在真实的神经网络中，情况完全不同：
+
+  1. 损失函数不是 2w²，而是 loss = f(w, x, y) —— 依赖输入数据 x 和真实标签 y。
+  2. 梯度不会总是把 w 推向 0，因为 loss 的最低点不一定在 w=0 处。比如线性回归 loss = (wx - y)²，最优 w 是让 wx ≈ y
+
+    的那个值，通常不是 0。
+  3. 多个权重相互制衡，真实网络有成千上万的参数，一个权重的梯度受其他所有权重影响，不会简单归零。
+  4. 当模型收敛时，梯度会趋近于 0，此时权重稳定在最优值附近，而不是单纯的 0。
+
+  一句话总结：这个 demo 的 loss 函数恰好是 2w²（最小值在 w=0），所以你看到 w→0
+  是对的。但在真实场景中，梯度下降会让权重停在让 loss 最小的那个值，那个值一般不是 0。
+
+## 自动微分模块案例-循环更新参数
+
+```python
+    w = torch.tensor(data=10, requires_grad=True, dtype=torch.float32)
+    loss = w ** 2 + 20
+    # 利用梯度下降法，循环迭代100求最优解
+    print(f'开始权重值:{w:.5f}, (0.01 * w.grad):无 , loss:{loss:.5f}')
+    for i in range(1, 101):
+        # 1.正向传播
+        loss = w ** 2 + 20
+        # 2.梯度清零，否则 backward() 会累加梯度
+        if w.grad is not None:
+            w.grad.zero_()
+        # 3.反向传播
+        # 这里的loss本身就是一个标量，所以可以不用写sum
+        # PyTorch 的 backward() 会累加梯度，而不是覆盖梯度。这是因为一个参数可能被多个 loss 贡献梯度（比如 RNN中同一个权重在不同时间步被使用）。
+        loss.backward()
+        # print(f'梯度值为:{w.grad}')
+        # 4.梯度更新
+        w.data = w.data - 0.01 * w.grad
+        # 5.打印本次梯度更新后的权重参数结果
+        print(f'第{i}次，权重初始值：{w:.5f},(0.01 * w.grad):{0.01 * w.grad:.5f}, loss:{loss:.5f}')
+    print(f'最终权重：{w},梯度:{w.grad},loss={loss}')
+```
+
+
+
 # 案例-线性回归案例
