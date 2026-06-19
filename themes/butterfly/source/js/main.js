@@ -528,13 +528,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
         item.classList.toggle('is-expanded', expanded)
         item.classList.toggle('is-collapsed', !expanded)
-        child.style.maxHeight = expanded ? `${child.scrollHeight}px` : '0px'
+
+        if (expanded) {
+          // 临时展开所有嵌套子目录，以便正确计算 scrollHeight
+          const nestedChildren = child.querySelectorAll('.toc-child')
+          const originalMaxHeights = []
+          nestedChildren.forEach(el => {
+            originalMaxHeights.push(el.style.maxHeight)
+            el.style.maxHeight = ''  // 空字符串让 CSS 规则生效（max-height: 0）
+          })
+
+          // 先让所有嵌套子目录临时展开以获取真实高度
+          nestedChildren.forEach(el => {
+            el.style.maxHeight = 'max-content'
+          })
+
+          const scrollH = child.scrollHeight
+
+          // 恢复原始高度
+          nestedChildren.forEach((el, i) => {
+            el.style.maxHeight = originalMaxHeights[i]
+          })
+
+          child.style.maxHeight = `${scrollH}px`
+        } else {
+          child.style.maxHeight = '0px'
+        }
+
         const toggle = Array.from(item.children).find(child => child.classList.contains('toc-toggle'))
         if (toggle) toggle.setAttribute('aria-expanded', expanded)
       }
       refreshExpandedTocHeights = () => {
         $cardToc.querySelectorAll('.toc-item.is-expanded > .toc-child').forEach(child => {
-          child.style.maxHeight = `${child.scrollHeight}px`
+          // 临时展开所有嵌套子目录
+          const nestedChildren = child.querySelectorAll('.toc-child')
+          const originalMaxHeights = []
+          nestedChildren.forEach(el => {
+            originalMaxHeights.push(el.style.maxHeight)
+            el.style.maxHeight = 'max-content'
+          })
+
+          const scrollH = child.scrollHeight
+
+          nestedChildren.forEach((el, i) => {
+            el.style.maxHeight = originalMaxHeights[i]
+          })
+
+          child.style.maxHeight = `${scrollH}px`
         })
       }
       expandTocAncestors = link => {

@@ -502,3 +502,8 @@ body {
     max-height: calc(100vh - 40px) !important;
     overflow-y: auto !important;
 }
+
+/* 分类/归档页面文章列表日期颜色设为白色 */
+.article-sort-item-time time {
+    color: #fff !important;
+}
