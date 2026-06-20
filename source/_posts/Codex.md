@@ -115,6 +115,14 @@ NO_PROXY=localhost,127.0.0.1
 
 ​	<span style="color:#FF00FF">cc是真的好用</span>
 
+五编：
+
+​	codex插件真好用，<span style="color:#FF00FF">出现重新连接问题关掉魔法后打开codex就可以了。</span>
+
+六编：
+
+​	我的token‌  **༎ຶД༎ຶ`**
+
 ## 手机验证码问题
 
 ![image-20260615205123522](image-20260615205123522.png)
