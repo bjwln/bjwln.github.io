@@ -138,7 +138,7 @@ void solve() {
 }
 ```
 
-# D. Brand New Tatar TV Show
+# D. Brand New Tatar TV Show[DP]
 
 ## 定义dp
 
