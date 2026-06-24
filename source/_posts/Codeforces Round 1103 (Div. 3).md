@@ -4,7 +4,7 @@ title: Codeforces Round 1103 (Div. 3)
 date: 2026-06-20 11:25:17
 tags:
 categories: 算法题
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGdqO7YuEShTIyD-bBLX1cbMaRn_hwAC7gtrG5DK4EWUtSqrW3wpkwEAAwIAA3gAAzwE.png
+cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkG1qO7dKG3J9zwMmUJ3_VRqSjDXGPwAC9AtrG5DK4EX9JjuwHnIWOQEAAwIAA3kAAzwE.png
 ---
 
 [题目地址](https://codeforces.com/contest/2236)
