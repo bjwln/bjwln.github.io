@@ -4,7 +4,7 @@ title: Codeforces Round 1103 (Div. 3)
 date: 2026-06-20 11:25:17
 tags:
 categories: 算法题
-cover: https://codeforces.com/codeforces.org/s/74416/images/codeforces-sponsored-by-ton.png
+cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGZqO7WbeF0MB5AktGPYapjoqjzdxQAC7QtrG5DK4EUaLiXUWwEsqwEAAwIAA3gAAzwE.png
 ---
 
 [题目地址](https://codeforces.com/contest/2236)
