@@ -295,22 +295,26 @@
 
         &.has-child
           > .toc-link
-            padding-right: 28px
+            display: flex
+            align-items: center
+            gap: 4px
 
         &.is-expanded
           > .toc-child
             opacity: 1
             visibility: visible
 
-          > .toc-toggle
+          > .toc-link > .toc-toggle
             transform: rotate(90deg)
 
       .toc-toggle
-        position: absolute
-        top: 4px
-        right: 2px
-        width: 20px
-        height: 20px
+        flex: none
+        display: inline-flex
+        align-items: center
+        justify-content: center
+        width: 16px
+        height: 16px
+        margin-left: -2px
         border: 0
         padding: 0
         background: transparent

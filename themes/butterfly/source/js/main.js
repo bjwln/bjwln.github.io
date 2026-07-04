@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 首頁top_img底下的箭�?
+   * 首頁top_img底下的箭�?
    */
   const scrollDownInIndex = () => {
     const handleScrollToDest = () => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * 代碼
-   * 只適用於Hexo默認的代碼渲�?
+   * 只適用於Hexo默認的代碼渲�?
    */
   const addHighlightTool = () => {
     const highLight = GLOBAL_CONFIG.highlight
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const expandCode = e => e.currentTarget.classList.toggle('expand-done')
 
-    // 獲取隱藏狀態下元素的真實高�?
+    // 獲取隱藏狀態下元素的真實高�?
     const getActualHeight = item => {
       if (item.offsetHeight > 0) return item.offsetHeight
       const hiddenElements = new Map()
@@ -547,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
           child.style.maxHeight = '0px'
         }
 
-        const toggle = Array.from(item.children).find(c => c.classList.contains('toc-toggle'))
+        const toggle = item.querySelector('.toc-toggle')
         if (toggle) toggle.setAttribute('aria-expanded', expanded)
       }
       refreshExpandedTocHeights = () => {
@@ -593,13 +593,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!child) return
 
         item.classList.add('has-child')
-        if (!Array.from(item.children).some(child => child.classList.contains('toc-toggle'))) {
+        const tocLink = item.querySelector(':scope > .toc-link')
+        if (tocLink && !tocLink.querySelector('.toc-toggle')) {
           const toggle = document.createElement('button')
           toggle.className = 'toc-toggle'
           toggle.type = 'button'
           toggle.setAttribute('aria-label', 'Toggle table of contents section')
           toggle.innerHTML = '<i class="fas fa-angle-right"></i>'
-          item.insertBefore(toggle, child)
+          tocLink.insertBefore(toggle, tocLink.firstChild)
+        } else if (!tocLink) {
+          if (!Array.from(item.children).some(c => c.classList.contains('toc-toggle'))) {
+            const toggle = document.createElement('button')
+            toggle.className = 'toc-toggle'
+            toggle.type = 'button'
+            toggle.innerHTML = '<i class="fas fa-angle-right"></i>'
+            item.insertBefore(toggle, child)
+          }
         }
 
         setTocExpanded(item, isExpand || item.parentElement === rootToc)
@@ -860,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 手机端目录点�?
+   * 手机端目录点�?
    */
   const openMobileMenu = () => {
     const toggleMenu = document.getElementById('toggle-menu')
@@ -869,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
- * 複製時加上版權信�?
+ * 複製時加上版權信�?
  */
   const addCopyright = () => {
     const { limitCount, languages } = GLOBAL_CONFIG.copyright
@@ -903,7 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 最後一次更新時�?
+   * 最後一次更新時�?
    */
   const addLastPushDate = () => {
     const $lastPushDateItem = document.getElementById('last-push-date')
