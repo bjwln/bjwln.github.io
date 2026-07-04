@@ -639,9 +639,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       autoScrollToc = item => {
         const sidebarHeight = $cardToc.clientHeight
-        const itemOffsetTop = item.offsetTop
         const itemHeight = item.clientHeight
         const scrollTop = $cardToc.scrollTop
+        const cardRect = $cardToc.getBoundingClientRect()
+        const itemRect = item.getBoundingClientRect()
+        const itemOffsetTop = itemRect.top - cardRect.top + scrollTop
         const offset = itemOffsetTop - scrollTop
         const middlePosition = (sidebarHeight - itemHeight) / 2
 
