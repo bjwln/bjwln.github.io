@@ -305,3 +305,100 @@ void solve() {
 }
 ```
 
+# E. Friendly Gifts
+
+## 题目分析
+
+如果一个数组是good数组，那么数组要满足
+
+1. 没有重复，2. 最大值 - 最小值 + 1 = 长度
+
+题目要找两个长度一样的 good 子段，而且它们合起来也要 good。比如长度是 `4`。第一段如果是：`[1,2,3,4]`。第二段就必须刚好接上：`[5,6,7,8]`.这样合起来才是：`[1,2,3,4,5,6,7,8]`。所以核心为找一段数值范围是 `[x, x+len-1]`，再找一段数值范围是` [x+len, x+2len-1]`
+
+## 定义转移数组
+
+同一种子段可能出现很多次，我们只记录它们所有起点里最靠左的那个、最靠右的那个，定义：
+
+> mnPos[len]\[x]：长度为 len、最小值为 x 的 good 子段中，最靠左的起点
+>
+> mxPos[len]\[x]：长度为 len、最小值为 x 的 good 子段中，最靠右的起点
+
+比如数组里有很多个长度为 `3`、最小值为 `1` 的 good 子段。
+
+```
+位置 2 开始：[1,2,3]
+位置 5 开始：[3,1,2]
+位置 8 开始：[2,3,1]
+```
+
+它们属于同一类：len = 3, x = 1。这些子段的起点分别是 2, 5, 8。则最小起点 = 2
+最大起点 = 8。
+
+### 我们为什么要记录最大起点？
+
+比如另一类子段是：len = 3, x = 4。假设它只出现在位置 1 开始：[4,5,6]。如果我们只知道第一类的最小起点 `2`，那它和起点 `1` 太近就感觉起来会重叠。但其实第一类还有一个起点 `8`，尽量拉远，就会不重叠。
+
+### 那凭什么认为记录最小和最大就是正确答案？万一在中间呢？
+
+因为我们只需要判断“有没有两个不重叠”，而不是要找某个特殊的中间位置。如果中间某两个能不重叠，那么最左和最右一定也能不重叠。所以，对于同一种 good 子段类型，<span style="color:#FF00FF">我们只需要知道它**最左能从哪里开始**，以及**最右能从哪里开始就可以了**。</span>
+
+## AC代码
+
+```c++
+void solve() {
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
+		vector<int> a(n + 1);
+		for (int i = 1; i <= n; i++) {
+			cin >> a[i];
+		}
+		// lPos[len][x]：长度为 len、最小值为 x 的 good 子段中，最靠左的起点
+		// rPos[len][x]：长度为 len、最小值为 x 的 good 子段中，最靠右的起点
+		vector<vector<int>> lpos(n + 1, vector<int>(n + 2, INF));
+		vector<vector<int>> rpos(n + 1, vector<int>(n + 2, -INF));
+
+		for (int l = 1; l <= n; l++) {
+			vector<int> cnt(n + 1, 0);
+			int mn = INF;
+			int mx = -INF;
+			for (int r = l; r <= n; r++) {
+				int tem = a[r];
+				cnt[tem]++;
+				if (cnt[tem] > 1) { //如果出现相同的数了，那一定不是good序列
+					break;
+				}
+				mn = min(mn, tem);
+				mx = max(mx, tem);
+				if (mx - mn + 1 == r - l + 1) { //说明此序列是一个good序列
+					lpos[mx - mn + 1][mn] = min(l, lpos[mx - mn + 1][mn]);
+					rpos[mx - mn + 1][mn] = max(l, rpos[mx - mn + 1][mn]);
+				}
+			}
+		}
+		int ans = 0;
+		for (int len = 0; len <= n / 2; len++) {
+			for (int x = 1; x <= n; x++) {
+				int flag = (lpos[len][x] != INF);
+				if (!flag) {
+					continue;
+				}
+				// 判断是否能选到两个不重叠的子段
+				// 一边取最靠左，另一边取最靠右。
+				// 如果起点差 >= len，则两个长度为 len 的子段不重叠。
+				int flag3 = 0;
+				if (abs(lpos[len][x] - rpos[len][x + len]) >= len && rpos[len][x + len] != -INF)
+					flag3 = 1;
+
+				if (flag3) ans = max(ans, len);
+			}
+		}
+		cout << ans;
+		cout << '\n';
+	}
+
+}
+```
+

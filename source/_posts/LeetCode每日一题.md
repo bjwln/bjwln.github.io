@@ -57,7 +57,7 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFou
 
 
 
-### 优化时间复杂度——矩阵快速幂
+### ⭐⭐⭐优化时间复杂度——矩阵快速幂
 
 比如·`n=3,l=0,r=2`
 
@@ -195,7 +195,7 @@ base 平方 -> T^16
 exp 右移 -> 0
 ```
 
-### 完整代码
+### AC代码
 
 ```c++
 #include <bits/stdc++.h>
