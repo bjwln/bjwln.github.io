@@ -57,4 +57,104 @@ div
   != partial('includes/third-party/search/index', {}, { cache: true })
 
 
+  // 目录 fixed 吸附：JS 驱动 position:fixed，让目录在侧边栏滚出后仍钉在右侧
+  script.
+    (() => {
+      const toc = document.getElementById('card-toc');
+      if (!toc || toc.closest('.sticky_layout')) return;
+      const aside = document.getElementById('aside-content');
+      if (!aside) return;
+      // 仅宽屏启用，移动端 #card-toc 本身是 fixed 弹窗
+      if (window.innerWidth < 901) return;
+
+      const spacer = document.createElement('div');
+      spacer.id = 'card-toc-spacer';
+      spacer.style.display = 'none';
+      toc.parentNode.insertBefore(spacer, toc);
+
+      let isFixed = false;
+      let fixedTop = 20;
+
+      function getTopOffset() {
+        const h = document.querySelector('#page-header');
+        const navFixed = h && (h.classList.contains('fixed') || h.classList.contains('nav-visible'));
+        return navFixed ? 90 : 20;
+      }
+
+      function applyFixed(offset) {
+        const rect = toc.getBoundingClientRect();
+        fixedTop = offset;
+        toc.style.setProperty('transition', 'none', 'important');
+        toc.style.setProperty('position', 'fixed', 'important');
+        toc.style.setProperty('top', offset + 'px', 'important');
+        toc.style.setProperty('left', rect.left + 'px', 'important');
+        toc.style.setProperty('width', rect.width + 'px', 'important');
+        toc.style.setProperty('z-index', '100', 'important');
+        spacer.style.display = 'block';
+        spacer.style.height = toc.offsetHeight + 'px';
+      }
+
+      function releaseFixed() {
+        toc.style.transition = '';
+        toc.style.position = '';
+        toc.style.top = '';
+        toc.style.left = '';
+        toc.style.width = '';
+        toc.style.zIndex = '';
+        spacer.style.display = 'none';
+      }
+
+      function update() {
+        const offset = getTopOffset();
+        if (!isFixed) {
+          const tocTop = toc.getBoundingClientRect().top;
+          if (tocTop <= offset) {
+            isFixed = true;
+            applyFixed(offset);
+          }
+        } else {
+          const spacerRect = spacer.getBoundingClientRect();
+          const tocRect = toc.getBoundingClientRect();
+          const spacerTop = Math.round(spacerRect.top);
+          const tocTop = Math.round(tocRect.top);
+          if (spacerTop > offset + 2) {
+            isFixed = false;
+            releaseFixed();
+          } else if (Math.abs(tocTop - fixedTop) > 1) {
+            toc.style.setProperty('top', fixedTop + 'px', 'important');
+          }
+        }
+      }
+
+      function onResize() {
+        if (window.innerWidth < 901) {
+          if (isFixed) { isFixed = false; releaseFixed(); }
+          return;
+        }
+        if (!isFixed) return;
+        const r = aside.getBoundingClientRect();
+        toc.style.setProperty('left', r.left + 'px', 'important');
+        toc.style.setProperty('width', r.width + 'px', 'important');
+      }
+
+      // 用 pjax 安全绑定，切页时自动解绑旧监听
+      btf.addEventListenerPjax(window, 'scroll', update, { passive: true });
+      btf.addEventListenerPjax(window, 'resize', onResize);
+
+      const header = document.querySelector('#page-header');
+      if (header) {
+        const mo = new MutationObserver(update);
+        mo.observe(header, { attributes: true, attributeFilter: ['class'] });
+        btf.addGlobalFn && btf.addGlobalFn('pjaxCompleteOnce', () => mo.disconnect(), 'tocFixedMO');
+      }
+
+      // pjax 切页时清理 spacer（新页面会重建）
+      btf.addGlobalFn && btf.addGlobalFn('pjaxCompleteOnce', () => {
+        if (spacer.parentNode) spacer.parentNode.removeChild(spacer);
+      }, 'tocFixedSpacer');
+
+      update();
+    })()
+
+
   if theme.google_tag_manager && theme.google_tag_manager.tag_id
