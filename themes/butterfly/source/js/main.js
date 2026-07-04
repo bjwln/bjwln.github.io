@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 首頁top_img底下的箭頭
+   * 首頁top_img底下的箭�?
    */
   const scrollDownInIndex = () => {
     const handleScrollToDest = () => {
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /**
    * 代碼
-   * 只適用於Hexo默認的代碼渲染
+   * 只適用於Hexo默認的代碼渲�?
    */
   const addHighlightTool = () => {
     const highLight = GLOBAL_CONFIG.highlight
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const expandCode = e => e.currentTarget.classList.toggle('expand-done')
 
-    // 獲取隱藏狀態下元素的真實高度
+    // 獲取隱藏狀態下元素的真實高�?
     const getActualHeight = item => {
       if (item.offsetHeight > 0) return item.offsetHeight
       const hiddenElements = new Map()
@@ -512,12 +512,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!($article && (isToc || isAnchor))) return
 
-    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors, syncTocToAside
+    let $tocLink, $cardToc, autoScrollToc, $tocPercentage, isExpand, refreshExpandedTocHeights, expandTocAncestors, syncTocToAside, tocLinkMap
 
     if (isToc) {
       const $cardTocLayout = document.getElementById('card-toc')
       $cardToc = $cardTocLayout.querySelector('.toc-content')
       $tocLink = $cardToc.querySelectorAll('.toc-link')
+      tocLinkMap = new Map()
+      $tocLink.forEach(link => {
+        const href = decodeURI(link.getAttribute('href') || '')
+        if (href.startsWith('#')) tocLinkMap.set(href.slice(1), link)
+      })
       $tocPercentage = $cardTocLayout.querySelector('.toc-percentage')
       isExpand = $cardToc.classList.contains('is-expand')
 
@@ -530,41 +535,30 @@ document.addEventListener('DOMContentLoaded', () => {
         item.classList.toggle('is-collapsed', !expanded)
 
         if (expanded) {
-          // 临时展开所有嵌套子目录，以便正确计算 scrollHeight
-          const nestedChildren = child.querySelectorAll('.toc-child')
-          const originalMaxHeights = []
-          nestedChildren.forEach(el => {
-            originalMaxHeights.push(el.style.maxHeight)
-            el.style.maxHeight = ''  // 空字符串让 CSS 规则生效（max-height: 0）
+          child.querySelectorAll('.toc-child').forEach(el => {
+            el.style.maxHeight = ''
           })
-
-          // 先让所有嵌套子目录临时展开以获取真实高度
-          nestedChildren.forEach(el => {
-            el.style.maxHeight = 'max-content'
-          })
-
           const scrollH = child.scrollHeight
-
-          // 恢复原始高度
-          nestedChildren.forEach((el, i) => {
-            el.style.maxHeight = originalMaxHeights[i]
-          })
-
           child.style.maxHeight = `${scrollH}px`
         } else {
+          child.querySelectorAll('.toc-child').forEach(el => {
+            el.style.maxHeight = ''
+          })
           child.style.maxHeight = '0px'
         }
 
-        const toggle = Array.from(item.children).find(child => child.classList.contains('toc-toggle'))
+        const toggle = Array.from(item.children).find(c => c.classList.contains('toc-toggle'))
         if (toggle) toggle.setAttribute('aria-expanded', expanded)
       }
       refreshExpandedTocHeights = () => {
         $cardToc.querySelectorAll('.toc-item.is-expanded > .toc-child').forEach(child => {
-          // 临时展开所有嵌套子目录
+          const prevTransition = child.style.transition
+          child.style.transition = 'none'
           const nestedChildren = child.querySelectorAll('.toc-child')
           const originalMaxHeights = []
           nestedChildren.forEach(el => {
             originalMaxHeights.push(el.style.maxHeight)
+            el.style.transition = 'none'
             el.style.maxHeight = 'max-content'
           })
 
@@ -572,9 +566,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           nestedChildren.forEach((el, i) => {
             el.style.maxHeight = originalMaxHeights[i]
+            el.style.transition = ''
           })
 
           child.style.maxHeight = `${scrollH}px`
+          requestAnimationFrame(() => {
+            child.style.transition = prevTransition
+          })
         })
       }
       expandTocAncestors = link => {
@@ -682,8 +680,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200))
 
     const findHeadPosition = top => {
-      if (top === 0) return false
-
       let currentId = ''
       let currentIndex = ''
 
@@ -697,6 +693,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      if (!currentId && headerList.length) {
+        const first = headerList[0]
+        currentId = first.id ? '#' + encodeURI(first.id) : ''
+        currentIndex = 0
+      }
+
       if (detectItem === currentIndex) return
 
       if (isAnchor) btf.updateAnchor(currentId)
@@ -707,7 +709,9 @@ document.addEventListener('DOMContentLoaded', () => {
         $cardToc.querySelectorAll('.active').forEach(i => i.classList.remove('active'))
 
         if (currentId) {
-          const currentActive = $tocLink[currentIndex]
+          const rawId = decodeURI(currentId).replace('#', '')
+          const currentActive = tocLinkMap.get(rawId)
+          if (!currentActive) return
           currentActive.classList.add('active')
 
           let parent = currentActive.parentNode
@@ -733,6 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100)
 
     btf.addEventListenerPjax(window, 'scroll', tocScrollFn, { passive: true })
+
+    findHeadPosition(window.scrollY || document.documentElement.scrollTop)
   }
 
   const handleThemeChange = mode => {
@@ -854,7 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 手机端目录点击
+   * 手机端目录点�?
    */
   const openMobileMenu = () => {
     const toggleMenu = document.getElementById('toggle-menu')
@@ -863,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
- * 複製時加上版權信息
+ * 複製時加上版權信�?
  */
   const addCopyright = () => {
     const { limitCount, languages } = GLOBAL_CONFIG.copyright
@@ -897,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * 最後一次更新時間
+   * 最後一次更新時�?
    */
   const addLastPushDate = () => {
     const $lastPushDateItem = document.getElementById('last-push-date')
