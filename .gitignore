@@ -7,3 +7,9 @@ public/
 .deploy*/
 _multiconfig.yml
 .claude/settings.local.json
+# Generated files that should not be tracked
+index.html
+search.json
+blogInfoList.json
+yarn-error.log
+_admin-config.yml
