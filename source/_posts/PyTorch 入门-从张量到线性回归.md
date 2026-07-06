@@ -1,5 +1,5 @@
 ---
-title: 神经网络与深度学习-Pytorch
+title: PyTorch 入门-从张量到线性回归
 date: 2026-06-04 10:04:06
 categories: 大模型
 tags:
