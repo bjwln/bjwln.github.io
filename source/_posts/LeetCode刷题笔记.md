@@ -1,14 +1,14 @@
 ---
-title: LeetCode每日一题
+title: LeetCode刷题笔记
 date: 2026-06-24 18:38:58
 tags:
 categories: 算法题
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFouAAC7AtrG5DK4EW3dVRlz4SK8AEAAwIAA3kAAzwE.png
 ---
 
-# 六月
+# DP
 
-## 6.24 锯齿形状数组的总数Ⅱ[DP]
+## 锯齿形状数组的总数Ⅱ
 
 ### 定义状态
 
@@ -287,6 +287,31 @@ signed main() {
 	cin.tie(0) ;
 	cout.tie(0);
 	solve();
+}
+```
+
+# 区间处理
+
+## 删除被覆盖区间
+
+我们只要确定了左端点从小到大排序，那么就确保了**接下来的区间的左端点一定位于前面已经遍历过区间左端点的后面**。那么只要本轮的右端点小于前面区间右端点的最大值，就可以把本轮区间消除掉。
+
+如果左端点相等，我们尽量让右端点值大的排在前面。因为⬆的假设就是由大区间逐渐包裹小区间的算法过程。
+
+```c++
+int removeCoveredIntervals(vector<vector<int>>& intervals) {
+	sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
+		if (a[0] != b[0])
+			return a[0] < b[0];
+		else return a[1] > b[1];
+	});
+	int maxx = 0;
+	int ans = intervals.size();
+	for (auto& v : intervals) {
+		if (v[1] <= maxx) ans--;
+		maxx = max(v[1], maxx);
+	}
+	return ans;
 }
 ```
 
