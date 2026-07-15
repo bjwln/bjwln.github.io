@@ -4,6 +4,7 @@ date: 2026-06-24 18:38:58
 tags:
 categories: 算法题
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFouAAC7AtrG5DK4EW3dVRlz4SK8AEAAwIAA3kAAzwE.png
+mathjax: true
 ---
 
 # DP
@@ -313,5 +314,29 @@ int removeCoveredIntervals(vector<vector<int>>& intervals) {
 	}
 	return ans;
 }
+```
+
+# 数论
+
+## 辗转相除法
+
+### [奇数和与偶数和的最大公约数](https://leetcode.cn/problems/gcd-of-odd-and-even-sums/solutions/3993675/qi-shu-he-yu-ou-shu-he-de-zui-da-gong-yu-f3os/?envType=daily-question&envId=2026-07-15)
+
+辗转相除法的核心原理是：两个整数的最大公约数等于**第二个数**与**第一个数除以第二个数所得余数**的最大公约数，其数学表达式如下：
+$$
+\gcd(a,b) = \gcd(b,\; a \bmod b)
+$$
+`sumOdd`和`sumEven`用等差数列求和
+
+```c++
+class Solution {
+public:
+    int gcd(int x, int y) {
+        return y == 0 ? x : gcd(y, x % y);
+    }
+    int gcdOfOddEvenSums(int n) {
+        return gcd(n * n, n * (n + 1));
+    }
+};
 ```
 

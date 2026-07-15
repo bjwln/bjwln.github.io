@@ -819,7 +819,7 @@ y = X @ coef + bias + noise # 假设 X 是 (100, 3)，coef 是 (3,)，结果 y �
 
      - 第一个 1：每个样本的特征数`（in_features）`
 
-     - 第二个 1：每个样本的输出出数`（out_features）`
+     - 第二个 1：每个样本的输出数`（out_features）`
 
 
 2. 线性回归公式为`output = input × W^T + b`
