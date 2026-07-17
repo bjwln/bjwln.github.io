@@ -1,6 +1,11 @@
 name = "numberofvisitors"
 main = "src/index.js"
 compatibility_date = "2026-07-17"
+workers_dev = true
+
+routes = [
+  { pattern = "counter.tysweb.site", custom_domain = true }
+]
 
 # D1 数据库存储浏览量
 [[d1_databases]]
