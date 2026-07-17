@@ -1,0 +1,9 @@
+name = "blog-view-counter"
+main = "src/index.js"
+compatibility_date = "2026-07-17"
+
+# D1 数据库存储浏览量
+[[d1_databases]]
+binding = "DB"
+database_name = "number_of_visitors"
+database_id = "48d2ba82-57f2-4099-8d09-f6f164a578d7"

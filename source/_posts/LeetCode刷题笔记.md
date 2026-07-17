@@ -5,6 +5,7 @@ tags:
 categories: 算法题
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFouAAC7AtrG5DK4EW3dVRlz4SK8AEAAwIAA3kAAzwE.png
 mathjax: true
+sticky: 4
 ---
 
 # DP
@@ -336,6 +337,36 @@ public:
     }
     int gcdOfOddEvenSums(int n) {
         return gcd(n * n, n * (n + 1));
+    }
+};
+```
+
+# 模拟
+
+## [3867.数对的最大公约数之和](https://leetcode.cn/problems/sum-of-gcd-of-formed-pairs/description/?envType=daily-question&envId=2026-07-16)
+
+```c++
+class Solution {
+public:
+    int gcd(int x,int y){
+        return y==0?x:gcd(y,x%y);
+    }
+    long long gcdSum(vector<int>& nums) {
+        vector<int> prefixGcd(nums.size());
+        int mx=0;
+        long long sum=0;
+        for(int i=0;i<nums.size();i++){
+        mx=max(mx,nums[i]);
+            prefixGcd[i]=gcd(nums[i],mx);
+        }
+        sort(prefixGcd.begin(),prefixGcd.end(),[](const int &a,const int &b){
+            return a<b;
+        });
+        for(int i=0,j=nums.size()-1;i<nums.size()/2;i++,j--){
+            if(i==j) break;
+            sum+=gcd(prefixGcd[i],prefixGcd[j]);
+        }
+        return sum;
     }
 };
 ```
