@@ -2,19 +2,14 @@
 (function () {
   'use strict';
 
-  // ====== 配置区域 ======
   var WORKER_URL = 'https://numberofvisitors.121986004.workers.dev';
-  // =====================
-
   var CACHE_KEY = 'blog_view_cache';
-  var CACHE_TTL = 5 * 60 * 1000; // 5 分钟缓存
+  var CACHE_TTL = 5 * 60 * 1000;
 
-  // 获取页面路径（与 Hexo 的 permalink 一致）
   function getPagePath() {
     return window.location.pathname.replace(/\/$/, '') || '/';
   }
 
-  // 从缓存读取
   function getCache(path) {
     try {
       var data = JSON.parse(sessionStorage.getItem(CACHE_KEY));
@@ -25,7 +20,6 @@
     return null;
   }
 
-  // 写入缓存
   function setCache(path, pv, uv) {
     try {
       var data = JSON.parse(sessionStorage.getItem(CACHE_KEY)) || {};
@@ -34,7 +28,6 @@
     } catch (e) {}
   }
 
-  // 调用 Worker API — POST /api/visit 递增并返回最新 PV
   function fetchViewCount(path) {
     var cached = getCache(path);
     if (cached !== null) {
@@ -58,7 +51,6 @@
       });
   }
 
-  // 只读查询（不递增，用于首页列表预览）
   function peekViewCount(path) {
     var cached = getCache(path);
     if (cached !== null) {
@@ -71,7 +63,6 @@
       .catch(function () { return 0; });
   }
 
-  // 在 post 页面显示浏览量
   function renderPostViewCount() {
     if (!document.getElementById('post')) return;
     if (document.getElementById('cf-view-counter')) return;
@@ -98,7 +89,6 @@
     });
   }
 
-  // 在首页/列表页显示文章浏览量
   function renderRecentPostViewCount() {
     var posts = document.querySelectorAll('#recent-posts .recent-post-item');
     if (!posts.length) return;
@@ -128,17 +118,20 @@
     });
   }
 
-  // 页面加载时执行
   function init() {
     renderPostViewCount();
     renderRecentPostViewCount();
   }
 
-  // Butterfly 使用 pjax 切换页面，需要重新绑定
-  if (window.btf && btf.addEventListenerPjax) {
-    btf.addEventListenerPjax(document, 'DOMContentLoaded', init);
-  } else {
+  // 脚本在 body 底部执行，DOM 已就绪，直接执行
+  // 但如果用了 defer，DOMContentLoaded 可能还没触发，两种都处理
+  if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
-    document.addEventListener('pjax:complete', init);
+  } else {
+    // DOMContentLoaded 已经触发过了，直接执行
+    init();
   }
+
+  // pjax 切页重新绑定
+  document.addEventListener('pjax:complete', init);
 })();
