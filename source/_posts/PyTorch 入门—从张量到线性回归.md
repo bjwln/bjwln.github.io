@@ -4,7 +4,6 @@ date: 2026-06-04 10:04:06
 categories: 大模型
 tags:
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjxVqMAsk-_Twr0LCOsrln4gLg72rjAACLAxrG3UggUWroE8MiRIINAEAAwIAA3kAAzwE.png
-sticky: 1 
 ---
 
 PyTorch是一个用于机器学习和深度学习的开源深度学习框架，由Facebook于2016年发布，其主要实现了自动微分功能，并引入动态计算图使模型建立更加灵活。Pytorch可分为前后端两个部分，前端是与用户直接交互的python API，后端是框架内部实现的部分，包括Autograd，它是一个自动微分引擎。

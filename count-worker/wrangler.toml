@@ -1,4 +1,4 @@
-name = "blog-view-counter"
+name = "numberofvisitors"
 main = "src/index.js"
 compatibility_date = "2026-07-17"
 
