@@ -68,20 +68,20 @@
     if (document.getElementById('cf-view-counter')) return;
 
     var path = getPagePath();
-    var meta = document.querySelector('.meta-secondline');
-    if (!meta) return;
+    var postMeta = document.getElementById('post-meta');
+    if (!postMeta) return;
 
-    var el = document.createElement('span');
+    var el = document.createElement('div');
     el.id = 'cf-view-counter';
+    el.className = 'meta-thirdline';
     el.innerHTML =
-      '<span class="post-meta-separator">|</span>' +
       '<span class="post-meta-viewcount">' +
       '  <i class="far fa-eye fa-fw post-meta-icon"></i>' +
       '  <span class="post-meta-label">阅读量:</span>' +
       '  <span id="cf-view-count-num"><i class="fa-solid fa-spinner fa-spin"></i></span>' +
       '</span>';
 
-    meta.appendChild(el);
+    postMeta.appendChild(el);
 
     fetchViewCount(path).then(function (pv) {
       var numEl = document.getElementById('cf-view-count-num');
