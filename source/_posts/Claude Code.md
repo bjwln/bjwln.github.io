@@ -53,9 +53,9 @@ Claude、GPT 等模型可通过**[API中转站](https://api.daheiai.com/)**接�
 
 ![image-20260527124212256](/images/image-20260527124212256.png)
 
-<span style="color:red">当关闭掉终端，然后再回来的时候，可以输入`/resume`命令来找到之前的对话内容</span>
+<span style="color:red">当关闭掉终端，然后再回来的时候，可以输入`/resume`命令来找到之前的对话内容。</span>
 
-<span style="color:red">当对话长度大于上下文长度，就需要通过输入`/compact`来压缩，但是很难恢复压缩前的上下文</span>
+<span style="color:red">当对话长度大于上下文长度，就需要通过输入`/compact`来压缩，但是很难恢复压缩前的上下文。</span>
 
 # ⑥用法：文献查询功能
 
