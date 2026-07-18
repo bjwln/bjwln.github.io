@@ -1,0 +1,189 @@
+/* Cloudflare 评论组件样式 (复用 butterfly CSS 变量, 自动适配深色模式) */
+#cf-comments.cf-cmt-container {
+  max-width: 800px;
+  margin: 40px auto 0;
+  padding: 0 16px;
+  font-size: 15px;
+  color: var(--font-color);
+}
+
+#cf-comments .cf-cmt-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: var(--text-highlight-color);
+}
+#cf-comments .cf-cmt-title i {
+  margin-right: 6px;
+}
+#cf-comments .cf-cmt-count-num {
+  font-weight: 700;
+  color: var(--text-highlight-color);
+}
+
+/* 表单 */
+#cf-comments .cf-cmt-form {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: var(--card-box-shadow);
+  margin-bottom: 28px;
+}
+#cf-comments .cf-cmt-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#cf-comments .cf-cmt-row .cf-cmt-input {
+  flex: 1;
+  min-width: 0;
+}
+#cf-comments .cf-cmt-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--tab-border-color, #e0e0e0);
+  border-radius: 8px;
+  background: var(--search-bg, #fff);
+  color: var(--font-color);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
+}
+#cf-comments .cf-cmt-input:focus {
+  outline: none;
+  border-color: var(--text-highlight-color);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, .04);
+}
+#cf-comments .cf-cmt-textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+#cf-comments .cf-cmt-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+#cf-comments .cf-cmt-counter {
+  font-size: 12px;
+  color: var(--card-meta, #999);
+}
+#cf-comments .cf-cmt-submit {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 14px;
+  color: var(--btn-color, #fff);
+  background: var(--btn-bg, var(--text-highlight-color));
+  transition: opacity .2s, transform .1s;
+}
+#cf-comments .cf-cmt-submit:hover { opacity: .85; }
+#cf-comments .cf-cmt-submit:active { transform: scale(.97); }
+#cf-comments .cf-cmt-submit:disabled { opacity: .6; cursor: not-allowed; }
+#cf-comments .cf-cmt-cancel {
+  cursor: pointer;
+  border: 1px solid var(--tab-border-color, #e0e0e0);
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 14px;
+  color: var(--font-color);
+  background: transparent;
+}
+#cf-comments .cf-cmt-cancel:hover { background: var(--text-bg-hover); }
+
+/* 提示信息 */
+#cf-comments .cf-cmt-msg { font-size: 13px; }
+#cf-comments .cf-cmt-msg.cf-cmt-ok { color: #52c41a; }
+#cf-comments .cf-cmt-msg.cf-cmt-err { color: #f5222d; }
+
+/* 评论列表 */
+#cf-comments .cf-cmt-list { margin-top: 8px; }
+#cf-comments .cf-cmt-loading,
+#cf-comments .cf-cmt-empty {
+  text-align: center;
+  color: var(--card-meta, #999);
+  padding: 32px 0;
+  font-size: 14px;
+}
+
+#cf-comments .cf-cmt-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hr-border, #eee);
+}
+#cf-comments .cf-cmt-item:last-child { border-bottom: none; }
+#cf-comments .cf-cmt-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--card-bg);
+}
+#cf-comments .cf-cmt-body { flex: 1; min-width: 0; }
+#cf-comments .cf-cmt-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+#cf-comments .cf-cmt-author {
+  font-weight: 600;
+  color: var(--text-highlight-color);
+  text-decoration: none;
+}
+#cf-comments .cf-cmt-author:hover { text-decoration: underline; }
+#cf-comments .cf-cmt-time {
+  font-size: 12px;
+  color: var(--card-meta, #999);
+}
+#cf-comments .cf-cmt-reply-btn {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--card-meta, #999);
+  cursor: pointer;
+  user-select: none;
+}
+#cf-comments .cf-cmt-reply-btn:hover { color: var(--text-highlight-color); }
+#cf-comments .cf-cmt-text {
+  line-height: 1.7;
+  word-break: break-word;
+  color: var(--font-color);
+}
+
+/* 嵌套回复 */
+#cf-comments .cf-cmt-replies {
+  margin-left: 52px;
+  padding-left: 16px;
+  border-left: 2px solid var(--hr-border, #eee);
+}
+#cf-comments .cf-cmt-replies .cf-cmt-item {
+  padding: 12px 0;
+}
+#cf-comments .cf-cmt-replies .cf-cmt-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+/* 回复表单 */
+#cf-comments .cf-cmt-reply-form {
+  margin: 8px 0 8px 52px;
+}
+#cf-comments .cf-cmt-reply-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  #cf-comments .cf-cmt-row { flex-direction: column; gap: 8px; }
+  #cf-comments .cf-cmt-replies { margin-left: 20px; }
+  #cf-comments .cf-cmt-reply-form { margin-left: 20px; }
+  #cf-comments .cf-cmt-foot { flex-wrap: wrap; }
+}
