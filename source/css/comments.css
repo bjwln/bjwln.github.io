@@ -65,10 +65,56 @@
   align-items: center;
   gap: 12px;
   margin-top: 12px;
+  position: relative;
 }
 #cf-comments .cf-cmt-counter {
   font-size: 12px;
   color: var(--card-meta, #999);
+}
+#cf-comments .cf-cmt-emoji-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 6px;
+  color: var(--card-meta, #999);
+  transition: background .2s, color .2s;
+  user-select: none;
+}
+#cf-comments .cf-cmt-emoji-btn:hover {
+  background: var(--text-bg-hover, rgba(0,0,0,.04));
+  color: var(--text-highlight-color);
+}
+#cf-comments .cf-cmt-emoji-btn:active {
+  transform: scale(.92);
+}
+
+/* 表情选择器弹出层 */
+#cf-comments .cf-cmt-emoji-picker-wrap {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  z-index: 100;
+  display: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  overflow: hidden;
+}
+#cf-comments .cf-cmt-emoji-picker-wrap.is-open {
+  display: block;
+}
+#cf-comments .cf-cmt-emoji-picker-wrap emoji-picker {
+  --background: var(--card-bg, #fff);
+  --border-color: var(--tab-border-color, #e0e0e0);
+  --button-hover-background: var(--text-bg-hover, rgba(0,0,0,.04));
+  --indicator-color: var(--text-highlight-color);
+  --input-border-color: var(--tab-border-color, #e0e0e0);
+  --input-placeholder-color: var(--card-meta, #999);
+  --num-background: var(--text-bg-hover, rgba(0,0,0,.04));
+  --outline-color: var(--text-highlight-color);
 }
 #cf-comments .cf-cmt-submit {
   cursor: pointer;

@@ -287,6 +287,42 @@
         }, rform, container);
       }
     });
+
+    // 插入表情到 textarea
+    function insertEmoji(textarea, emoji) {
+      var start = textarea.selectionStart;
+      var end = textarea.selectionEnd;
+      textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
+      textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+      textarea.dispatchEvent(new Event('input'));
+      textarea.focus();
+    }
+
+    // 表情选择器
+    var emojiBtn = container.querySelector('.cf-cmt-emoji-btn');
+    var emojiWrap = container.querySelector('.cf-cmt-emoji-picker-wrap');
+    var emojiPicker = emojiWrap.querySelector('emoji-picker');
+
+    emojiBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      emojiWrap.classList.toggle('is-open');
+    });
+
+    emojiPicker.addEventListener('emoji-click', function (e) {
+      var emoji = e.detail.unicode;
+      if (emoji) {
+        var active = document.activeElement;
+        var ta = active && active.matches('.cf-cmt-textarea') ? active : form.querySelector('[name=content]');
+        insertEmoji(ta, emoji);
+      }
+      emojiWrap.classList.remove('is-open');
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!emojiWrap.contains(e.target) && !emojiBtn.contains(e.target)) {
+        emojiWrap.classList.remove('is-open');
+      }
+    });
   }
 
   function render() {
@@ -310,8 +346,10 @@
       '  <textarea name="content" class="cf-cmt-input cf-cmt-textarea" placeholder="说点什么吧… (支持 Markdown 换行)" maxlength="1000" rows="4"></textarea>' +
       '  <div class="cf-cmt-foot">' +
       '    <span class="cf-cmt-counter">0/' + MAX_CONTENT + '</span>' +
+      '    <button type="button" class="cf-cmt-emoji-btn" title="插入表情">😊</button>' +
       '    <button type="submit" class="cf-cmt-submit">发表评论</button>' +
       '    <span class="cf-cmt-msg"></span>' +
+      '    <div class="cf-cmt-emoji-picker-wrap"><emoji-picker></emoji-picker></div>' +
       '  </div>' +
       '</form>' +
       '<div class="cf-cmt-list"></div>';

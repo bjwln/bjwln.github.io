@@ -1083,6 +1083,7 @@ inject:
     - <script src="/js/particles-stars.js" defer></script>
     - <script src="/js/rightside-auto-hide.js" defer></script>
     - <script src="/js/page-counter.js" defer></script>
+    - <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.22.6/dist/emoji-picker-element.umd.min.js" defer></script>
     - <script src="/js/comments.js" defer></script>
 
 # CDN Settings
