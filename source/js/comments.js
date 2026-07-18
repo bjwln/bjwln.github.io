@@ -306,23 +306,25 @@
     emojiBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (!emojiPicker) {
-        if (!customElements.get('emoji-picker')) {
-          console.warn('emoji-picker-element 未加载，请检查网络');
-          return;
-        }
-        emojiPicker = document.createElement('emoji-picker');
-        emojiPicker.addEventListener('emoji-click', function (ev) {
-          var emoji = ev.detail.unicode || ev.detail.emoji;
-          if (emoji && typeof emoji === 'string') {
-            var active = document.activeElement;
-            var ta = active && active.matches('.cf-cmt-textarea') ? active : form.querySelector('[name=content]');
-            insertEmoji(ta, emoji);
-          }
-          emojiWrap.classList.remove('is-open');
-        });
-        // 先显示容器再追加 picker，确保 Web Component 在可见状态下初始化
-        emojiWrap.classList.add('is-open');
-        emojiWrap.appendChild(emojiPicker);
+        // 使用动态 import 加载 ES Module，首次点击可能稍慢，后续即刻打开
+        import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1.29.1/index.js')
+          .then(function () {
+            emojiPicker = document.createElement('emoji-picker');
+            emojiPicker.addEventListener('emoji-click', function (ev) {
+              var emoji = ev.detail.unicode || ev.detail.emoji;
+              if (emoji && typeof emoji === 'string') {
+                var active = document.activeElement;
+                var ta = active && active.matches('.cf-cmt-textarea') ? active : form.querySelector('[name=content]');
+                insertEmoji(ta, emoji);
+              }
+              emojiWrap.classList.remove('is-open');
+            });
+            emojiWrap.classList.add('is-open');
+            emojiWrap.appendChild(emojiPicker);
+          })
+          .catch(function (err) {
+            console.warn('emoji-picker-element 加载失败:', err);
+          });
         return;
       }
       emojiWrap.classList.toggle('is-open');
