@@ -7,6 +7,7 @@ const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Token',
+  'Vary': 'Origin',
 };
 
 const MAX_NICKNAME = 30;
@@ -85,7 +86,9 @@ export default {
     const path = url.pathname;
 
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS });
+      return new Response(null, {
+        headers: { ...CORS, 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+      });
     }
 
     if (path === '/' || path === '/ping') {
