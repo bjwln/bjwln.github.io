@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://counter.tysweb.site';
+  var WORKER_URL = 'https://counter-api.tysweb.site';
   var STORAGE_KEY = 'cf_comment_user';
   var MAX_CONTENT = 1000;
 

@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://counter.tysweb.site';
+  var WORKER_URL = 'https://counter-api.tysweb.site';
   var CACHE_KEY = 'blog_view_cache';
   var CACHE_TTL = 5 * 60 * 1000;
 
