@@ -298,6 +298,183 @@ export default {
       return json({ ok: true });
     }
 
+
+    // ============ 管理后台 HTML 页面 ============
+    function adminHTML() {
+      return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>管理后台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#333;padding:20px}
+.c{max-width:1100px;margin:0 auto}
+.lbox{max-width:400px;margin:100px auto;background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.lbox h2{margin-bottom:20px}
+.lbox input{width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;margin-bottom:15px;font-size:14px}
+.lbox button{width:100%;padding:10px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px}
+.lbox button:hover{background:#0056b3}
+h1{margin-bottom:20px;font-size:22px}
+.tabs{margin-bottom:15px;border-bottom:2px solid #ddd;display:flex;align-items:center}
+.tabs button{padding:10px 20px;background:none;border:none;cursor:pointer;font-size:15px;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tabs button.active{border-bottom-color:#007bff;color:#007bff}
+.tabs .right{margin-left:auto}
+table{width:100%;background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1);border-collapse:collapse}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #eee;font-size:14px}
+th{background:#f8f8f8;font-weight:600}
+tr:hover{background:#fafafa}
+code{background:#f0f0f0;padding:2px 6px;border-radius:3px;font-size:13px}
+.actions button{padding:4px 10px;margin-right:4px;border:none;border-radius:3px;cursor:pointer;font-size:12px;color:#fff}
+.be{background:#ffc107}.bd{background:#dc3545}.bs{background:#28a745}.bc{background:#6c757d}
+.err{color:#dc3545;margin-top:10px;font-size:13px}
+input[type=number]{width:80px;padding:4px;border:1px solid #ddd;border-radius:3px}
+.hid{display:none}
+</style>
+</head>
+<body>
+<div class="c">
+<div id="ls" class="lbox">
+<h2>🔒 管理后台</h2>
+<input type="password" id="pw" placeholder="管理员密码" onkeypress="if(event.key==='Enter')doLogin()">
+<button onclick="doLogin()">登录</button>
+<div id="le" class="err hid"></div>
+</div>
+<div id="ds" class="hid">
+<h1>📊 管理后台</h1>
+<div class="tabs">
+<button id="tp" class="active" onclick="show('p')">浏览量</button>
+<button id="tc" onclick="show('c')">评论</button>
+<button class="right" onclick="doLogout()">退出</button>
+</div>
+<div id="pp"><table><thead><tr><th>路径</th><th>PV</th><th>UV</th><th>操作</th></tr></thead><tbody id="pb"></tbody></table></div>
+<div id="cp" class="hid"><table><thead><tr><th>ID</th><th>路径</th><th>昵称</th><th>内容</th><th>时间</th><th>操作</th></tr></thead><tbody id="cb"></tbody></table></div>
+</div>
+</div>
+<script>
+var tk=localStorage.getItem('at')||'';
+if(tk){document.getElementById('ls').classList.add('hid');document.getElementById('ds').classList.remove('hid');loadP()}
+function show(t){
+  document.getElementById('pp').classList.toggle('hid',t!=='p');
+  document.getElementById('cp').classList.toggle('hid',t!=='c');
+  document.getElementById('tp').classList.toggle('active',t==='p');
+  document.getElementById('tc').classList.toggle('active',t==='c');
+  if(t==='p')loadP();if(t==='c')loadC();
+}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+async function api(u,o){
+  o=o||{};o.headers=Object.assign({},o.headers,{'X-Admin-Token':tk});
+  var r=await fetch(u,o);
+  if(r.status===401){doLogout();throw new Error('unauthorized')}
+  return r.json();
+}
+async function doLogin(){
+  tk=document.getElementById('pw').value;
+  try{await api('/api/admin/pages');localStorage.setItem('at',tk);document.getElementById('ls').classList.add('hid');document.getElementById('ds').classList.remove('hid');loadP()}
+  catch(e){tk='';var le=document.getElementById('le');le.textContent='密码错误';le.classList.remove('hid')}
+}
+function doLogout(){localStorage.removeItem('at');tk='';location.reload()}
+async function loadP(){
+  var d=await api('/api/admin/pages');
+  document.getElementById('pb').innerHTML=(d.data||[]).map(function(p){
+    return '<tr data-p="'+esc(p.path)+'"><td><code>'+esc(p.path)+'</code></td><td><span class="pv">'+p.pv+'</span></td><td><span class="uv">'+p.uv+'</span></td><td><button class="be" onclick="editP(this)">编辑</button> <button class="bd" onclick="delP(this)">删除</button></td></tr>';
+  }).join('');
+}
+function editP(b){
+  var tr=b.closest('tr');
+  tr.querySelector('.pv').innerHTML='<input type="number" value="'+tr.querySelector('.pv').textContent+'">';
+  tr.querySelector('.uv').innerHTML='<input type="number" value="'+tr.querySelector('.uv').textContent+'">';
+  tr.querySelector('td:last-child').innerHTML='<button class="bs" onclick="saveP(this)">保存</button> <button class="bc" onclick="loadP()">取消</button>';
+}
+async function saveP(b){
+  var tr=b.closest('tr'),p=tr.dataset.p;
+  var pv=tr.querySelector('.pv input').value,uv=tr.querySelector('.uv input').value;
+  await api('/api/admin/pages/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:p,pv:Number(pv),uv:Number(uv)})});
+  loadP();
+}
+async function delP(b){
+  if(!confirm('确定删除？'))return;
+  var tr=b.closest('tr');
+  await api('/api/admin/pages/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:tr.dataset.p})});
+  tr.remove();
+}
+async function loadC(){
+  var d=await api('/api/admin/comments');
+  document.getElementById('cb').innerHTML=(d.data||[]).map(function(c){
+    var ct=esc(c.content.substring(0,60))+(c.content.length>60?'...':'');
+    return '<tr><td>'+c.id+'</td><td><code>'+esc(c.path)+'</code></td><td>'+esc(c.nickname)+'</td><td>'+ct+'</td><td>'+new Date(c.created_at).toLocaleString()+'</td><td><button class="bd" onclick="delC('+c.id+')">删除</button></td></tr>';
+  }).join('');
+}
+async function delC(id){
+  if(!confirm('确定删除？'))return;
+  await api('/api/comment/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})});
+  loadC();
+}
+</script>
+</body>
+</html>`;
+    }
+
+    // GET /admin
+    if (path === '/admin' && request.method === 'GET') {
+      return new Response(adminHTML(), {
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      });
+    }
+
+    // GET /api/admin/pages
+    if (path === '/api/admin/pages' && request.method === 'GET') {
+      const token = request.headers.get('X-Admin-Token');
+      if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN)
+        return json({ error: 'unauthorized' }, 401);
+      const { results } = await env.DB.prepare(
+        'SELECT path, pv, uv FROM page_views ORDER BY pv DESC'
+      ).all();
+      return json({ data: results || [] });
+    }
+
+    // POST /api/admin/pages/update
+    if (path === '/api/admin/pages/update' && request.method === 'POST') {
+      const token = request.headers.get('X-Admin-Token');
+      if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN)
+        return json({ error: 'unauthorized' }, 401);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'invalid json' }, 400); }
+      const p = String(body.path || '').trim();
+      const pv = Number(body.pv);
+      const uv = Number(body.uv);
+      if (!p || !Number.isInteger(pv) || pv < 0 || !Number.isInteger(uv) || uv < 0)
+        return json({ error: 'invalid params' }, 400);
+      await env.DB.prepare('UPDATE page_views SET pv = ?, uv = ? WHERE path = ?')
+        .bind(pv, uv, p).run();
+      return json({ ok: true });
+    }
+
+    // POST /api/admin/pages/delete
+    if (path === '/api/admin/pages/delete' && request.method === 'POST') {
+      const token = request.headers.get('X-Admin-Token');
+      if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN)
+        return json({ error: 'unauthorized' }, 401);
+      let body;
+      try { body = await request.json(); } catch { return json({ error: 'invalid json' }, 400); }
+      const p = String(body.path || '').trim();
+      if (!p) return json({ error: 'path required' }, 400);
+      await env.DB.prepare('DELETE FROM page_views WHERE path = ?').bind(p).run();
+      return json({ ok: true });
+    }
+
+    // GET /api/admin/comments
+    if (path === '/api/admin/comments' && request.method === 'GET') {
+      const token = request.headers.get('X-Admin-Token');
+      if (!env.ADMIN_TOKEN || token !== env.ADMIN_TOKEN)
+        return json({ error: 'unauthorized' }, 401);
+      const { results } = await env.DB.prepare(
+        `SELECT id, path, parent_id, nickname, website, content, created_at, status
+         FROM comments ORDER BY created_at DESC LIMIT 500`
+      ).all();
+      return json({ data: results || [] });
+    }
     return json({ error: 'not found' }, 404);
   },
 };
