@@ -298,24 +298,34 @@
       textarea.focus();
     }
 
-    // 表情选择器
+    // 表情选择器（延迟创建，确保初始化时容器可见）
     var emojiBtn = container.querySelector('.cf-cmt-emoji-btn');
     var emojiWrap = container.querySelector('.cf-cmt-emoji-picker-wrap');
-    var emojiPicker = emojiWrap.querySelector('emoji-picker');
+    var emojiPicker = null;
 
     emojiBtn.addEventListener('click', function (e) {
       e.stopPropagation();
-      emojiWrap.classList.toggle('is-open');
-    });
-
-    emojiPicker.addEventListener('emoji-click', function (e) {
-      var emoji = e.detail.unicode;
-      if (emoji) {
-        var active = document.activeElement;
-        var ta = active && active.matches('.cf-cmt-textarea') ? active : form.querySelector('[name=content]');
-        insertEmoji(ta, emoji);
+      if (!emojiPicker) {
+        if (!customElements.get('emoji-picker')) {
+          console.warn('emoji-picker-element 未加载，请检查网络');
+          return;
+        }
+        emojiPicker = document.createElement('emoji-picker');
+        emojiPicker.addEventListener('emoji-click', function (ev) {
+          var emoji = ev.detail.unicode || ev.detail.emoji;
+          if (emoji && typeof emoji === 'string') {
+            var active = document.activeElement;
+            var ta = active && active.matches('.cf-cmt-textarea') ? active : form.querySelector('[name=content]');
+            insertEmoji(ta, emoji);
+          }
+          emojiWrap.classList.remove('is-open');
+        });
+        // 先显示容器再追加 picker，确保 Web Component 在可见状态下初始化
+        emojiWrap.classList.add('is-open');
+        emojiWrap.appendChild(emojiPicker);
+        return;
       }
-      emojiWrap.classList.remove('is-open');
+      emojiWrap.classList.toggle('is-open');
     });
 
     document.addEventListener('click', function (e) {
@@ -349,7 +359,7 @@
       '    <button type="button" class="cf-cmt-emoji-btn" title="插入表情">😊</button>' +
       '    <button type="submit" class="cf-cmt-submit">发表评论</button>' +
       '    <span class="cf-cmt-msg"></span>' +
-      '    <div class="cf-cmt-emoji-picker-wrap"><emoji-picker></emoji-picker></div>' +
+      '    <div class="cf-cmt-emoji-picker-wrap"></div>' +
       '  </div>' +
       '</form>' +
       '<div class="cf-cmt-list"></div>';
