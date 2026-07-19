@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://counter-api.tysweb.site';
+  var WORKER_URL = ''; // 同源调用, 不再需要跨域
   var CACHE_KEY = 'blog_view_cache';
   var CACHE_TTL = 5 * 60 * 1000;
 

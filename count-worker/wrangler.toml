@@ -3,11 +3,7 @@ main = "src/index.js"
 compatibility_date = "2026-07-17"
 workers_dev = true
 
-routes = [
-  { pattern = "counter-api.tysweb.site", custom_domain = true }
-]
-
-# D1 数据库存储浏览量
+# D1 数据库存储浏览量 (现已迁移到 Pages Functions, 此 Worker 保留作为备份)
 [[d1_databases]]
 binding = "DB"
 database_name = "number_of_visitors"

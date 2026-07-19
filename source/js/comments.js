@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://counter-api.tysweb.site';
+  var WORKER_URL = ''; // 同源调用, 不再需要跨域
   var STORAGE_KEY = 'cf_comment_user';
   var MAX_CONTENT = 1000;
 
