@@ -47,4 +47,8 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBk-VqV5pIzZ3HpmRrc8mUZtTZ2uc3W
 
 ![09142f392fba1581c9f8eeb74c618743](09142f392fba1581c9f8eeb74c618743.jpg)
 
-# 
+# 改进措施
+
+## 边上硬，中间软
+
+在铺的时候，边上铺薄一点。这样卷起来就不会变硬。

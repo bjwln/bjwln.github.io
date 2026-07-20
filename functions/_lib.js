@@ -24,7 +24,7 @@ export async function sha256hex(str) {
 
 export async function avatarUrl(email) {
   const hash = await sha256hex((email || '').trim().toLowerCase());
-  return `https://cravatar.cn/avatar/${hash}?d=monsterid&s=80`;
+  return `https://gravatar.com/avatar/${hash}?d=monsterid&s=80`;
 }
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
