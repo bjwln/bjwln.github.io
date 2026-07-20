@@ -23,7 +23,14 @@ export async function sha256hex(str) {
 }
 
 export async function avatarUrl(email) {
-  const hash = await sha256hex((email || '').trim().toLowerCase());
+  const e = (email || '').trim().toLowerCase();
+  // QQ 邮箱 (纯数字@qq.com): 直接用 QQ 头像, 国内速度快
+  const qqMatch = e.match(/^(\d+)@qq\.com$/);
+  if (qqMatch) {
+    return `https://q1.qlogo.cn/g?b=qq&nk=${qqMatch[1]}&s=100`;
+  }
+  // 其他邮箱: Gravatar
+  const hash = await sha256hex(e);
   return `https://gravatar.com/avatar/${hash}?d=monsterid&s=80`;
 }
 
