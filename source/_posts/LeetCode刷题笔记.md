@@ -461,3 +461,29 @@ public:
 };
 ```
 
+## [1260. 二维网格迁移（参考分值：1337）](https://leetcode.cn/problems/shift-2d-grid)
+
+把二维网格展开成一串，比如样例一我们可以展开成：
+
+`1 2 3 4 5 6 7 8 9`，然后每个数的实际位置为`i*n+j`，移动后的实际位置为`(i*n+j+k)%(m*n)`。然后再复原回矩阵形式就行了。
+
+**AC代码  **
+
+```c++
+vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
+	
+	int m=grid.size();
+	int n=grid[0].size();
+	vector<vector<int>> grid2(m,vector<int>(n));
+	for(int i=0;i<m;i++){
+		for(int j=0;j<n;j++){
+			int fact=(i*n+j+k)%(m*n);
+			int i1=fact/n;
+			int j1=fact-i1*n;
+			grid2[i1][j1]=grid[i][j];
+		}
+	}
+	return grid2;
+}
+```
+

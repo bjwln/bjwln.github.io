@@ -31,7 +31,7 @@ export async function avatarUrl(email) {
   }
   // 其他邮箱: Gravatar
   const hash = await sha256hex(e);
-  return `https://gravatar.com/avatar/${hash}?d=monsterid&s=80`;
+  return `https://cravatar.cn/avatar/${hash}?d=monsterid&s=80`;
 }
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
