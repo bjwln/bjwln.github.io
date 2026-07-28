@@ -14,7 +14,7 @@ sticky: 4
 
 ## 单调栈
 
-### [1081. 不同字符的最小子序列（参考分值：2185）](https://leetcode.cn/problems/smallest-subsequence-of-distinct-characters)
+### [1081. 不同字符的最小子序列（2185）](https://leetcode.cn/problems/smallest-subsequence-of-distinct-characters)
 
 本题当我们遍历到一个新的位置的时候，思考这个字符串是作为一个新的子串的开头，还是作为一个旧的子串的延续？
 
@@ -431,6 +431,57 @@ public:
 };
 ```
 
+# 位运算
+
+## XOR 性质
+
+### [3513. 不同 XOR 三元组的数目 I（1663）](https://leetcode.cn/problems/number-of-unique-xor-triplets-i)
+
+最终答案肯定包含n，因为三个相同的数XOR出来是这个数本身且两个下标相同 时 a XOR a XOR b = b，仍然包括在n里面
+
+**那么能XOR出来n外面的值只能通过三个下标不同的数XOR。**
+
+n=4时
+
+XOR出来0 ：1 XOR 2 XOR 3
+
+XOR出来n+1 ：  2 XOR 3 XOR 4
+
+XOR出来n+2 ：  1 XOR 3 XOR 4
+
+XOR出来n+3 ：  1 XOR 2 XOR 4
+
+n=5时，n=6时，n=6时.最多到7就没了
+
+n=8，9，10，11，12，13，14，15时，最高到15就没了
+
+![image-20260727142026967](image-20260727142026967.png)
+
+这么说.....
+
+![image-20260727142134553](image-20260727142134553.png)
+
+```c++
+int uniqueXorTriplets(vector<int>& nums) {
+	if(nums.size()==2) return 2;
+	else if(nums.size()==1) return 1;
+	else {
+		int a=nums.size();
+		int b=1;
+		while(b<=a) b*=2;
+		return b;
+	};
+}
+```
+
+![image-20260727142640488](image-20260727142640488.png)
+
+![image-20260727142717545](image-20260727142717545.png)
+
+后来发现....
+
+> 对于 n ≥ 3，所有可能的 XOR 值恰好覆盖 [0, 2^k - 1]，其中 2^k 是大于 n 的最小 2 的幂。
+
 # 模拟
 
 ## [3867.数对的最大公约数之和](https://leetcode.cn/problems/sum-of-gcd-of-formed-pairs/description/?envType=daily-question&envId=2026-07-16)
@@ -461,7 +512,7 @@ public:
 };
 ```
 
-## [1260. 二维网格迁移（参考分值：1337）](https://leetcode.cn/problems/shift-2d-grid)
+## [1260. 二维网格迁移（1337）](https://leetcode.cn/problems/shift-2d-grid)
 
 把二维网格展开成一串，比如样例一我们可以展开成：
 
@@ -485,5 +536,118 @@ vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
 	}
 	return grid2;
 }
+```
+
+## [3499. 操作后最大活跃区段数 I（1729）](https://leetcode.cn/problems/maximize-active-section-with-trade-i/)
+
+操作的本质是：
+  - 损失：选中那个 1 块的长度（它变成 0 了）
+  - 收获：选中那个 1 块左右两侧的 0 块长度之和（它们变成 1 了）
+
+**其实选中那个 1 块是不会变化的**，因为首先它变成0，然后又变成1.相当于不加不减。我们收获的得到的就是这个1块周围0的长度之和.**注意题目没有说`1`的区间必须连续，也就是比如`111111101111100`的最大活跃区间有12个`1`**
+
+那么我们的算法目的就出现了：原始 1 的个数 + max(左右 0 块长度之和)
+
+**AC代码**
+
+```c++
+int maxActiveSectionsAfterTrade(string s) {
+	int ones = count(s.begin(), s.end(), '1');
+	vector<pair<int, int>> blocks;
+	char com = s[0];
+	int tem = 1;
+	for (int i = 1; i < s.size(); i++) {
+		if (com == s[i]) {
+			tem++;
+		} else {
+            blocks.push_back({com-'0',tem});
+			com=s[i];
+			tem=1;
+		}
+	}
+	  blocks.push_back({s[s.size()-1]-'0',tem});
+	int maxx=0;
+	for (int idx = 1; idx + 1 < blocks.size(); idx++) {
+		if (blocks[idx].first == 1) {
+			int gain = blocks[idx - 1].second + blocks[idx + 1].second;
+			maxx = max(maxx, gain);
+		}
+	}
+	return ones+maxx;
+}
+```
+
+![image-20260721191419331](image-20260721191419331.png)
+
+emmmmm优化一下
+
+- **`vector<pair<int,int>> blocks`** — 原来要先建块数组再二次遍历，n=10^5 时 push_back 有多次扩容和堆分配。改成单遍扫描，只维护 `prev0`/`cur0` 两个滑动变量，零动态分配
+- **合并 `count` 遍历** — 原来 `count(s.begin(), s.end(), '1')` 单独扫一遍，现在在主循环里顺便累加 `ones`
+
+```c++
+class Solution {
+public:
+    int maxActiveSectionsAfterTrade(const string& s) {
+        int n = s.size();
+        int ones = 0;
+        int prev0 = 0, cur0 = 0;
+        int max2 = 0;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '1') {
+                ones++;
+                if (cur0 > 0) {
+                    if (prev0 > 0) max2 = max(max2, prev0 + cur0);
+                    prev0 = cur0;
+                    cur0 = 0;
+                }
+            } else {
+                cur0++;
+            }
+        }
+        if (cur0 > 0 && prev0 > 0) max2 = max(max2, prev0 + cur0);
+        return ones + max2;
+    }
+};
+```
+
+## [3536. 两个数字的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-two-digits)
+
+简单模拟
+
+```c++
+ int maxProduct(int n) {
+        int ans[10] = {0};
+        while (n != 0) {
+            ans[n % 10]++;
+            n /= 10;
+        }
+        int anss = 0;
+        for (int i = 9; i >= 0; i--) {
+            if (ans[i] >= 1) {
+                if (anss == 0 && ans[i] >= 2)
+                    return i * i;
+                if (anss != 0)
+                    return anss * i;
+                else {
+                    anss = i;
+                    ans[i]--;
+                }
+            }
+        }
+        return anss;
+    }
+```
+
+## [628. 三个数的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-three-numbers/description/?envType=daily-question&envId=2026-07-27)
+
+简单模拟
+
+```c++
+int maximumProduct(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        return max(nums[nums.size() - 1] * nums[nums.size() - 2] *
+                       nums[nums.size() - 3],
+                   nums[nums.size() - 1] * nums[0] * nums[1]);
+    }
 ```
 
