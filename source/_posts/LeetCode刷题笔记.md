@@ -382,6 +382,8 @@ signed main() {
 }
 ```
 
+
+
 # 区间处理
 
 ## 删除被覆盖区间
@@ -481,6 +483,114 @@ int uniqueXorTriplets(vector<int>& nums) {
 后来发现....
 
 > 对于 n ≥ 3，所有可能的 XOR 值恰好覆盖 [0, 2^k - 1]，其中 2^k 是大于 n 的最小 2 的幂。
+
+### [3514. 不同 XOR 三元组的数目 II（1884）](https://leetcode.cn/problems/number-of-unique-xor-triplets-ii)
+
+一开始想的dp，后来发现用不到，只需要开个set然后枚举就能过了。这是1884的题？
+
+```c++
+int uniqueXorTriplets(vector<int>& nums) {
+	 unordered_set<int> nums2;
+	 unordered_set<int> nums3;
+	 for(int i=0;i<nums.size();i++){
+		 for(int j=0;j<nums.size();j++){
+			 nums2.insert(nums[i]^nums[j]);
+		 }
+	 }
+	 for(auto v:nums2){
+		 for(int i=0;i<nums.size();i++){
+			 nums3.insert(nums[i]^v);
+		 }
+	 }
+	 return nums3.size();
+}
+```
+
+![image-20260729183615933](image-20260729183615933.png)
+
+emmmm，能过就是好方法[doge]
+
+# 字符串
+
+## [3517. 最小回文排列 I（1357）](https://leetcode.cn/problems/smallest-palindromic-rearrangement-i)
+
+```c++
+string smallestPalindrome(string s) {
+	string beginn = "";
+	string endd = "";
+	int ant[27] = {0};
+	for (int i = 0; i < s.size(); i++) {
+		ant[s[i] - 'a']++;
+	}
+	char pre;
+	int flag = 0;
+	for (int i = 26; i >= 0; i--) {
+		if (ant[i] % 2 != 0) {
+			pre = 'a' + i;
+			ant[i]--;
+			flag = 1;
+		}
+		while (ant[i] > 0) {
+			ant[i] -= 2;
+			char temp = 'a' + i;
+//			cout<<ant[i]<<endl;
+			beginn += temp;
+			endd += temp;
+		}
+	}
+	reverse(beginn.begin(), beginn.end());
+	if (flag)
+		beginn = beginn + pre + endd;
+	else beginn += endd;
+	return beginn;
+
+}
+```
+
+**这段代码内存会超限**
+
+```c++
+ans = temp + ans + temp;
+```
+
+它在循环里每次都在构造一个新字符串，并且把当前 `ans` 完整地复制一遍。假设字符串长度是 n，这个循环大概执行 n/2 次，每次平均复制 O(n) 个字符，总时间和临时内存开销都是 **O(n²)**。当 n 很大时（比如 10⁵），中间产生的大量临时字符串对象会把内存顶爆，LeetCode 就报 MLE 了。
+
+## [ 3016. 输入单词需要的最少按键次数 II（1534）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-ii)
+
+能过就是好方法
+
+```c++
+int minimumPushes(string word) {
+	sort(word.begin(), word.end());
+	cout<<word<<endl;
+	int out[27];
+	int ant=0;
+	int ans = 1;
+	int step = 1;
+	int button = 2;
+	char pre = word[0];
+	for (int i = 1; i < word.size(); i++,ans++) {
+		if (word[i] != pre) {
+			pre=word[i];
+			out[ant++]=ans;
+            ans=0;
+		}
+	}
+    out[ant++]=ans;
+	ans=0;
+	sort(out,out+ant);
+	for(int i=ant-1;i>=0;i--,button++){
+		if(button==10){
+			button=2;
+			step++;
+		}
+		ans+=out[i]*step;
+	}
+	return ans;
+}
+```
+
+
 
 # 模拟
 
@@ -649,5 +759,34 @@ int maximumProduct(vector<int>& nums) {
                        nums[nums.size() - 3],
                    nums[nums.size() - 1] * nums[0] * nums[1]);
     }
+```
+
+## [1464. 数组中两元素的最大乘积(1121)](https://leetcode.cn/problems/maximum-product-of-two-elements-in-an-array)
+
+同上
+
+```c++
+int maxProduct(vector<int>& nums) {
+	sort(nums.begin(),nums.end());
+	return max((nums[nums.size()-1]-1)*(nums[nums.size()-2]-1),(nums[0]-1)*(nums[1]-1));
+}
+```
+
+## [3014. 输入单词需要的最少按键次数 I（1324）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-i)
+
+简单模拟
+
+```c++
+int minimumPushes(string word) {
+	sort(word.begin(), word.end());
+	int ans = 0, step = 1, button = 2;
+	char pre = word[0];
+	ans += step;
+	for (int i = 1; i < word.size(); i++) {
+		word[i] != pre ? (button + 1 == 10 ? (button = 2, step++) : (button += 1)) : 1;
+		ans += step;
+	}
+	return ans;
+}
 ```
 

@@ -1,5 +1,4 @@
 ---
-layout: codeforces
 title: Codeforces Round 1109 (Div. 3)
 date: 2026-07-22 18:43:22
 tags:
