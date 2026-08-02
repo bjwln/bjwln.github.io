@@ -412,6 +412,8 @@ bool predictTheWinner(vector<int>& nums) {
 }
 ```
 
+### [877. 石子游戏（1590）](https://leetcode.cn/problems/stone-game)
+
 
 
 # 区间处理
