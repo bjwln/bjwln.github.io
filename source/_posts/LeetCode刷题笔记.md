@@ -384,6 +384,36 @@ signed main() {
 
 
 
+## 区间DP
+
+### [（模板题）486. 预测赢家](https://leetcode.cn/problems/predict-the-winner/)
+
+我们在每一步选择的时候会经过这样一个流程：选左或选右导致区间缩小。然后来到下一步面临的还是同样的问题结构
+
+  - 每一步选择影响的是剩余的连续区间
+  - 状态天然和"子数组首尾"绑定
+
+```c++
+bool predictTheWinner(vector<int>& nums) {
+	int len = nums.size();
+	int dp[len][len]; // dp[i][j] = 当前玩家从 nums[i..j] 能获得的最大分差（自己 - 对手）
+	for (int i = 0; i < len; i++) {
+		dp[i][i] = nums[i];
+	}
+	int ans = 0;
+	for (int i = len - 2; i >= 0; i--) {
+		for (int j = i + 1; j < len; j++) {
+			// 选左边 nums[i]，对手从 i+1..j 能得 dp[i+1][j]，所以当前分差 = nums[i] - dp[i+1][j]
+			// 选右边 nums[j]，对手从 i..j-1 能得 dp[i][j-1]，所以当前分差 = nums[j] - dp[i][j-1]
+			dp[i][j] = max(nums[i] - dp[i + 1][j], nums[j] - dp[i][j - 1]);
+		}
+	}
+	return dp[0][len - 1] >= 0;
+}
+```
+
+
+
 # 区间处理
 
 ## 删除被覆盖区间
@@ -408,6 +438,8 @@ int removeCoveredIntervals(vector<vector<int>>& intervals) {
 	return ans;
 }
 ```
+
+
 
 # 数论
 
