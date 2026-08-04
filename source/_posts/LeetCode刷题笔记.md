@@ -414,6 +414,32 @@ bool predictTheWinner(vector<int>& nums) {
 
 ### [877. 石子游戏（1590）](https://leetcode.cn/problems/stone-game)
 
+```c++
+class Solution {
+public:
+bool stoneGame(vector<int>& piles) {
+	int len = piles.size();
+	int dp[len][len]; // dp[i][j] = 当前玩家从 nums[i..j] 能获得的最大分差（自己 - 对手）
+	for (int i = 0; i < len; i++) {
+		dp[i][i] = piles[i];
+	}
+	int ans = 0;
+	for (int i = len - 2; i >= 0; i--) {
+		for (int j = i + 1; j < len; j++) {
+			// 选左边 nums[i]，对手从 i+1..j 能得 dp[i+1][j]，所以当前分差 = nums[i] - dp[i+1][j]
+			// 选右边 nums[j]，对手从 i..j-1 能得 dp[i][j-1]，所以当前分差 = nums[j] - dp[i][j-1]
+			dp[i][j] = max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
+		}
+	}
+	return dp[0][len - 1] >= 0;
+}
+};
+```
+
+
+
+### [1406. 石子游戏 III（2027）](https://leetcode.cn/problems/stone-game-iii)
+
 
 
 # 区间处理
@@ -822,5 +848,22 @@ int minimumPushes(string word) {
 	}
 	return ans;
 }
+```
+
+## [3731. 找出缺失的元素（1217）](https://leetcode.cn/problems/find-missing-elements/)
+
+```c++
+    vector<int> findMissingElements(vector<int>& nums) {
+        vector<int> ans;
+        sort(nums.begin(), nums.end());
+        int temp = nums[0];
+        for (int i = 0; i < nums.size(); i++,temp++) {
+            while (nums[i] != temp) {
+                ans.push_back(temp);
+                temp++;
+            }
+        }
+        return ans;
+    }
 ```
 
