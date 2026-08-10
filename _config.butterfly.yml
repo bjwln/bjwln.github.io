@@ -19,6 +19,7 @@ nav:
 
 menu:
   Home: / || fas fa-home
+  热门: /hot/ || fas fa-fire
   # List||fas fa-list:
   #   Music: /music/ || fas fa-music
   #   Movie: /movies/ || fas fa-video

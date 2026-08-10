@@ -6,7 +6,7 @@ categories: Multi-agent system for MDT
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBmM1qbvXaJmmiG4udMCE0TW9N4RbbWwACgwxrGzeJeUcs8HfzSs6e7gEAAwIAA3gAAz0E.png
 ---
 
-[下载论文 PDF](妇科多智能体.pdf)
+[Download PDF](妇科多智能体.pdf)
 
 # 背景
 
@@ -101,7 +101,7 @@ OMGs采用两层架构：
 
 ## 多智能体受约束审议
 
-![image-20260805215439590](OMGs论文解读/image-20260805215439590.png)
+![image-20260805215439590](image-20260805215439590.png)
 
 基于结构化病例表示、角色范围输入和集中证据库，系统进行<u>受控多角色审议</u>，模拟MDT治理而非自由形式的agent交互。
 
