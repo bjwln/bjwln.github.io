@@ -867,3 +867,20 @@ int minimumPushes(string word) {
     }
 ```
 
+## [3345. 最小可整除数位乘积 I（1200）](https://leetcode.cn/problems/smallest-divisible-digit-product-i/)
+
+```c++
+    int smallestNumber(int n, int t) {
+        for (int i = n;; i++) {
+            int ans = 1;
+            int temp = i;
+            while (temp > 0) {
+                ans *= (temp % 10);
+                temp /= 10;
+            }
+            if (ans % t == 0)
+                return i;
+        }
+    }
+```
+
