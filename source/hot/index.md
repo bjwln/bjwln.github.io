@@ -24,7 +24,7 @@ description: 按浏览量排序的文章列表
 .hot-summary-num {
   font-size: 1.8em;
   font-weight: 700;
-  color: var(--btn-bg);
+  color: var(--text-highlight-color);
   line-height: 1.2;
 }
 .hot-summary-label {
@@ -67,12 +67,9 @@ description: 按浏览量排序的文章列表
   justify-content: center;
   font-size: 1em;
   font-weight: 700;
-  background: var(--light-grey);
-  color: var(--dark-grey);
+  background: var(--text-highlight-color);
+  color: #fff;
 }
-.hot-rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #fff; }
-.hot-rank-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #fff; }
-.hot-rank-3 { background: linear-gradient(135deg, #CD7F32, #B06830); color: #fff; }
 
 .hot-cover {
   flex-shrink: 0;
@@ -109,7 +106,8 @@ description: 按浏览量排序的文章列表
 .hot-cat {
   padding: 1px 8px;
   border-radius: 4px;
-  background: var(--light-grey);
+  background: rgba(128, 128, 128, .2);
+  color: var(--text-highlight-color);
 }
 
 .hot-pv {
@@ -121,7 +119,7 @@ description: 按浏览量排序的文章列表
   color: var(--card-meta);
   white-space: nowrap;
 }
-.hot-pv i { color: var(--btn-bg); }
+.hot-pv i { color: var(--text-highlight-color); }
 
 .hot-loading, .hot-error, .hot-empty {
   text-align: center;
@@ -136,6 +134,19 @@ description: 按浏览量排序的文章列表
   .hot-summary-num { font-size: 1.4em; }
   .hot-card { padding: 12px 14px; gap: 10px; }
   .hot-rank { width: 28px; height: 28px; font-size: .9em; }
+}
+
+[data-theme="dark"] .hot-summary-num,
+[data-theme="dark"] .hot-card:hover .hot-title,
+[data-theme="dark"] .hot-cat,
+[data-theme="dark"] .hot-pv i {
+  color: #6cb6ff;
+}
+[data-theme="dark"] .hot-rank {
+  background: #6cb6ff;
+}
+[data-theme="dark"] .hot-cat {
+  background: rgba(108, 182, 255, .15);
 }
 </style>
 

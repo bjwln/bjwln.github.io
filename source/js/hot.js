@@ -78,7 +78,7 @@
 
     var html = posts.map(function (post, index) {
       var rank = index + 1;
-      var rankClass = rank <= 3 ? 'hot-rank hot-rank-' + rank : 'hot-rank';
+      var rankClass = 'hot-rank';
       var coverHtml = post.cover
         ? '<div class="hot-cover"><img src="' + escapeHtml(post.cover) + '" alt="" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></div>'
         : '';
