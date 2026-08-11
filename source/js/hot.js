@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
 
   function formatNumber(n) {
@@ -28,7 +28,11 @@
 
       var pvMap = {};
       (pvData.data || []).forEach(function (item) {
-        pvMap[item.path] = { pv: item.pv || 0, uv: item.uv || 0 };
+        // D1 stores URL-decoded paths (from window.location.pathname),
+        // so decode them to match hot-posts.json which stores raw paths
+        var decodedPath;
+        try { decodedPath = decodeURIComponent(item.path); } catch (e) { decodedPath = item.path; }
+        pvMap[decodedPath] = { pv: item.pv || 0, uv: item.uv || 0 };
       });
 
       var totalViews = 0;
