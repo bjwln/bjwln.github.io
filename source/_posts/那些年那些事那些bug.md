@@ -2,7 +2,7 @@
 title: 那些年那些事那些bug
 date: 2026-08-13 16:44:25
 tags:
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNRqfY-szuA6oKgh_KyMnrcLqyWaDwACWAxrG3sF6EfmoImdvzdGHAEAAwIAA3gAAz0E.png
+cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNVqfZIjlAxBmRG3FpZMqEkCahXTZgACWQxrG3sF6Efun34yU9GdugEAAwIAA3kAAz0E.png
 ---
 
 # 朋友家网DNS给我网址解析到成人网站
