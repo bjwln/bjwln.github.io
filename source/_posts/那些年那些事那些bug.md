@@ -9,7 +9,7 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNVqfZIjlAxBmRG3FpZMqEkCahXTZ
 
 ## 问题展示
 
-<video src="那些年那些事那些bug/2026-08-13 16-32-12.mkv"></video>
+<video src="2026-08-13 16-32-12.mkv"></video>
 
 
 
