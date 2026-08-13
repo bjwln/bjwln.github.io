@@ -9,7 +9,7 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNVqfZIjlAxBmRG3FpZMqEkCahXTZ
 
 ## 问题展示
 
-<video src="2026-08-13 16-32-12.mkv"></video>
+<video src="2026-08-13 16-32-12.mp4" controls preload="metadata"></video>
 
 
 
@@ -110,4 +110,3 @@ DNS 劫持的常见危害
   1. 广告轰炸：劫持者把正常网站的广告替换成自己的，靠流量赚钱。你访问每个网站都被强行塞广告。
   1.  SSL 证书失效（部分情况）：如果劫持者用了自签名证书，浏览器可能会报安全警告，但也可能直接放行（取决于用户是否忽略警告）。
   1.  隐私泄露：你访问什么网站都被 DNS 劫持者知道得一清二楚。
-

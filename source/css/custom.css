@@ -507,3 +507,13 @@ body {
 .article-sort-item-time time {
     color: #fff !important;
 }
+
+/* 文章内视频自适应宽度，防止撑大页面 */
+#article-container video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 20px;
+    border-radius: 8px;
+    background: #000;
+}
