@@ -652,7 +652,40 @@ int minimumPushes(string word) {
 
 
 
+
+
+# 滑动窗口
+
+### 
+
 # 模拟
+
+## [2958. 最多 K 个重复元素的最长子数组（）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/)
+
+```c++
+class Solution {
+public:
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        map<int, int> mp;
+        int ans = 1;
+        int temp = 0;
+        int j = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            mp[nums[i]]++;
+            temp++;
+            while (mp[nums[i]] > k && j < i) {
+                temp--;
+                mp[nums[j]]--;
+                j++;
+            }
+            ans = max(ans, temp);
+        }
+        return ans;
+    }
+};
+```
+
+
 
 ## [3867.数对的最大公约数之和](https://leetcode.cn/problems/sum-of-gcd-of-formed-pairs/description/?envType=daily-question&envId=2026-07-16)
 
@@ -881,6 +914,27 @@ int minimumPushes(string word) {
             if (ans % t == 0)
                 return i;
         }
+    }
+```
+
+## [2996. 大于等于顺序前缀和的最小缺失整数（1406）](https://leetcode.cn/problems/smallest-missing-integer-greater-than-sequential-prefix-sum/)
+
+```c++
+    int missingInteger(vector<int>& nums) {
+        unordered_set<int> st(nums.begin(), nums.end());
+        int sum = nums[0];
+        for(int i = 1; i < nums.size(); ++i){
+            if(nums[i] == nums[i-1] + 1){
+                sum += nums[i];
+            }else{
+                break; 
+            }
+        }
+        int x = sum;
+        while(st.count(x)){
+            x++;
+        }
+        return x;
     }
 ```
 
