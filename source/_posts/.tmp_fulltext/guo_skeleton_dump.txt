@@ -1,0 +1,239 @@
+## SECTION Abstract  (slot pid starts 0)
+  H0: Abstract
+B1: Large Language Models (LLMs) have achieved remarkable success across a wide array of tasks. Due to the impressive planning and reasoning abilities of LLMs, they
+## SECTION 1 Introduction  (slot pid starts 2)
+  H2: 1 Introduction
+B3: Large Language Models (LLMs) have recently shown remarkable potential in reaching a level of reasoning and planning capabilities comparable to humans. This abil
+B4: ∗This work was done when Yaqi and Ruidi were visiting students at the University of Notre Dame.
+B5: †Corresponding author.
+B6: Liang et al., 2023]. Hence, LLM-based agent has been studied and rapidly developed to understand and generate human-like instructions, facilitating sophisticate
+B7: Based on the inspiring capabilities of the single LLM-based agent, LLM-based Multi-Agents have been proposed to leverage the collective intelligence and special
+B8: Figure 1: The rising trend in the research field of LLM-based Multi-Agents. For Problem Solving and World Simulation, we categorize current work into several ca
+B9: amine future research challenges. This underscores the significance of our work and serves as the motivation behind pre-senting this survey paper, dedicated to 
+B10: We expect that our survey can make significant contributions to both the research and development of LLMs and to a wider range of interdisciplinary studies empl
+B11: To assist individuals from various backgrounds in understanding LLM-MA techniques and to complement existing surveys by tackling unresolved questions, we have o
+## SECTION 2 Background  (slot pid starts 12)
+  H12: 2 Background
+## SECTION 2.1 Single-Agent Systems Powered LLMs  (slot pid starts 13)
+  H13: 2.1 Single-Agent Systems Powered LLMs
+B14: We introduce the background by first outlining the capabilities of a single-agent system based on LLMs, following the discussion presented in [Weng, 2023].
+B15: Decision-making Thought: This term denotes the capability of LLM-based agents, guided by prompts, to break down complex tasks into smaller subgoals [Khot et al.
+B16: Tool-use: LLM-based agents’ tool-use capability allows them to leverage external tools and resources to accomplish tasks, enhancing their functional capabilitie
+B17: Memory: This ability refers to the capability of LLM-based agent for conducting in-context learning [Dong et al., 2023a] as short memory or external vector data
+## SECTION 2.2 Single-Agent VS. Multi-Agent Systems  (slot pid starts 18)
+  H18: 2.2 Single-Agent VS. Multi-Agent Systems
+B19: Single-Agent systems empowered by LLMs have shown inspiring cognitive abilities [Sumers et al., 2023]. The construction of such systems concentrates on formulat
+## SECTION 3 Dissecting LLM-MA Systems: Interface,  (slot pid starts 20)
+  H20: 3 Dissecting LLM-MA Systems: Interface,
+B21: Profiling, Communication, and Capabilities
+B22: In this section, we delve into the intricacies of LLM-MA systems , where multiple autonomous agents engage in collaborative activities akin to human group dynam
+## SECTION 3.1 Agents-Environment Interface  (slot pid starts 23)
+  H23: 3.1 Agents-Environment Interface
+B24: The operational environments defines the specific contexts or settings in which the LLM-MA systems are deployed and interact. For example, these environments ca
+## SECTION 3.2 Agents Profiling  (slot pid starts 25)
+  H25: 3.2 Agents Profiling
+B26: In LLM-MA systems, agents are defined by their traits, actions , and skills, which are tailored to meet specific goals. Across various systems, agents assume di
+B27: Figure 2: The Architecture of LLM-MA Systems.
+B28: Data-Derived. In the Pre-defined cases, agent profiles are The Model- explicitly defined by the system designers. Generated method creates agent profiles by mod
+## SECTION 3.3 Agents Communication  (slot pid starts 29)
+  H29: 3.3 Agents Communication
+B30: The communication between agents in LLM-MA systems is the critical infrastructure supporting collective intelligence. We dissect agent communication from three 
+B31: Communication Paradigms: Current LLM-MA systems mainly take three paradigms for communication: Cooperative , Debate, and Competitive. Cooperative agents work to
+B32: Communication Structure: Fig. 3 shows four typical Layered communication structures in LLM-MA systems. communication is structured hierarchically, with agents a
+B33: Figure 3: The Agent Communication Structure.
+B34: introduces a framework called Dynamic LLM-Agent Network (DyLAN), which organizes agents in a multi-layered feed-forward network. This setup facilitates dynamic 
+B35: Communication Content: In LLM-MA systems, the Communication Content typically takes the form of text. The specific content varies widely and depends on the part
+## SECTION 3.4 Agents Capabilities Acquisition  (slot pid starts 36)
+  H36: 3.4 Agents Capabilities Acquisition
+B37: The Agents Capabilities Acquisition is a crucial process in LLM-MA, enabling agents to learn and evolve dynamically. In this context, there are two fundamental 
+B38: Feedback: Feedback involves the critical information that agents receive about the outcome of their actions, helping the agents learn the potential impact of th
+B39: Agents Adjustment to Complex Problems: To enhance their capabilities, agents in LLM-MA systems can adapt 1) Memory. through three main solutions. Most LLM-MA sy
+B40: With the scaling up LLM-MA with a larger number of agents, the escalating complexity of managing various kinds of agents has been a critical problem. Agents Orc
+## SECTION 4 Applications  (slot pid starts 41)
+  H41: 4 Applications
+B42: LLM-MA systems have been used in a wide range of applications . We summarize two kinds of applications in Table 1: Problem Solving and World Simulation. We elab
+## SECTION 4.1 LLM-MA for Problem Solving  (slot pid starts 43)
+  H43: 4.1 LLM-MA for Problem Solving
+B44: The main motivation of using LLM-MA for problem solving is to harness the collective capabilities of agents with specialized expertise. These agents, each actin
+B45: Table 1: Summary of the LLM-MA studies. We categorize current work according to their motivation, research domains and goals, and detail each work from differen
+## SECTION 4.1.1 Software Development  (slot pid starts 46)
+  H46: 4.1.1 Software Development
+B47: Given that software development is a complex endeavor requiring the collaboration of various roles like product managers , programmers, and testers, LLM-MA syst
+## SECTION 4.1.2 Embodied Agents  (slot pid starts 48)
+  H48: 4.1.2 Embodied Agents
+B49: Most embodied agents applications inherently utilize multi-ple robots working together to perform complex real-world planning and manipulation tasks such as war
+## SECTION 4.1.3 Science Experiments  (slot pid starts 50)
+  H50: 4.1.3 Science Experiments
+B51: Like multiple agents play as different specialists and cooperate to solve the Software Development and Embodied Agents problem, multiple agents can also be used
+## SECTION 4.1.4 Science Debate  (slot pid starts 52)
+  H52: 4.1.4 Science Debate
+B53: LLM-MA can be set for science debating scenarios, where agents debate with each other to enhance the collective reasoning capabilities in tasks such as Massive 
+## SECTION 4.2 LLM-MA for World Simulation  (slot pid starts 54)
+  H54: 4.2 LLM-MA for World Simulation
+B55: Another mainstream application scenario of LLM-MA is the world simulation. Research in this area is rapidly growing and spans a diverse range of fields includin
+## SECTION 4.2.1 Societal Simulation  (slot pid starts 56)
+  H56: 4.2.1 Societal Simulation
+B57: In societal simulation, LLM-MA models are used to simulate social behaviors, aiming to explore the potential social dynamics and propagation, test social scienc
+B58: The scale of societal simulation has expanded over time, beginning with smaller, more intimate settings and progressing to larger, more intricate ones. Initial 
+## SECTION 4.2.2 Gaming  (slot pid starts 59)
+  H59: 4.2.2 Gaming
+B60: LLM-MA is well-suited for creating simulated gaming environments , allowing agents to assume various roles within games. This technology enables the development
+B61: [Akata et al., 2023] leverages behavioral game theory to examine LLMs’ behavior in interactive social settings, particularly their performance in games like the
+## SECTION 4.2.3 Psychology  (slot pid starts 62)
+  H62: 4.2.3 Psychology
+B63: In psychological simulation studies, like in the societal simulation , multiple agents are utilized to simulate humans with various traits and thought processes
+## SECTION 4.2.4 Economy  (slot pid starts 64)
+  H64: 4.2.4 Economy
+B65: LLM-MA is used to simulate economic and financial trading environments mainly because it can serve as implicit computational models of humans. In these simulati
+B66: Table 2: Datasets and Benchmarks commonly used in LLM-MA studies. “ / ” denotes the unavailability of data link.
+B67: ing macroeconomic activities, information marketplaces, financial trading, and virtual town simulations. Agents interact in cooperative or debate, decentralized
+## SECTION 4.2.5 Recommender Systems  (slot pid starts 68)
+  H68: 4.2.5 Recommender Systems
+B69: The use of the LLM-MA in recommender systems is similar to that in psychology since studies in both fields involve the consideration of extrinsic and intrinsic 
+## SECTION 4.2.6 Policy Making  (slot pid starts 70)
+  H70: 4.2.6 Policy Making
+B71: Similar to simulations in gaming and economic scenarios, Policy Making requires strong decision-making capabilities to realistic and dynamic complex problems. L
+## SECTION 4.2.7 Disease Propagation Simulation  (slot pid starts 72)
+  H72: 4.2.7 Disease Propagation Simulation
+B73: Leveraging the societal simulation capabilities of LLM-MA can also be used to simulate disease propagation. The most recent study in [Williams et al., 2023] del
+## SECTION 5 Implementation Tools and Resources  (slot pid starts 74)
+  H74: 5 Implementation Tools and Resources
+## SECTION 5.1 Multi-Agents Framework  (slot pid starts 75)
+  H75: 5.1 Multi-Agents Framework
+B76: We provide a detailed introduction to three open-source MetaGPT [Hong et al., 2023], multi-agent frameworks: CAMEL [Li et al., 2023b], and Autogen [Wu et al., 2
+B77: MetaGPT is designed to embed human workflow processes into the operation of language model agents, thereby reducing the hallucination problem that often arises 
+B78: CAMEL, or Communicative Agent Framework, is oriented towards facilitating autonomous cooperation among agents. It uses a novel technique called inception prompt
+B79: AutoGen is a versatile framework that allows for the creation of applications using language models. It is distinctive for its high level of customization, enab
+B80: More recently, [Chen et al., 2023c; Chen et al., 2023a] introduce frameworks for dynamic multi-agent collaboration , while [Zhou et al., 2023a; Li et al., 2023h
+## SECTION 5.2 Datasets and Benchmarks  (slot pid starts 81)
+  H81: 5.2 Datasets and Benchmarks
+B82: We summarize commonly used datasets or benchmarks for LLM-MA study in Table 2. We observe that different research applications use different datasets and benchm
+## SECTION 6 Challenges and Opportunities  (slot pid starts 83)
+  H83: 6 Challenges and Opportunities
+B84: Studies of LLM-MA frameworks and applications are advancing rapidly, giving rise to numerous challenges and opportunities . We identified several critical chall
+## SECTION 6.1 Advancing into Multi-Modal Environment  (slot pid starts 85)
+  H85: 6.1 Advancing into Multi-Modal Environment
+B86: Most previous work on LLM-MA has been focused on text-based environments, excelling in processing and generating text. However, there is a notable lack in multi
+## SECTION 6.2 Addressing Hallucination  (slot pid starts 87)
+  H87: 6.2 Addressing Hallucination
+B88: The hallucination problem is a significant challenge in LLMs and single LLM-based Agent systems. It refers to the phenomenon where the model generates text that
+## SECTION 6.3 Acquiring Collective Intelligence  (slot pid starts 89)
+  H89: 6.3 Acquiring Collective Intelligence
+B90: In traditional multi-agent systems, agents often use reinforcement learning to learn from offline training datasets. However , LLM-MA systems mainly learn from 
+## SECTION 6.4 Scaling Up LLM-MA Systems  (slot pid starts 91)
+  H91: 6.4 Scaling Up LLM-MA Systems
+B92: LLM-MA systems are composed of a number of individual LLM-based agents, posing a significant challenge of scalability regarding the number of agents. From the c
+B93: Additionally, as the number of agents in an LLM-MA system increases, additional complexities and research opportunities emerge, particularly in areas like effic
+## SECTION 6.5 Evaluation and Benchmarks  (slot pid starts 94)
+  H94: 6.5 Evaluation and Benchmarks
+B95: We have summarized the datasets and benchmarks currently available for LLM-MA in Table 2. This is a starting point, and far from being comprehensive. We identif
+## SECTION 6.6 Applications and Beyond  (slot pid starts 96)
+  H96: 6.6 Applications and Beyond
+B97: The potential of LLM-MA systems extends far beyond their current applications, holding great promise for advanced computational problem-solving in fields such a
+## SECTION 7 Conclusion  (slot pid starts 98)
+  H98: 7 Conclusion
+B99: LLM-based Multi-Agents have shown inspiring collective intelligence and rapidly garnered increasing interest among researchers . In this survey, we first system
+## SECTION References  (slot pid starts 100)
+  H100: References
+B101: [Agashe et al., 2023] Saaket Agashe, Yue Fan, and Xin Eric
+B102: Wang. Evaluating multi-agent coordination abilities in large language models, 2023. [Aher et al., 2023] Gati Aher, Rosa I. Arriaga, and Adam Tauman Kalai. Using
+B103: Forno, Seong Joon Oh, Matthias Bethge, and Eric Schulz. Playing repeated games with large language models. arXiv preprint arXiv:2305.16867, 2023.
+B104: [Anonymous, 2023] Anonymous. Rethinking the buyer’s in- spection paradox in information markets with language agents. In Submitted to The Twelfth International 
+B105: Su, Jianxuan Yu, Wei Xue, Shanghang Zhang, Jie Fu, and Zhiyuan Liu. Chateval: Towards better llm-based evaluators through multi-agent debate, 2023. [Chen et al.
+B106: Ge Zhang, Jaward Sesay, B¨orje F Karlsson, Jie Fu, and Yemin Shi. Autoagents: A framework for automatic agent generation. arXiv preprint arXiv:2309.17288, 2023.
+B107: Cheng Yang, Chenfei Yuan, Chen Qian, Chi-Min Chan, Yujia Qin, Yaxi Lu, Ruobing Xie, et al. Agentverse: Facilitating multi-agent collaboration and exploring emer
+B108: Zhang, Nicholas Roy, and Chuchu Fan. Scalable multirobot collaboration with large language models: CenarXiv preprint tralized or decentralized systems? [Cobbe e
+B109: Chen, Kenneth Marino, Arun Ahuja, Sheila Babayan, Felix Hill, and Rob Fergus. Collaborating with lanarXiv preprint guage models for embodied reasoning. [Dibia, 
+B110: Ce Zheng, Zhiyong Wu, Baobao Chang, Xu Sun, Jingjing Xu, Lei Li, and Zhifang Sui. A survey on in-context learning , 2023. [Dong et al., 2023b] Yihong Dong, Xue 
+B111: Ge Li. Self-collaboration code generation via chatgpt, 2023. [Du et al., 2023] Yilun Du, Shuang Li, Antonio Torralba,
+B112: Joshua B. Tenenbaum, and Igor Mordatch. Improving factuality and reasoning in language models through multiagent debate, 2023. [Fan et al., 2023] Caoyun Fan, Ji
+B113: Hao He. Can large language models serve as rational players in game theory? a systematic analysis. arXiv preprint
+B114: [Farmer and Axtell, 2022] J. Doyne Farmer and Robert L.
+B115: Axtell. Agent-Based Modeling in Economics and Finance: Past, Present, and Future. INET Oxford Working Papers 2022-10, Institute for New Economic Thinking at the
+B116: [Gao et al., 2023a] Chen Gao, Xiaochong Lan, Zhihong Lu,
+B117: Jinzhu Mao, Jinghua Piao, Huandong Wang, Depeng Jin, and Yong Li. S3: Social-network simulation system with large language model-empowered agents. arXiv preprin
+B118: [Gao et al., 2023b] Yunfan Gao, Yun Xiong, Xinyu Gao,
+B119: Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi Dai, Jiawei Sun, and Haofen Wang. Retrieval-augmented generation arXiv preprint for large language models: A survey.
+B120: [Geva et al., 2021] Mor Geva, Daniel Khashabi, Elad Segal,
+B121: Tushar Khot, Dan Roth, and Jonathan Berant. Did aristotle use a laptop? a question answering benchmark with implicit reasoning strategies, 2021.
+B122: [Ghaffarzadegan et al., 2023] Navid Ghaffarzadegan, Aritra
+B123: Majumdar, Ross Williams, and Niyousha Hosseinichimeh. Generative agent-based modeling: Unveiling social system dynamics through coupling mechanistic models arXi
+B124: [Guo et al., 2023] Taicheng Guo, Kehan Guo, Zhengwen
+B125: Liang, Zhichun Guo, Nitesh V Chawla, Olaf Wiest, Xiangliang Zhang, et al. What indeed can gpt models do in chemistry? a comprehensive benchmark on eight tasks. 
+B126: [Hendrycks et al., 2020] Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. Measuring massive multitask lang
+B127: [Hong et al., 2023] Sirui Hong, Xiawu Zheng, Jonathan
+B128: Chen, Yuheng Cheng, Ceyao Zhang, Zili Wang, Steven Ka Shing Yau, Zijuan Lin, Liyang Zhou, Chenyu Ran, et al. Metagpt: Meta programming for multi-agent collabora
+B129: [Horton, 2023] John J Horton. Large language models as simulated economic agents: What can we learn from homo silicus? Technical report, National Bureau of Econ
+B130: [Hua et al., 2023] Wenyue Hua, Lizhou Fan, Lingyao Li,
+B131: Kai Mei, Jianchao Ji, Yingqiang Ge, Libby Hemphill, and Yongfeng Zhang. War and peace (waragent): Large language model-based multi-agent simulation of world war
+B132: [Huang et al., 2023a] Dong Huang, Qingwen Bu, Jie M.
+B133: Zhang, Michael Luck, and Heming Cui. Agentcoder: Multi-agent-based code generation with iterative testing and optimisation, 2023.
+B134: [Huang et al., 2023b] Lei Huang, Weijiang Yu, Weitao Ma,
+B135: Weihong Zhong, Zhangyin Feng, Haotian Wang, Qianglong Chen, Weihua Peng, Xiaocheng Feng, Bing Qin, et al. A survey on hallucination in large language models: Pr
+B136: Finlayson, Yao Fu, Kyle Richardson, Peter Clark, and Ashish Sabharwal. Decomposed prompting: A modular approach for solving complex tasks, 2023. [Kovaˇc et al.,
+B137: Dominey, and Pierre-Yves Oudeyer. The socialai school: Insights from developmental psychology towards artificial socio-cultural agents. arXiv preprint arXiv:230
+B138: Psychology-informed recommender systems: A human-centric perspective on recommender systems. In Proceedings of the 2022 Conference on Human Information Interact
+B139: Cong Xue, and Chunmo Zheng. Quantifying the impact of large language models on collective opinion dynamics. arXiv preprint arXiv:2308.03313, 2023. [Li et al., 2
+B140: Feifan Song, Hangyu Li, Haiyang Yu, Zhoujun Li, Fei Huang, and Yongbin Li. Api-bank: A comprehensive benchmark for tool-augmented llms, 2023. [Li et al., 2023e]
+B141: Liao. Large language model-empowered agents for simulating macroeconomic activities, 2023. [Li et al., 2023f] Siyu Li, Jin Yang, and Kui Zhao. Are you in a masq
+B142: [Li et al., 2023g] Yang Li, Yangyang Yu, Haohang Li, Zhi
+B143: Chen, and Khaldoun Khashanah. Tradinggpt: Multi-agent system with layered memory and distinct characters for enhanced financial trading performance, 2023.
+B144: [Li et al., 2023h] Yuan Li, Yixuan Zhang, and Lichao Sun.
+B145: Metaagents: Simulating interactions of human behaviors for llm-based task-oriented coordination via collaborative generative agents. arXiv preprint arXiv:2310.0
+B146: [Liang et al., 2023] Zhenwen Liang, Wenhao Yu, Tanmay
+B147: Rajpurohit, Peter Clark, Xiangliang Zhang, and Ashwin Kaylan. Let gpt be a math tutor: Teaching math word problem solvers with customized exercise generation. a
+B148: [Light et al., 2023a] Jonathan Light, Min Cai, Sheng Shen, and Ziniu Hu. Avalonbench: Evaluating llms playing the game of avalon, 2023.
+B149: [Light et al., 2023b] Jonathan Light, Min Cai, Sheng Shen, and Ziniu Hu. From text to tactic: Evaluating llms playing the game of avalon. arXiv preprint arXiv:2
+B150: [Liu et al., 2023] Zijun Liu, Yanzhe Zhang, Peng Li, Yang
+B151: Liu, and Diyi Yang. Dynamic llm-agent network: An llm-agent collaboration framework with agent team optimization . arXiv preprint arXiv:2310.02170, 2023.
+B152: [Ma et al., 2023] Zilin Ma, Yiyang Mei, and Zhaoyuan Su.
+B153: Understanding the benefits and challenges of using large language model-based conversational agents for mental arXiv preprint arXiv:2307.15810, well-being suppo
+B154: [Mandi et al., 2023] Zhao Mandi, Shreeya Jain, and Shuran
+B155: Song. Roco: Dialectic multi-robot collaboration with large language models. arXiv preprint arXiv:2307.04738, 2023.
+B156: [Mao et al., 2023] Shaoguang Mao, Yuzhe Cai, Yan Xia,
+B157: Wenshan Wu, Xun Wang, Fengyi Wang, Tao Ge, and Furu Wei. Alympics: Language agents meet game theory. arXiv preprint arXiv:2311.03220, 2023.
+B158: [Moura, 2023] Jo˜ao Moura. Crewai. https://github.com/ joaomdmoura/crewAI, 2023.
+B159: [Mukobi et al., 2023] Gabriel Mukobi, Hannah Erlebach,
+B160: Niklas Lauffer, Lewis Hammond, Alan Chan, and Jesse Clifton. Welfare diplomacy: Benchmarking language arXiv preprint arXiv:2310.08901, model cooperation. 2023.
+B161: [Nascimento et al., 2023] Nathalia Nascimento, Paulo Alen- car, and Donald Cowan. Self-adaptive large language In 2023 IEEE model (llm)-based multiagent systems
+B162: [Park et al., 2022] Joon Sung Park, Lindsay Popowski, Car- rie Cai, Meredith Ringel Morris, Percy Liang, and
+B163: Michael S Bernstein. Social simulacra: Creating popuIn Pro- lated prototypes for social computing systems. ceedings of the 35th Annual ACM Symposium on User Int
+B164: Yang, Weize Chen, Yusheng Su, Yufan Dang, Jiahao Li, Juyuan Xu, Dahai Li, Zhiyuan Liu, and Maosong Sun. Communicative agents for software development, 2023. [Ru
+B165: Zhiwei Xu, Tianpeng Bao, Guoqing Du, Shiwei Shi, Hangyu Mao, Ziyue Li, Xingyu Zeng, and Rui Zhao. Tptu: Large language model-based ai agents for task planning a
+B166: Artificial Intelligence: A Modern Approach. Prentice Hall Press, USA, 3rd edition, 2009. [Shinn et al., 2023] Noah Shinn, Federico Cassano, Edward
+B167: Berman, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. Reflexion: Language agents with verbal reinforcement learning, 2023. [Sumers et al., 2023] Theodore
+B168: Karthik Narasimhan, and Thomas L Griffiths. CogniarXiv preprint tive architectures for language agents. [Tang et al., 2023] Xiangru Tang, Anni Zou, Zhuosheng
+B169: Zhang, Yilun Zhao, Xingyao Zhang, Arman Cohan, and Mark Gerstein. Medagents: Large language models as collaborators for zero-shot medical reasoning, 2023. [Wang
+B170: Xu, and Diyi Yang. Putting humans in the natural language processing loop: A survey, 2021. [Wang et al., 2023a] Kuan Wang, Yadong Lu, Michael San- tacroce, Yeyu
+B171: Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu Chen, Yankai Lin, Wayne Xin Zhao, Zhewei Wei, and Ji-Rong Wen. A survey on large language mod
+B172: [Weng, 2023] Lilian Weng. Llm powered autonomous agents. https://lilianweng.github.io/posts/ 2023-06-23-agent/, 2023.
+B173: [Williams et al., 2023] Ross Williams, Niyousha Hosseinichimeh , Aritra Majumdar, and Navid Ghaffarzadegan . Epidemic modeling with generative agents. arXiv pre
+B174: [Wooldridge and Jennings, 1995] Michael Wooldridge and
+B175: Nicholas R. Jennings. Intelligent agents: theory and practice . The Knowledge Engineering Review, 10:115 – 152, 1995.
+B176: [Wu et al., 2023a] Qingyun Wu, Gagan Bansal, Jieyu Zhang,
+B177: Yiran Wu, Shaokun Zhang, Erkang Zhu, Beibin Li, Li Jiang, Xiaoyun Zhang, and Chi Wang. Autogen: Enabling next-gen llm applications via multi-agent conversation 
+B178: [Wu et al., 2023b] Yuxiang Wu, Zhengyao Jiang, Akbir
+B179: Khan, Yao Fu, Laura Ruis, Edward Grefenstette, and Tim Rockt¨aschel. Chatarena: Multi-agent language game environments for large language models. GitHub reposit
+B180: [Xi et al., 2023] Zhiheng Xi, Wenxiang Chen, Xin Guo,
+B181: Wei He, Yiwen Ding, Boyang Hong, Ming Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, Rui Zheng, Xiaoran Fan, Xiao Wang, Limao Xiong, Yuhao Zhou, Weiran Wang, Changh
+B182: [Xiao et al., 2023] Bushi Xiao, Ziyuan Yin, and Zixuan
+B183: Shan. Simulating public administration crisis: A novel generative agent-based simulation system to lower technology barriers in social science research. arXiv p
+B184: [Xie et al., 2023] Tianbao Xie, Fan Zhou, Zhoujun Cheng,
+B185: Peng Shi, Luoxuan Weng, Yitao Liu, Toh Jing Hua, Junning Zhao, Qian Liu, Che Liu, et al. Openagents: An open platform for language agents in the wild. arXiv pre
+B186: [Xiong et al., 2023] Kai Xiong, Xiao Ding, Yixin Cao, Ting
+B187: Liu, and Bing Qin. Examining inter-consistency of large language models collaboration: An in-depth analysis via debate, 2023.
+B188: [Xu et al., 2023a] Lin Xu, Zhiyuan Hu, Daquan Zhou, Hongyu Ren, Zhen Dong, Kurt Keutzer, See Kiong Ng, and Jiashi Feng. Magic: Investigation of large language m
+B189: [Xu et al., 2023b] Yuzhuang Xu, Shuo Wang, Peng Li,
+B190: Fuwen Luo, Xiaolong Wang, Weidong Liu, and Yang Liu. Exploring large language models for communication games: An empirical study on werewolf. arXiv preprint
+B191: [Xu et al., 2023c] Zelai Xu, Chao Yu, Fei Fang, Yu Wang, and Yi Wu. Language agents with reinforcement learning for strategic play in the werewolf game. arXiv p
+B192: Shafran, Thomas L. Griffiths, Yuan Cao, and Karthik Narasimhan. Tree of thoughts: Deliberate problem solving with large language models, 2023. [Yu et al., 2023]
+B193: Cao. Co-navgpt: Multi-robot cooperative visual semantic navigation using large language models, 2023. [Zhang et al., 2023a] An Zhang, Leheng Sheng, Yuxin Chen, 
+B194: Zihao Wang, Guanghe Li, Yihang Sun, Cheng Zhang, Zhaowei Zhang, Anji Liu, Song-Chun Zhu, et al. Proagent : Building proactive cooperative ai with large language
+B195: Shan, Qinhong Zhou, Yilun Du, Joshua B Tenenbaum, Tianmin Shu, and Chuang Gan. Building cooperative embodied agents modularly with large language models. arXiv 
+B196: Deng. Exploring collaboration mechanisms for llm agents: A social psychology view, 2023. [Zhang et al., 2023e] Junjie Zhang, Yupeng Hou, Ruobing
+B197: Xie, Wenqi Sun, Julian McAuley, Wayne Xin Zhao, Leyu Lin, and Ji-Rong Wen. Agentcf: Collaborative learning with autonomous language agents for recommender syste
+B198: Zhang, Yiqiao Jin, Kaijie Zhu, Hao Chen, and Xing Xie. Competeai: Understanding the competition behaviors in large language model-based agents, 2023. [Zheng et 
+B199: Nguyen, Nakul Rampal, Ali H. Alawadhi, Zichao Rong, Teresa Head-Gordon, Christian Borgs, Jennifer T. Chayes, and Omar M. Yaghi. Chatgpt research group for optim
+B200: Jiang, Long Li, Jialong Wu, Tiannan Wang, Shi Qiu, Jintian Zhang, Jing Chen, Ruipu Wu, Shuai Wang, et al. Agents: An open-source framework for autonomous langua
+B201: Ruohong Zhang, Haofei Yu, Zhengyang Qi, LouisPhilippe Morency, Yonatan Bisk, Daniel Fried, Graham Neubig, and Maarten Sap. Sotopia: Interactive evaluation for s
+B202: Zhang, William Held, Jiaao Chen, and Diyi Yang. Can large language models transform computational social science ? Computational Linguistics, pages 1–53, 2023.

@@ -1,0 +1,52 @@
+=== LI ===
+pages: 43
+page 2 table 0 rows 1
+ROW		
+
+=== GUO ===
+pages: 15
+page 6 table 0 rows 33
+ROW	ResearchDomain&Goals		Work	Agents-Env. | Interface	AgentsProfiling		Agents | Communication		
+ROW					Profiling | methods	Profiles | (examples)	Paradigms	Structure	Feedbackfrom
+ROW	Softwaredevelopment		[Qianetal.,2023]	Sandbox	Pre-defined, | Model-Generated	CTO, | programmer	Cooperative	Layered	Environment, | Agentinteraction, | Human
+ROW			[Hongetal.,2023]	Sandbox	Pre-defined	ProductManager, | Engineer	Cooperative	Layered, | SharedMessagePool	Environment, | Agentinteraction, | Human
+ROW			[Dongetal.,2023b]	Sandbox	Pre-defined, | Model-Generated	Analyst, | coder	Cooperative	Layered	Environment, | Agentinteraction
+ROW	Embodied | Agents	Multi-robot | planning	[Chenetal.,2023d]	Sandbox, | Physical	Pre-defined	Robots	Cooperative	Centralized, | Decentralized	Environment, | Agentinteraction
+ROW		Multi-robot | collaboration	[Mandietal.,2023]	Sandbox, | Physical	Pre-defined	Robots	Cooperative	Decentralized	Environment, | Agentinteraction
+ROW		Multi-Agents | cooperation	[Zhangetal.,2023c]	Sandbox	Pre-defined	Robots	Cooperative	Decentralized	Environment, | Agentinteraction
+ROW	Science | Experiments	Optimization | ofMOF	[Zhengetal.,2023]	Physical	Pre-defined	Strategyplaners, | literature | collector,coder	Cooperative	Centralized	Environment, | Human
+ROW	Science | Debate	Improving | Factuality	[Duetal.,2023]	None	Pre-defined	Agents	Debate	Decentralized	Agentinteraction
+ROW		Examining, | Inter-Consistency	[Xiongetal.,2023]	None	Pre-defined	Proponent, | Opponent, | Judge	Debate	Centralized, | Decentralized	Agentinteraction
+ROW		Evaluators | fordebates	[Chanetal.,2023]	None	Pre-defined	Agents	Debate	Centralized, | Decentralized	Agentinteraction
+ROW		Multi-Agents | forMedication	[Tangetal.,2023]	None	Pre-defined	Cardiology, | Surgery	Debate, | Cooperative	Centralized, | Decentralized	Agentinteraction
+ROW	Society	ModestCommunity | (25persons)	[Parketal.,2023]	Sandbox	Model-generated	Pharmacy, | shopkeeper	-	-	Environment, | Agentinteraction
+ROW		Onlinecommunity | (1000persons)	[Parketal.,2022]	None	Pre-defined, | Model-generated	Camping, | fishing	-	-	Agentinteraction
+ROW		Emotionpropagation	[Gaoetal.,2023a]	None	Pre-defined, | Model-generated	Real-world | user	-	-	Agentinteraction
+ROW		Real-time | socialinteractions	[Kaiyaetal.,2023]	Sandbox	Pre-defined	Real-world | user	-	-	Environment, | Agentinteraction
+ROW		Opiniondynamics	[Lietal.,2023a]	None	Pre-defined	NIN,NINL, | NIL	-	-	Agentinteraction
+ROW	Gaming	WereWolf	[Xuetal.,2023b] | [Xuetal.,2023c]	Sandbox	Pre-defined	Seer, | werewolf, | villager	Cooperative, | Debate, | Competitive	Decentralized	Environment, | Agentinteraction
+ROW		Avalon	[Lightetal.,2023a] | [Wangetal.,2023c]	Sandbox	Pre-defined	Servant, | Merlin, | Assassin	Cooperative, | Debate, | Competitive	Decentralized	Environment, | Agentinteraction
+ROW		WelfareDiplomacy	[Mukobietal.,2023]	Sandbox	Pre-defined	Countries	Cooperative, | Competitive	Decentralized	Environment, | Agentinteraction
+ROW	Psychology	Humanbehavior | Simulation	[Aheretal.,2023]	Sandbox	Pre-defined	Humans	-	-	Agentinteraction
+ROW		Collaboration | Exploring	[Zhangetal.,2023d]	None	Pre-defined	Agents	Cooperative, | Debate	Decentralized	Agentinteraction
+ROW	Economy	Macroeconomic | simulation	[Lietal.,2023e]	None	Pre-defined, | Model-generated	Labor	Cooperative	Decentralized	Agentinteraction
+ROW		Information | Marketplaces	[Anonymous,2023]	Sandbox	Pre-defined, | Data-Derived	Buyer	Cooperative, | Competitive	Decentralized	Environment, | Agentinteraction
+ROW		Improving | financialtrading	[Lietal.,2023g]	Physical	Pre-defined	Trader	Debate	Decentralized	Environment, | Agentinteraction
+ROW		Economictheories	[Zhaoetal.,2023]	Sandbox	Pre-defined, | Model-Generated	Restaurant, | Customer	Competitive	Decentralized	Environment, | Agentinteraction
+ROW	Recommender | Systems	Simulating | userbehaviors	[Zhangetal.,2023a]	Sandbox	Data-Derived	Usersfrom | MovieLens-1M	-	-	Environment
+ROW		Simulatinguser-item | interactions	[Zhangetal.,2023e]	Sandbox	Pre-defined, | Data-Derived	UserAgents | ItemAgents	Cooperative	Decentralized	Environment, | Agentinteraction
+ROW	Policy | Making	Public | Administration	[Xiaoetal.,2023]	None	Pre-defined	Residents	Cooperative	Decentralized	Agentinteraction
+ROW		WarSimulation	[Huaetal.,2023]	None	Pre-defined	Countries	Competitive	Decentralized	Agentinteraction
+ROW	Disease	HumanBehaviors | toepidemics	[Ghaffarzadegan | etal.,2023]	Sandbox	Pre-defined, | Model-Generated	Conformity | traits	Cooperative	Decentralized	Environment, | Agentinteraction
+ROW		Publichealth	[Williams | etal.,2023]	Sandbox	Pre-defined, | Model-Generated	Adultsaged | 18to64	Cooperative	Decentralized	Environment, | Agentinteraction
+page 9 table 0 rows 9
+ROW	Domain	DatasetsandBenchmarks	Usedby
+ROW	SoftwareDevelopment	HumanEval | MBPP | SoftwareDev	[Hongetal.,2023] | [Hongetal.,2023] | [Hongetal.,2023]
+ROW	EmbodiedAI	RoCoBench | CommunicativeWatch-And-Help(C-WAH) | ThreeDWorldMulti-AgentTransport(TDW-MAT) | HM3Dv0.2	[Mandietal.,2023] | [Zhangetal.,2023c] | [Zhangetal.,2023c] | [Yuetal.,2023]
+ROW	ScienceDebate	MMLU | MedQA | PubMedQA | GSM8K | StrategyQA | ChessMoveValidity	[Tangetal.,2023] | [Tangetal.,2023] | [Tangetal.,2023] | [Duetal.,2023] | [Xiongetal.,2023] | [Duetal.,2023]
+ROW	Society	SOTOPIA | GenderDiscrimination | NuclearEnergy	[Zhouetal.,2023b] | [Gaoetal.,2023a] | [Gaoetal.,2023a]
+ROW	Gaming	Werewolf | Avalon | WelfareDiplomacy | LayoutintheOvercooked-AIenvironment | Chameleon | Undercover	[Xuetal.,2023b] | [Lightetal.,2023b] | [Mukobietal.,2023] | [Agasheetal.,2023] | [Xuetal.,2023a] | [Xuetal.,2023a]
+ROW	Psychology	UltimatumGameTE | GardenPathTE | WisdomofCrowdsTE	[Aheretal.,2023] | [Aheretal.,2023] | [Aheretal.,2023]
+ROW	RecommenderSystem	MovieLens-1M | Amazonreviewdataset	[Zhangetal.,2023a] | [Zhangetal.,2023e]
+ROW	PolicyMaking	BoardConnectivityEvaluation	[Huaetal.,2023]
+

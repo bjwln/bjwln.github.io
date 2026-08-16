@@ -1,0 +1,756 @@
+<!-- page 38 -->
+Page 38 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	154.	 H. Liu, C. Li, Q. Wu, Y.J. Lee, Visual instruction tuning. Adv. Neural Inf. 
+Process. Syst. 36(2024). pp. 34892-34916
+	155.	 D. Zhang, S. Li, X. Zhang, J. Zhan, P. Wang, Y. Zhou, X. Qiu, Speechgpt: 
+Empowering large language models with intrinsic cross-modal con-
+versational abilities. in Findings of the Association for Computational 
+Linguistics: EMNLP 2023 (Association for Computational Linguistics, 
+Singapore, 2023), pp. 15757–15773.
+	156.	 H. Touvron, T. Lavril, G. Izacard, X. Martinet, M.A. Lachaux, T. Lacroix, B. 
+Rozière, N. Goyal, E. Hambro, F. Azhar et al., Llama: Open and efficient 
+foundation language models. arXiv preprint (2023) arXiv:2302.13971
+	157.	 C. Lyu, M. Wu, L. Wang, X. Huang, B. Liu, Z. Du, S. Shi, Z. Tu, Macaw-llm: 
+Multi-modal language modeling with image, audio, video, and text 
+integration. arXiv preprint (2023) arXiv:2306.09093
+	158.	 W. Yu, C. Tang, G. Sun, X. Chen, T. Tan, W. Li, L. Lu, Z. Ma, C. Zhang, Con-
+necting speech encoder and large language model for asr. in ICASSP 
+2024-2024 IEEE International Conference on Acoustics, Speech and Signal 
+Processing (ICASSP), (IEEE, Seoul, Korea, 2024), pp. 12637–12641
+	159.	 P.K. Rubenstein, C. Asawaroengchai, D.D. Nguyen, A. Bapna, Z. Borsos, 
+F.D.C. Quitry, P. Chen, D.E. Badawy, W. Han, E. Kharitonov et al., Audio-
+palm: A large language model that can speak and listen. arXiv preprint 
+(2023) arXiv:2306.12925
+	160.	 Y. Ding, X. Zhang, S. Amiri, N. Cao, H. Yang, A. Kaminski, C. Esselink, S. 
+Zhang, Integrating action knowledge and llms for task planning and 
+situation handling in open worlds. Auton. Robot. 47(8), 981–997 (2023)
+	161.	 K. Cobbe, V. Kosaraju, M. Bavarian, M. Chen, H. Jun, L. Kaiser, M. Plappert, 
+J. Tworek, J. Hilton, R. Nakano et al., Training verifiers to solve math word 
+problems. arXiv preprint (2021) arXiv:2110.14168
+	162.	 K. Singhal, S. Azizi, T. Tu, S.S. Mahdavi, J. Wei, H.W. Chung, N. Scales, A. 
+Tanwani, H. Cole-Lewis, S. Pfohl et al., Large language models encode 
+clinical knowledge. Nature 620, 172-180(2023). https://​doi.​org/​10.​1038/​
+s41586-​023-​06291-2
+	163.	 K. Singhal, T. Tu, J. Gottweis, R. Sayres, E. Wulczyn, L. Hou, K. Clark, 
+S. Pfohl, H. Cole-Lewis, D. Neal et al., Towards expert-level medical 
+question answering with large language models. arXiv preprint (2023) 
+arXiv:2305.09617
+	164.	 T. Tu, S. Azizi, D. Driess, M. Schaekermann, M. Amin, P.C. Chang, A. Carroll, 
+C. Lau, R. Tanno, I. Ktena et al., Towards generalist biomedical ai. NEJM AI 
+1(3), AIoa2300,138 (2024)
+	165.	 F.F. Xu, U. Alon, G. Neubig, V.J. Hellendoorn, A systematic evaluation of 
+large language models of code. in Proceedings of the 6th ACM SIGPLAN 
+International Symposium on Machine Programming (Association for 
+Computing Machinery, New York, NY, United States, 2022), pp. 1–10
+	166.	 A. Madaan, S. Zhou, U. Alon, Y. Yang, G. Neubig, Language models of 
+code are few-shot commonsense learners. in Proceedings of the 2022 
+Conference on Empirical Methods in Natural Language Processing 
+(Association for Computational Linguistics, Abu Dhabi, United Arab 
+Emirates, 2022), pp. 1384–1403.
+	167.	 V. Pallagani, B.C. Muppasani, K. Roy, F. Fabiano, A. Loreggia, K. Murug-
+esan, B. Srivastava, F. Rossi, L. Horesh, A. Sheth, On the prospects of 
+incorporating large language models (llms) in automated planning 
+and scheduling (aps). in Proceedings of the International Conference 
+on Automated Planning and Scheduling (AAAI Press, Washington, DC, 
+USA). 34(2024), pp. 432–444
+	168.	 A. Chowdhery, S. Narang, J. Devlin, M. Bosma, G. Mishra, A. Roberts, 
+P. Barham, H.W. Chung, C. Sutton, S. Gehrmann et al., Palm: Scaling 
+language modeling with pathways. J. Mach. Learn. Res. 24(240), 1–113 
+(2023)
+	169.	 R. Sun, S.Ö. Arik, A. Muzio, L. Miculicich, S. Gundabathula, P. Yin, H. Dai, 
+H. Nakhost, R. Sinha, Z. Wang et al., Sql-palm: Improved large language 
+model adaptation for text-to-sql (extended). arXiv preprint (2023) 
+arXiv:2306.00739
+	170.	 X. Wang, Q. Yang, Y. Qiu, J. Liang, Q. He, Z. Gu, Y. Xiao, W. Wang, Knowl-
+edgpt: Enhancing large language models with retrieval and storage 
+access on knowledge bases. arXiv preprint (2023) arXiv:2308.11761
+	171.	 R. Nakano, J. Hilton, S. Balaji, J. Wu, L. Ouyang, C. Kim, C. Hesse, S. Jain, V. 
+Kosaraju, W. Saunders et al., Webgpt: Browser-assisted question-answer-
+ing with human feedback. arXiv preprint (2021) arXiv:2112.09332
+	172.	 L. Gao, A. Madaan, S. Zhou, U. Alon, P. Liu, Y. Yang, J. Callan, G. Neubig, 
+Pal: Program-aided language models. in International Conference 
+on Machine Learning (PMLR, Honolulu, Hawaii, USA, 2023), pp. 
+10764–10799
+	173.	 A. Parisi, Y. Zhao, N. Fiedel, Talm: Tool augmented language models. 
+arXiv preprint (2022) arXiv:2205.12255
+	174.	 S.G. Patil, T. Zhang, X. Wang, J.E. Gonzalez, Gorilla: Large language model 
+connected with massive apis. arXiv preprint (2023) arXiv:2305.15334
+	175.	 P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küttler, 
+M. Lewis, W.T. Yih, T. Rocktäschel et al., Retrieval-augmented generation 
+for knowledge-intensive nlp tasks. Adv. Neural Inf. Process. Syst. 33, 
+9459–9474 (2020)
+	176.	 L. Zha, J. Zhou, L. Li, R. Wang, Q. Huang, S. Yang, J. Yuan, C. Su, X. Li, A. 
+Su et al., Tablegpt: Towards unifying tables, nature language and com-
+mands into one gpt. arXiv preprint (2023) arXiv:2307.08674
+	177.	 Z. Luo, C. Xu, P. Zhao, X. Geng, C. Tao, J. Ma, Q. Lin, D. Jiang, Augmented 
+large language models with parametric knowledge guiding. arXiv 
+preprint (2023) arXiv:2305.04757
+	178.	 X. He, Y. Tian, Y. Sun, N.V. Chawla, T. Laurent, Y. LeCun, X. Bresson, 
+B. Hooi, G-retriever: Retrieval-augmented generation for textual 
+graph understanding and question answering. arXiv preprint (2024) 
+arXiv:2402.07630
+	179.	 X. Cheng, D. Luo, X. Chen, L. Liu, D. Zhao, R. Yan, Lift yourself up: 
+Retrieval-augmented text generation with self-memory. Adv. Neural Inf. 
+Process. Syst. 36 (2024). pp. 43780-43799
+	180.	 W. Yu, D. Iter, S. Wang, Y. Xu, M. Ju, S. Sanyal, C. Zhu, M. Zeng, M. Jiang, 
+Generate rather than retrieve: Large language models are strong con-
+text generators. in The Eleventh International Conference on Learning 
+Representations (Kigali, Rwanda, 2023)
+	181.	 Z. Shao, Y. Gong, Y. Shen, M. Huang, N. Duan, W. Chen, Enhancing 
+retrieval-augmented large language models with iterative retrieval-
+generation synergy. in Findings of the Association for Computational 
+Linguistics: EMNLP 2023 (Association for Computational Linguistics, 
+Singapore, 2023), pp. 9248-9274
+	182.	 H. Trivedi, N. Balasubramanian, T. Khot, A. Sabharwal, Interleaving 
+retrieval with chain-of-thought reasoning for knowledge-intensive 
+multi-step questions. in Proceedings of the 61st Annual Meeting of 
+the Association for Computational Linguistics (Volume 1: Long Papers) 
+(Association for Computational Linguistics, Toronto, Canada, 2023), pp. 
+10014-10037
+	183.	 Z. Jiang, F.F. Xu, L. Gao, Z. Sun, Q. Liu, J. Dwivedi-Yu, Y. Yang, J. Callan, G. 
+Neubig, Active retrieval augmented generation. in Proceedings of the 
+2023 Conference on Empirical Methods in Natural Language Process-
+ing (Association for Computational Linguistics, Singapore, 2023), pp. 
+7969-7992
+	184.	 A. Asai, Z. Wu, Y. Wang, A. Sil, H. Hajishirzi, Self-rag: Learning to retrieve, 
+generate, and critique through self-reflection. in The Twelfth Interna-
+tional Conference on Learning Representations (Vienna, Austria, 2024)
+	185.	 Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, Y. Dai, J. Sun, H. Wang, 
+Retrieval-augmented generation for large language models: A survey. 
+arXiv preprint (2023) arXiv:2312.10997
+	186.	 S. Zhuang, B. Liu, B. Koopman, G. Zuccon, Open-source large language 
+models are strong zero-shot query likelihood models for document 
+ranking. in Findings of the Association for Computational Linguistics: 
+EMNLP 2023 (Association for Computational Linguistics, Singapore, 
+2023), pp. 8807-8817
+	187.	 H. Yang, Z. Li, Y. Zhang, J. Wang, N. Cheng, M. Li, J. Xiao, Prca: Fitting 
+black-box large language models for retrieval question answering via 
+pluggable reward-driven contextual adapter. in Proceedings of the 
+2023 Conference on Empirical Methods in Natural Language Process-
+ing (Association for Computational Linguistics, Singapore, 2023), pp. 
+5364-5375
+	188.	 F. Xu, W. Shi, E. Choi, Recomp: Improving retrieval-augmented lms with 
+compression and selective augmentation. in The Twelfth International 
+Conference on Learning Representations (Vienna, Austria, 2024)
+	189.	 X. Du, H. Ji, Retrieval-augmented generative question answering for 
+event argument extraction. in Proceedings of the 2022 Conference on 
+Empirical Methods in Natural Language Processing (Association for 
+Computational Linguistics, Abu Dhabi, United Arab Emirates, 2022), pp. 
+4649-4666
+	190.	 X. Li, Z. Liu, C. Xiong, S. Yu, Y. Gu, Z. Liu, G. Yu, Structure-aware language 
+model pretraining improves dense retrieval on structured data. in 
+Findings of the Association for Computational Linguistics: ACL 2023 
+(Association for Computational Linguistics, Toronto, Canada, 2023), pp. 
+11560-11574
+
+<!-- page 39 -->
+Page 39 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	
+	191.	 J. Kirkpatrick, R. Pascanu, N. Rabinowitz, J. Veness, G. Desjardins, A.A. 
+Rusu, K. Milan, J. Quan, T. Ramalho, A. Grabska-Barwinska et al., Over-
+coming catastrophic forgetting in neural networks. Proc. Natl. Acad. Sci. 
+114(13), 3521–3526 (2017)
+	192.	 B. Peng, M. Galley, P. He, H. Cheng, Y. Xie, Y. Hu, Q. Huang, L. Liden, Z. 
+Yu, W. Chen et al., Check your facts and try again: Improving large 
+language models with external knowledge and automated feedback. 
+arXiv preprint (2023) arXiv:2302.12813
+	193.	 Y. Yao, P. Wang, B. Tian, S. Cheng, Z. Li, S. Deng, H. Chen, N. Zhang, Edit-
+ing large language models: Problems, methods, and opportunities. in 
+Proceedings of the 2023 Conference on Empirical Methods in Natural 
+Language Processing (Association for Computational Linguistics, Singa-
+pore, 2023), pp. 10222-10240
+	194.	 X. Li, S. Li, S. Song, J. Yang, J. Ma, J. Yu, Pmet: Precise model editing in a 
+transformer. in Proceedings of the AAAI Conference on Artificial Intelligence 
+(AAAI Press, Washington, DC, USA), vol. 38 (2024), pp. 18564–18572
+	195.	 E. Mitchell, C. Lin, A. Bosselut, C.D. Manning, C. Finn, Memory-based 
+model editing at scale. in International Conference on Machine Learning 
+(PMLR, Baltimore, Maryland, USA, 2022), pp. 15817–15831
+	196.	 J. Maynez, S. Narayan, B. Bohnet, R. McDonald, On faithfulness and fac-
+tuality in abstractive summarization. in Proceedings of the 58th Annual 
+Meeting of the Association for Computational Linguistics (Association 
+for Computational Linguistics, Online, 2022), pp. 1906-1919
+	197.	 V. Raunak, A. Menezes, M. Junczys-Dowmunt, The curious case of 
+hallucinations in neural machine translation. in Proceedings of the 
+2021 Conference of the North American Chapter of the Association for 
+Computational Linguistics: Human Language Technologies (Associa-
+tion for Computational Linguistics, Online, 2021), pp. 1172-1183
+	198.	 Y. Zhang, Y. Li, L. Cui, D. Cai, L. Liu, T. Fu, X. Huang, E. Zhao, Y. Zhang, Y. 
+Chen et al., Siren’s song in the ai ocean: a survey on hallucination in 
+large language models. arXiv preprint (2023) arXiv:2309.01219
+	199.	 Z. Ji, N. Lee, R. Frieske, T. Yu, D. Su, Y. Xu, E. Ishii, Y.J. Bang, A. Madotto, 
+P. Fung, Survey of hallucination in natural language generation. ACM 
+Comput. Surv. 55(12), 1–38 (2023)
+	200.	 Z. Guo, M. Schlichtkrull, A. Vlachos, A survey on automated fact-check-
+ing. Trans. Assoc. Comput. Linguist. 10, 178–206 (2022)
+	201.	 J. Thorne, A. Vlachos, Automated fact checking: Task formulations, 
+methods and future directions. in Proceedings of the 27th International 
+Conference on Computational Linguistics (Association for Computa-
+tional Linguistics, Santa Fe, New Mexico, USA, 2018), pp. 3346-3359
+	202.	 S. Dhuliawala, M. Komeili, J. Xu, R. Raileanu, X. Li, A. Celikyilmaz, J. 
+Weston, Chain-of-verification reduces hallucination in large language 
+models. in Findings of the Association for Computational Linguistics 
+ACL 2024 (Association for Computational Linguistics, Bangkok, Thailand 
+and virtual meeting, 2024), pp. 3563-3578
+	203.	 S. Huang, S. Mamidanna, S. Jangam, Y. Zhou, L.H. Gilpin, Can large 
+language models explain themselves? a study of llm-generated self-
+explanations. arXiv preprint (2023) arXiv:2310.11207
+	204.	 C. Zhou, P. Liu, P. Xu, S. Iyer, J. Sun, Y. Mao, X. Ma, A. Efrat, P. Yu, L. Yu 
+et al., Lima: Less is more for alignment. Adv. Neural Inf. Process. Syst. 36 
+(2024). pp. 55006-55021
+	205.	 L. Ouyang, J. Wu, X. Jiang, D. Almeida, C. Wainwright, P. Mishkin, C. 
+Zhang, S. Agarwal, K. Slama, A. Ray et al., Training language models to 
+follow instructions with human feedback. Adv. Neural Inf. Process. Syst. 
+35, 27730–27744 (2022)
+	206.	 Z. Wu, Y. Hu, W. Shi, N. Dziri, A. Suhr, P. Ammanabrolu, N.A. Smith, M. 
+Ostendorf, H. Hajishirzi, Fine-grained human feedback gives better 
+rewards for language model training. Adv. Neural Inf. Process. Syst. 36 
+(2024). pp. 59008-59033
+	207.	 S. Lin, J. Hilton, O. Evans, Truthfulqa: Measuring how models mimic 
+human falsehoods. in Proceedings of the 60th Annual Meeting of the 
+Association for Computational Linguistics (Volume 1: Long Papers) 
+(Association for Computational Linguistics, Dublin, Ireland, 2022), pp. 
+3214-3252
+	208.	 S. Zhang, L. Pan, J. Zhao, W.Y. Wang, Mitigating language model halluci-
+nation with interactive question-knowledge alignment. in Proceedings 
+of the AAAI Conference on Artificial Intelligence, 38(16), 18126-18134. 
+https://​doi.​org/​10.​1609/​aaai.​v38i16.​29770
+	209.	 Y.S. Chuang, Y. Xie, H. Luo, Y. Kim, J. Glass, P. He, Dola: Decoding by 
+contrasting layers improves factuality in large language models. in The 
+Twelfth International Conference on Learning Representations (Vienna, 
+Austria, 2024)
+	210.	 W. Shi, X. Han, M. Lewis, Y. Tsvetkov, L. Zettlemoyer, S.W.t. Yih, Trusting 
+your evidence: Hallucinate less with context-aware decoding. in 
+Proceedings of the 2024 Conference of the North American Chapter 
+of the Association for Computational Linguistics: Human Language 
+Technologies (Volume 2: Short Papers) (Association for Computational 
+Linguistics, Mexico City, Mexico, 2024), pp. 783-791
+	211.	 R. Geirhos, J.H. Jacobsen, C. Michaelis, R. Zemel, W. Brendel, M. Bethge, 
+F.A. Wichmann, Shortcut learning in deep neural networks. Nat. Mach. 
+Intell. 2(11), 665–673 (2020)
+	212.	 Y. Lu, M. Bartolo, A. Moore, S. Riedel, P. Stenetorp, Fantastically ordered 
+prompts and where to find them: Overcoming few-shot prompt order 
+sensitivity. in Proceedings of the 60th Annual Meeting of the Associa-
+tion for Computational Linguistics (Volume 1: Long Papers) (Association 
+for Computational Linguistics, Dublin, Ireland, 2022), pp. 8086-8098
+	213.	 M. Du, F. He, N. Zou, D. Tao, X. Hu, Shortcut learning of large language 
+models in natural language understanding. Commun. ACM 67(1), 
+110–120 (2023)
+	214.	 R. Tang, D. Kong, L. Huang, H. Xue, Large language models can be lazy 
+learners: Analyze shortcuts in in-context learning. in Findings of the 
+Association for Computational Linguistics: ACL 2023 (Association for 
+Computational Linguistics, Toronto, Canada, 2023), pp. 4645-4657
+	215.	 Y. Zhou, P. Xu, X. Liu, B. An, W. Ai, F. Huang, Explore spurious correla-
+tions at the concept level in language models for text classification. 
+in Proceedings of the 62nd Annual Meeting of the Association for 
+Computational Linguistics (Volume 1: Long Papers) (Association for 
+Computational Linguistics, Bangkok, Thailand, 2024), pp. 478-492
+	216.	 P.C. Wason, Reasoning about a rule. Q. J. Exp. Psychol. 20(3), 273–281 
+(1968)
+	217.	 P.C. Wason, P.N. Johnson-Laird, Psychology of reasoning: Structure and 
+content. Harvard University Press, Cambridge, MA, USA, 1972. 86, pp. 
+246-252
+	218.	 K.M. Galotti, Approaches to studying formal and everyday reasoning. 
+Psychol. Bull. 105(3), 331 (1989)
+	219.	 J. Huang, K.C.C. Chang, Towards reasoning in large language models: 
+A survey. in Findings of the Association for Computational Linguistics: 
+ACL 2023 (Association for Computational Linguistics, Toronto, Canada, 
+2023), pp. 1049-1065
+	220.	 D. Zhou, N. Schärli, L. Hou, J. Wei, N. Scales, X. Wang, D. Schuurmans, C. 
+Cui, O. Bousquet, Q. Le et al., Least-to-most prompting enables complex 
+reasoning in large language models. in The Eleventh International 
+Conference on Learning Representations (Kigali, Rwanda, 2023)
+	221.	 M. Ahn, A. Brohan, N. Brown, Y. Chebotar, O. Cortes, B. David, C. Finn, 
+C. Fu, K. Gopalakrishnan, K. Hausman et al., Do as i can, not as i say: 
+Grounding language in robotic affordances. in Conference on Robot 
+Learning (Atlanta, GA, United States, 2023), pp. 287–318. PMLR
+	222.	 B. Xu, Z. Peng, B. Lei, S. Mukherjee, Y. Liu, D. Xu, Rewoo: Decoupling 
+reasoning from observations for efficient augmented language models. 
+arXiv preprint (2023) arXiv:2305.18323
+	223.	 S.S. Raman, V. Cohen, E. Rosen, I. Idrees, D. Paulius, S. Tellex, Planning 
+with large language models via corrective re-prompting. in NeurIPS 
+2022 Foundation Models for Decision Making Workshop (New Orleans, 
+Louisiana, USA, 2022)
+	224.	 T. Kojima, S.S. Gu, M. Reid, Y. Matsuo, Y. Iwasawa, Large language models 
+are zero-shot reasoners. Adv. Neural Inf. Process. Syst. 35, 22199–22213 
+(2022)
+	225.	 Q. Lyu, S. Havaldar, A. Stein, L. Zhang, D. Rao, E. Wong, M. Apidianaki, C. 
+Callison-Burch, Faithful chain-of-thought reasoning. in Proceedings of 
+the 13th International Joint Conference on Natural Language Process-
+ing and the 3rd Conference of the Asia-Pacific Chapter of the Associa-
+tion for Computational Linguistics (Volume 1: Long Papers) (Association 
+for Computational Linguistics, Nusa Dua, Bali, 2023), pp. 305-329
+	226.	 Y. Wu, S.Y. Min, Y. Bisk, R. Salakhutdinov, A. Azaria, Y. Li, T. Mitchell, S. Prab-
+humoye, Plan, eliminate, and track–language models are good teachers 
+for embodied agents. arXiv preprint (2023) arXiv:2305.02412
+	227.	 B.Y. Lin, Y. Fu, K. Yang, F. Brahman, S. Huang, C. Bhagavatula, P. Ammana-
+brolu, Y. Choi, X. Ren, Swiftsage: A generative agent with fast and slow 
+thinking for complex interactive tasks. Adv. Neural Inf. Process. Syst. 36 
+(2024). pp. 23813-23825
+
+<!-- page 40 -->
+Page 40 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	228.	 Z. Zhang, A. Zhang, M. Li, A. Smola, Automatic chain of thought 
+prompting in large language models. in The Eleventh International 
+Conference on Learning Representations (Kigali, Rwanda, 2023)
+	229.	 X. Wang, J. Wei, D. Schuurmans, Q. Le, E. Chi, S. Narang, A. Chowdhery, 
+D. Zhou, Self-consistency improves chain of thought reasoning in lan-
+guage models. in The Eleventh International Conference on Learning 
+Representations (Kigali, Rwanda, 2023)
+	230.	 S. Yao, D. Yu, J. Zhao, I. Shafran, T. Griffiths, Y. Cao, K. Narasimhan, Tree of 
+thoughts: Deliberate problem solving with large language models. Adv. 
+Neural Inf. Process. Syst. 36 (2024). pp. 11809-11822
+	231.	 B. Sel, A. Al-Tawaha, V. Khattar, L. Wang, R. Jia, M. Jin, Algorithm of 
+thoughts: Enhancing exploration of ideas in large language models. 
+in Forty-first International Conference on Machine Learning (Vienna, 
+Austria, 2024)
+	232.	 Y. Wang, Z. Jiang, Z. Chen, F. Yang, Y. Zhou, E. Cho, X. Fan, X. Huang, 
+Y. Lu, Y. Yang, Recmind: Large language model powered agent for 
+recommendation. in Findings of the Association for Computational 
+Linguistics: NAACL 2024 (Association for Computational Linguistics, 
+Mexico City, Mexico, 2024), pp. 4351-4364
+	233.	 M. Besta, N. Blach, A. Kubicek, R. Gerstenberger, M. Podstawski, L. 
+Gianinazzi, J. Gajda, T. Lehmann, H. Niewiadomski, P. Nyczyk et al., Graph 
+of thoughts: Solving elaborate problems with large language models. 
+in Proceedings of the AAAI Conference on Artificial Intelligence (AAAI Press, 
+Washington, DC, USA). 38(2024), pp. 17682–17690
+	234.	 W. Huang, P. Abbeel, D. Pathak, I. Mordatch, Language models as zero-
+shot planners: Extracting actionable knowledge for embodied agents. 
+in International Conference on Machine Learning (PMLR, Baltimore, 
+Maryland, USA, 2022), pp. 9118–9147
+	235.	 S. Hao, Y. Gu, H. Ma, J.J. Hong, Z. Wang, D.Z. Wang, Z. Hu, Reasoning with 
+language model is planning with world model. in Proceedings of the 
+2023 Conference on Empirical Methods in Natural Language Process-
+ing (Association for Computational Linguistics, Singapore, 2023), pp. 
+8154-8173
+	236.	 K. Nottingham, P. Ammanabrolu, A. Suhr, Y. Choi, H. Hajishirzi, S. Singh, 
+R. Fox, Do embodied agents dream of pixelated sheep: Embodied deci-
+sion making using language guided world modelling. in International 
+Conference on Machine Learning (PMLR, Honolulu, Hawaii, USA, 2023), 
+pp. 26311–26325
+	237.	 J. Ruan, Y. Chen, B. Zhang, Z. Xu, T. Bao, G. Du, S. Shi, H. Mao, X. Zeng, R. 
+Zhao, Tptu: Task planning and tool usage of large language model-
+based ai agents. in NeurIPS 2023 Foundation Models for Decision Mak-
+ing Workshop (New Orleans, Louisiana, United States of America, 2023)
+	238.	 E. Karpas, O. Abend, Y. Belinkov, B. Lenz, O. Lieber, N. Ratner, Y. Shoham, 
+H. Bata, Y. Levine, K. Leyton-Brown et al., Mrkl systems: A modular, 
+neuro-symbolic architecture that combines large language models, 
+external knowledge sources and discrete reasoning. arXiv preprint 
+(2022) arXiv:2205.00445
+	239.	 B. Liu, Y. Jiang, X. Zhang, Q. Liu, S. Zhang, J. Biswas, P. Stone, Llm+ p: 
+Empowering large language models with optimal planning proficiency. 
+arXiv preprint (2023) arXiv:2304.11477
+	240.	 T. Brown, B. Mann, N. Ryder, M. Subbiah, J.D. Kaplan, P. Dhariwal, A. 
+Neelakantan, P. Shyam, G. Sastry, A. Askell et al., Language models are 
+few-shot learners. Adv. Neural Inf. Process. Syst. 33, 1877–1901 (2020)
+	241.	 Z. Zhao, E. Wallace, S. Feng, D. Klein, S. Singh, Calibrate before use: 
+Improving few-shot performance of language models. in Interna-
+tional conference on machine learning (PMLR, Virtual Event, 2021), pp. 
+12697–12706
+	242.	 A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, I. Sutskever et al., Lan-
+guage models are unsupervised multitask learners. OpenAI Blog 1(8), 9 
+(2019)
+	243.	 Z. Wang, S. Cai, G. Chen, A. Liu, X. Ma, Y. Liang, Describe, explain, plan 
+and select: Interactive planning with large language models enables 
+open-world multi-task agents. arXiv preprint (2023) arXiv: 2302.01560
+	244.	 G. Wang, Y. Xie, Y. Jiang, A. Mandlekar, C. Xiao, Y. Zhu, L. Fan, A. Anand-
+kumar, Voyager: An open-ended embodied agent with large language 
+models. arXiv preprint (2023) arXiv: 2305.16291
+	245.	 Y. Liang, C. Wu, T. Song, W. Wu, Y. Xia, Y. Liu, Y. Ou, S. Lu, L. Ji, S. Mao et al., 
+Taskmatrix. ai: Completing tasks by connecting foundation models with 
+millions of apis. arXiv preprint (2023) arXiv: 2303.16434
+	246.	 Y. Song, W. Xiong, D. Zhu, C. Li, K. Wang, Y. Tian, S. Li, Restgpt: Connect-
+ing large language models with real-world applications via restful apis. 
+arXiv preprint (2023) arXiv: 2306.06624
+	247.	 T. Schick, J. Dwivedi-Yu, R. Dessì, R. Raileanu, M. Lomeli, E. Hambro, L. 
+Zettlemoyer, N. Cancedda, T. Scialom, Toolformer: Language models 
+can teach themselves to use tools. Adv. Neural Inf. Process. Syst. 36 
+(2024). pp. 68539-68551
+	248.	 R. Gong, Q. Huang, X. Ma, H. Vo, Z. Durante, Y. Noda, Z. Zheng, S.C. Zhu, 
+D. Terzopoulos, L. Fei-Fei et al., Mindagent: Emergent gaming interac-
+tion. arXiv preprint (2023) arXiv: 2309.09971
+	249.	 M. Carroll, R. Shah, M.K. Ho, T. Griffiths, S. Seshia, P. Abbeel, A. Dragan, On 
+the utility of learning about humans for human-ai coordination. Adv. 
+Neural Inf. Process. Syst. 32(2019), pp. 5174-5185
+	250.	 H. Hu, D. Yarats, Q. Gong, Y. Tian, M. Lewis, Hierarchical decision making 
+by generating and following natural language instructions. Adv. Neural 
+Inf. Process. Syst. 32(2019), pp. 10025-10034
+	251.	 B. Hu, C. Zhao, P. Zhang, Z. Zhou, Y. Yang, Z. Xu, B. Liu, Enabling intel-
+ligent interactions between an agent and an llm: A reinforcement 
+learning approach. arXiv preprint (2023) arXiv: 2306.03604
+	252.	 Z. Liu, Y. Zhang, P. Li, Y. Liu, D. Yang, Dynamic llm-agent network: An 
+llm-agent collaboration framework with agent team optimization. arXiv 
+preprint (2023) arXiv: 2310.02170
+	253.	 Y. Chen, J. Arkin, Y. Zhang, N. Roy, C. Fan, Scalable multi-robot collabora-
+tion with large language models: Centralized or decentralized systems? 
+arXiv preprint (2023) arXiv: 2309.15943
+	254.	 Z. Hu, Z. Zhang, H. Li, C. Chen, H. Ding, Z. Wang, Attention-guided 
+contrastive role representations for multi-agent reinforcement learning. 
+arXiv preprint (2023) arXiv: 2312.04819
+	255.	 G. Li, H. Hammoud, H. Itani, D. Khizbullin, B. Ghanem, Camel: Commu-
+nicative agents for “mind” exploration of large language model society. 
+Adv. Neural Inf. Process. Syst. 36(2024), pp. 51991-52008
+	256.	 F. Guo, Gpt agents in game theory experiments. Technical report (2023)
+	257.	 Q. Zhao, J. Wang, Y. Zhang, Y. Jin, K. Zhu, H. Chen, X. Xie, Competeai: 
+Understanding the competition behaviors in large language model-
+based agents. arXiv preprint (2023) arXiv: 2310.17512
+	258.	 R. Hao, L. Hu, W. Qi, Q. Wu, Y. Zhang, L. Nie, Chatllm network: More 
+brains, more intelligence. arXiv preprint (2023) arXiv: 2304.12998
+	259.	 X. Ning, Z. Lin, Z. Zhou, Z. Wang, H. Yang, Y. Wang, Skeleton-of-thought: 
+Prompting llms for efficient parallel generation. in The Twelfth Interna-
+tional Conference on Learning Representations (Vienna, Austria, 2024)
+	260.	 Q. Wu, G. Bansal, J. Zhang, Y. Wu, S. Zhang, E. Zhu, B. Li, L. Jiang, X. Zhang, 
+C. Wang, Autogen: Enabling next-gen llm applications via multi-agent 
+conversation framework. arXiv preprint (2023) arXiv: 2308.08155
+	261.	 S. Srivastava, C. Li, M. Lingelbach, R. Martín-Martín, F. Xia, K.E. Vainio, Z. 
+Lian, C. Gokmen, S. Buch, K. Liu et al., Behavior: Benchmark for everyday 
+household activities in virtual, interactive, and ecological environments. 
+in Conference on robot learning (PMLR, London, UK, 2021), pp. 477–490
+	262.	 X. Guo, K. Huang, J. Liu, W. Fan, N. Vélez, Q. Wu, H. Wang, T.L. Griffiths, M. 
+Wang, Embodied llm agents learn to cooperate in organized teams. 
+arXiv preprint (2024) arXiv: 2403.12482
+	263.	 Z. Wang, S. Mao, W. Wu, T. Ge, F. Wei, H. Ji, Unleashing cognitive synergy 
+in large language models: A task-solving agent through multi-persona 
+self-collaboration. arXiv preprint (2023) arXiv: 2307.05300
+	264.	 T. Liang, Z. He, W. Jiao, X. Wang, Y. Wang, R. Wang, Y. Yang, Z. Tu, S. Shi, 
+Encouraging divergent thinking in large language models through 
+multi-agent debate. arXiv preprint (2023) arXiv: 2305.19118
+	265.	 Z. Liu, W. Yao, J. Zhang, L. Yang, Z. Liu, J. Tan, P.K. Choubey, T. Lan, J. 
+Wu, H. Wang et al., Agentlite: A lightweight library for building and 
+advancing task-oriented llm agent system. arXiv preprint (2024) 
+arXiv: 2402.15538
+	266.	 W. Yao, S. Heinecke, J.C. Niebles, Z. Liu, Y. Feng, L. Xue, R. Murthy, Z. 
+Chen, J. Zhang, D. Arpit et al., Retroformer: Retrospective large language 
+agents with policy gradient optimization. arXiv preprint (2023) arXiv: 
+2308.02151
+	267.	 Y. Shu, H. Gu, P. Zhang, H. Zhang, T. Lu, D. Li, N. Gu, Rah! recsys-assistant-
+human: A human-central recommendation framework with large 
+language models. arXiv preprint (2023) arXiv: 2308.09904
+	268.	 C. Colas, L. Teodorescu, P.Y. Oudeyer, X. Yuan, M.A. Côté, Augmenting 
+autotelic agents with large language models. in Conference on Lifelong 
+Learning Agents (PMLR, McGill University, Montréal, Québec, Canada, 
+2023), pp. 205–226
+
+<!-- page 41 -->
+Page 41 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	
+	269.	 Y. Wu, Z. Jiang, A. Khan, Y. Fu, L. Ruis, E. Grefenstette, T. Rocktäschel, Cha-
+tarena: Multi-agent language game environments for large language 
+models. https://​github.​com/​chata​rena/​chata​rena.
+	270.	 C. Fan, J. Chen, Y. Jin, H. He, Can large language models serve as rational 
+players in game theory? a systematic analysis. in Proceedings of the AAAI 
+Conference on Artificial Intelligence (AAAI, Washington, DC, USA, 2024), 
+pp. 17960–17967
+	271.	 Z.J. Wang, D. Choi, S. Xu, D. Yang, Putting humans in the natural 
+language processing loop: A survey. arXiv preprint (2021) arXiv: 
+2103.04044
+	272.	 K.A. Fischer, Reflective linguistic programming (rlp): A stepping stone in 
+socially-aware agi (socialagi). arXiv preprint (2023) arXiv: 2305.12647
+	273.	 B. Chen, C. Shu, E. Shareghi, N. Collier, K. Narasimhan, S. Yao, Fireact: 
+Toward language agent fine-tuning. arXiv preprint (2023) arXiv: 
+2310.05915
+	274.	 A. Brock, T. Lim, J.M. Ritchie, N. Weston, Freezeout: Accelerate training by 
+progressively freezing layers. arXiv preprint (2017) arXiv: 1706.04983
+	275.	 Y. Liu, S. Agarwal, S. Venkataraman, Autofreeze: Automatically freezing 
+model blocks to accelerate fine-tuning. arXiv preprint (2021) arXiv: 
+2102.01386
+	276.	 L. Zhu, L. Hu, J. Lin, S. Han, Lift: Efficient layer-wise fine-tuning for large 
+model models. in Proceedings of the 31st ACM International Conference 
+on -Multimedia (Association for Computing Machinery, New York, NY, 
+United States, 2023), pp. 4678-4687
+	277.	 E.B. Zaken, S. Ravfogel, Y. Goldberg, Bitfit: Simple parameter-efficient 
+fine-tuning for transformer-based masked language-models. arXiv 
+preprint (2021) arXiv: 2106.10199
+	278.	 W. Song, Z. Li, L. Zhang, H. Zhao, B. Du, Sparse is enough in fine-
+tuning pre-trained large language model. arXiv preprint (2023) arXiv: 
+2312.11875
+	279.	 N. Houlsby, A. Giurgiu, S. Jastrzebski, B. Morrone, Q. De Laroussilhe, A. 
+Gesmundo, M. Attariyan, S. Gelly, Parameter-efficient transfer learning 
+for nlp. in International conference on machine learning (PMLR, Long 
+Beach, California, USA, 2019), pp. 2790–2799
+	280.	 J. Pfeiffer, I. Vulić, I. Gurevych, S. Ruder, Mad-x: An adapter-based frame-
+work for multi-task cross-lingual transfer. arXiv preprint (2020) arXiv: 
+2005.00052
+	281.	 J. He, C. Zhou, X. Ma, T. Berg-Kirkpatrick, G. Neubig, Towards a unified 
+view of parameter-efficient transfer learning. arXiv preprint (2021) arXiv: 
+2110.04366
+	282.	 Z. Hu, L. Wang, Y. Lan, W. Xu, E.P. Lim, L. Bing, X. Xu, S. Poria, R.K.W. Lee, 
+Llm-adapters: An adapter family for parameter-efficient fine-tuning of 
+large language models. arXiv preprint (2023) arXiv: 2304.01933
+	283.	 E.J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, W. Chen, 
+Lora: Low-rank adaptation of large language models. arXiv preprint 
+(2021) arXiv: 2106.09685
+	284.	 T. Dettmers, A. Pagnoni, A. Holtzman, L. Zettlemoyer, Qlora: Efficient 
+finetuning of quantized llms. Adv. Neural Inf. Process. Syst. 36 (2024). 
+pp. 10088-10115
+	285.	 X.L. Li, P. Liang, Prefix-tuning: Optimizing continuous prompts for gen-
+eration. arXiv preprint (2021) arXiv: 2101.00190
+	286.	 Z.R. Zhang, C. Tan, H. Xu, C. Wang, J. Huang, S. Huang, Towards adaptive 
+prefix tuning for parameter-efficient language model fine-tuning. arXiv 
+preprint (2023) arXiv: 2305.15212
+	287.	 B. Lester, R. Al-Rfou, N. Constant, The power of scale for parameter-
+efficient prompt tuning. arXiv preprint (2021) arXiv: 2104.08691
+	288.	 X. Liu, Y. Zheng, Z. Du, M. Ding, Y. Qian, Z. Yang, J. Tang, Gpt understands, 
+too. arXiv preprint (2021) arXiv: 2103.10385
+	289.	 F. Petroni, T. Rocktäschel, P. Lewis, A. Bakhtin, Y. Wu, A.H. Miller, S. Riedel, 
+Language models as knowledge bases? arXiv preprint (2019) arXiv: 
+1909.01066
+	290.	 A. Wang, Y. Pruksachatkun, N. Nangia, A. Singh, J. Michael, F. Hill, O. Levy, 
+S. Bowman, Superglue: A stickier benchmark for general-purpose lan-
+guage understanding systems. Adv. Neural Inf. Process. Syst. 32 (2019). 
+pp. 3266-3280
+	291.	 Y. Bai, S. Kadavath, S. Kundu, A. Askell, J. Kernion, A. Jones, A. Chen, A. 
+Goldie, A. Mirhoseini, C. McKinnon et al., Constitutional ai: Harmlessness 
+from ai feedback. arXiv preprint (2022) arXiv: 2212.08073
+	292.	 A. Madaan, N. Tandon, P. Gupta, S. Hallinan, L. Gao, S. Wiegreffe, U. Alon, 
+N. Dziri, S. Prabhumoye, Y. Yang et al., Self-refine: Iterative refinement 
+with self-feedback. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 
+46534-46594
+	293.	 N. Shinn, B. Labash, A. Gopinath, Reflexion: an autonomous agent 
+with dynamic memory and self-reflection. arXiv preprint (2023) arXiv: 
+2303.11366
+	294.	 R. Rafailov, A. Sharma, E. Mitchell, C.D. Manning, S. Ermon, C. Finn, Direct 
+preference optimization: Your language model is secretly a reward 
+model. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 53728-53741
+	295.	 T. Shin, Y. Razeghi, R.L. Logan IV, E. Wallace, S. Singh, Autoprompt: Elicit-
+ing knowledge from language models with automatically generated 
+prompts. arXiv preprint (2020) arXiv: 2010.15980
+	296.	 E. Brooks, L. Walls, R.L. Lewis, S. Singh, Large language models can 
+implement policy iteration. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 
+30349-30366
+	297.	 T. Carta, C. Romac, T. Wolf, S. Lamprier, O. Sigaud, P.Y. Oudeyer, Ground-
+ing large language models in interactive environments with online 
+reinforcement learning. in International Conference on Machine Lear-
+ing (PMLR, Honolulu, Hawaii, USA, 2023), pp. 3676–3713
+	298.	 Z. Yang, J. Liu, Y. Han, X. Chen, Z. Huang, B. Fu, G. Yu, Appagent: 
+Multimodal agents as smartphone users. arXiv preprint (2023) arXiv: 
+2312.13771
+	299.	 A. Madaan, N. Tandon, P. Clark, Y. Yang, Memory-assisted prompt edit-
+ing to improve gpt-3 after deployment. arXiv preprint (2022) arXiv: 
+2201.06009
+	300.	 Y. Zhang, S. Yang, C. Bai, F. Wu, X. Li, X. Li, Z. Wang, Towards efficient 
+llm grounding for embodied multi-agent collaboration. arXiv preprint 
+(2024) arXiv: 2405.14314
+	301.	 G. Chen, S. Dong, Y. Shu, G. Zhang, J. Sesay, B.F. Karlsson, J. Fu, Y. Shi, 
+Autoagents: A framework for automatic agent generation. arXiv pre-
+print (2023) arXiv: 2309.17288
+	302.	 W. Chen, Y. Su, J. Zuo, C. Yang, C. Yuan, C. Qian, C.M. Chan, Y. Qin, Y. Lu, 
+R. Xie et al., Agentverse: Facilitating multi-agent collaboration and 
+exploring emergent behaviors in agents. arXiv preprint (2023) arXiv: 
+2308.10848
+	303.	 H. Wu, Z. He, X. Zhang, X. Yao, S. Zheng, H. Zheng, B. Yu, Chateda: A large 
+language model powered autonomous agent for eda. in IEEE Transac-
+tions on Computer-Aided Design of Integrated Circuits and Systems, vol. 43 
+(IEEE, Snowbird, UT, USA, 2024), pp. 3184-3197
+	304.	 S. Kang, J. Yoon, S. Yoo, Large language models are few-shot testers: 
+Exploring llm-based general bug reproduction. in 2023 IEEE/ACM 45th 
+International Conference on Software Engineering (ICSE) (IEEE, 2023), pp. 
+2312–2323
+	305.	 G. Deng, Y. Liu, V. Mayoral-Vilches, P. Liu, Y. Li, Y. Xu, T. Zhang, Y. Liu, M. 
+Pinzger, S. Rass, Pentestgpt: An llm-empowered automatic penetration 
+testing tool. arXiv preprint (2023) arXiv: 2308.06782
+	306.	 S. Sudhakaran, M. González-Duque, M. Freiberger, C. Glanois, E. Najarro, 
+S. Risi, Mariogpt: Open-ended text2level generation through large lan-
+guage models. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 54213-54227
+	307.	 J.J. Horton, Large language models as simulated economic agents: 
+What can we learn from homo silicus? Technical report, National Bureau 
+of Economic Research (2023)
+	308.	 E. Akata, L. Schulz, J. Coda-Forno, S.J. Oh, M. Bethge, E. Schulz, Playing 
+repeated games with large language models. arXiv preprint (2023) 
+arXiv: 2305.16867
+	309.	 J. Zhang, R. Xie, Y. Hou, W.X. Zhao, L. Lin, J.R. Wen, Recommendation as 
+instruction following: A large language model empowered recommen-
+dation approach. arXiv preprint (2023) arXiv: 2305.07001
+	310.	 K. Bao, J. Zhang, Y. Zhang, W. Wang, F. Feng, X. He, Tallrec: An effective 
+and efficient tuning framework to align large language model with 
+recommendation. in Proceedings of the 17th ACM Conference on Recom-
+mender Systems (Association for Computing Machinery, New York, NY, 
+United States, 2023), pp. 1007–1014
+	311.	 Y. Hou, J. Zhang, Z. Lin, H. Lu, R. Xie, J. McAuley, W.X. Zhao, Large 
+language models are zero-shot rankers for recommender systems. in 
+European Conference on Information Retrieval (Springer-Verlag, Berlin, 
+Heidelberg, 2024), pp. 364–381
+	312.	 J. Liu, C. Liu, P. Zhou, R. Lv, K. Zhou, Y. Zhang, Is chatgpt a good recom-
+mender? a preliminary study. arXiv preprint (2023) arXiv: 2304.10149
+	313.	 Y. Gao, T. Sheng, Y. Xiang, Y. Xiong, H. Wang, J. Zhang, Chat-rec: Towards 
+interactive and explainable llms-augmented recommender system. 
+arXiv preprint (2023) arXiv: 2303.14524
+
+<!-- page 42 -->
+Page 42 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	314.	 S. Dai, N. Shao, H. Zhao, W. Yu, Z. Si, C. Xu, Z. Sun, X. Zhang, J. Xu, 
+Uncovering chatgpt’s capabilities in recommender systems. in Proceed-
+ings of the 17th ACM Conference on Recommender Systems (Association 
+for Computing Machinery, New York, NY, United States, 2023), pp. 
+1126–1132
+	315.	 Y. Xi, W. Liu, J. Lin, J. Zhu, B. Chen, R. Tang, W. Zhang, R. Zhang, Y. Yu, 
+Towards open-world recommendation with knowledge augmentation 
+from large language models. arXiv preprint (2023) arXiv: 2306.10933
+	316.	 Q. Liu, N. Chen, T. Sakai, X.M. Wu, A first look at llm-powered generative 
+news recommendation. arXiv preprint (2023) arXiv: 2305.06566
+	317.	 W. Wei, X. Ren, J. Tang, Q. Wang, L. Su, S. Cheng, J. Wang, D. Yin, C. 
+Huang, Llmrec: Large language models with graph augmentation 
+for recommendation. in Proceedings of the 17th ACM International 
+Conference on Web Search and Data Mining (Association for Computing 
+Machinery, New York, NY, United States, 2024), pp. 806–815
+	318.	 E. Ie, C.w. Hsu, M. Mladenov, V. Jain, S. Narvekar, J. Wang, R. Wu, C. 
+Boutilier, Recsim: A configurable simulation platform for recommender 
+systems. arXiv preprint (2019) arXiv: 1909.04847
+	319.	 N. Ghaffarzadegan, A. Majumdar, R. Williams, N. Hosseinichimeh, 
+Generative agent-based modeling: Unveiling social system dynamics 
+through coupling mechanistic models with generative artificial intel-
+ligence. arXiv preprint (2023) arXiv: 2309.11456
+	320.	 D. Zhou, Y. Li, F. Ma, X. Zhang, Y. Yang, Migc: Multi-instance generation 
+controller for text-to-image synthesis. in Proceedings of the IEEE/CVF 
+Conference on Computer Vision and Pattern Recognition (IEEE, Seattle, WA, 
+USA, 2024), pp. 6818–6828
+	321.	 Y. Cheng, L. Li, Y. Xu, X. Li, Z. Yang, W. Wang, Y. Yang, Segment and track 
+anything. arXiv preprint (2023) arXiv: 2305.06558
+	322.	 C. Liang, F. Ma, L. Zhu, Y. Deng, Y. Yang, Caphuman: Capture your 
+moments in parallel universes. in Proceedings of the IEEE/CVF Conference 
+on Computer Vision and Pattern Recognition (IEEE, Seattle, WA, USA, 
+2024), pp. 6400–6409
+	323.	 X. Dong, S.I. Yu, X. Weng, S.E. Wei, Y. Yang, Y. Sheikh, Supervision-by-reg-
+istration: An unsupervised approach to improve the precision of facial 
+landmark detectors. in Proceedings of the IEEE conference on computer 
+vision and pattern recognition (IEEE, Salt Lake City, UT, USA, 2018), pp. 
+360–368
+	324.	 A. Salih, Z. Raisi-Estabragh, I.B. Galazzo, P. Radeva, S.E. Petersen, G. 
+Menegaz, K. Lekadir, Commentary on explainable artificial intelligence 
+methods: Shap and lime. arXiv preprint (2023) arXiv: 2305.02012
+	325.	 L. Gao, Z. Dai, P. Pasupat, A. Chen, A.T. Chaganty, Y. Fan, V.Y. Zhao, N. Lao, 
+H. Lee, D.C. Juan et al., Rarr: Researching and revising what language 
+models say, using language models. arXiv preprint (2022) arXiv: 
+2210.08726
+	326.	 F. Cardoso Durier da Silva, R. Vieira, A.C. Garcia, Can machines learn to 
+detect fake news? a survey focused on social media, in 2021 IEEE 4th 
+International Conference on Computing, Power and Communication 
+Technologies (Kuala Lumpur, Malaysia, 2021), pp.1-7
+	327.	 I.O. Gallegos, R.A. Rossi, J. Barrow, M.M. Tanjim, S. Kim, F. Dernoncourt, T. 
+Yu, R. Zhang, N.K. Ahmed, Bias and fairness in large language models: A 
+survey. Computational Linguistics 2024. 50(3), 1097–1179.
+	328.	 H. Kotek, R. Dockum, D. Sun, Gender bias and stereotypes in large 
+language models. in Proceedings of The ACM Collective Intelligence Con-
+ference (Association for Computing Machinery, New York, NY, United 
+States, 2023), pp. 12–24
+	329.	 Y. Wan, G. Pu, J. Sun, A. Garimella, K.W. Chang, N. Peng, “kelly is a warm 
+person, joseph is a role model”: Gender biases in llm-generated refer-
+ence letters. arXiv preprint (2023) arXiv: 2310.09219
+	330.	 Y. Li, M. Du, R. Song, X. Wang, Y. Wang, A survey on fairness in large 
+language models. arXiv preprint (2023) arXiv: 2308.10149
+	331.	 K. Lu, P. Mardziel, F. Wu, P. Amancharla, A. Datta, Gender bias in neural 
+natural language processing. in Logic, language, and security (Springer, 
+Cham, 2020), pp. 189–202
+	332.	 R. Qian, C. Ross, J. Fernandes, E. Smith, D. Kiela, A. Williams, Perturbation 
+augmentation for fairer nlp. arXiv preprint (2022) arXiv: 2205.12586
+	333.	 A. Zayed, P. Parthasarathi, G. Mordido, H. Palangi, S. Shabanian, S. Chan-
+dar, Deep learning on a healthy data diet: Finding important examples 
+for fairness. in Proceedings of the AAAI Conference on Artificial Intelligence, 
+vol. 37 (AAAI Press, Washington, DC, USA, 2023), pp. 14593–14601
+	334.	 H. Liu, J. Dacon, W. Fan, H. Liu, Z. Liu, J. Tang, Does gender matter? 
+towards fairness in dialogue systems. arXiv preprint (2019) arXiv: 
+1910.10486
+	335.	 D. Saunders, R. Sallis, B. Byrne, First the worst: Finding better gender 
+translations during beam search. arXiv preprint (2021) arXiv: 2104.07429
+	336.	 H. Dhingra, P. Jayashanker, S. Moghe, E. Strubell, Queer people are peo-
+ple first: Deconstructing sexual identity stereotypes in large language 
+models. arXiv preprint (2023) arXiv: 2307.00101
+	337.	 E.K. Tokpo, T. Calders, Text style transfer for bias mitigation using 
+masked language modeling. arXiv preprint (2022) arXiv: 2201.08643
+	338.	 Z. He, B.P. Majumder, J. McAuley, Detect and perturb: Neutral rewriting 
+of biased and sensitive text via gradient-based decoding. arXiv preprint 
+(2021) arXiv: 2109.11708
+	339.	 J. Devlin, M.W. Chang, K. Lee, K. Toutanova, Bert: Pre-training of deep 
+bidirectional transformers for language understanding. arXiv preprint 
+(2018) arXiv: 1810.04805
+	340.	 B. Buchanan, A. Lohn, M. Musser, K. Sedova, Truth, lies, and automation. 
+Cent. Secur. Emerg. Technol. 1(1), 2 (2021)
+	341.	 Y. Pan, L. Pan, W. Chen, P. Nakov, M.Y. Kan, W.Y. Wang, On the risk of mis-
+information pollution with large language models. arXiv preprint (2023) 
+arXiv: 2305.13661
+	342.	 J. Yang, H. Xu, S. Mirzoyan, T. Chen, Z. Liu, W. Ju, L. Liu, M. Zhang, S. 
+Wang, Poisoning scientific knowledge using large language models. 
+bioRxiv (2023). https://​doi.​org/​10.​1101/​2023.​11.​06.​565928
+	343.	 P. Charan, H. Chunduri, P.M. Anand, S.K. Shukla, From text to mitre tech-
+niques: Exploring the malicious use of large language models for gen-
+erating cyber attack payloads. arXiv preprint (2023) arXiv: 2305.15336
+	344.	 F. Heiding, B. Schneier, A. Vishwanath, J. Bernstein, Devising and detect-
+ing phishing: Large language models vs. smaller human models. arXiv 
+preprint (2023) arXiv: 2308.12287
+	345.	 A. Happe, J. Cito, Getting pwn’d by ai: Penetration testing with large 
+language models. in Proceedings of the 31st ACM Joint European Software 
+Engineering Conference and Symposium on the Foundations of Software 
+Engineering (Association for Computing Machinery, New York, NY, 
+United States, 2023), pp. 2082–2086
+	346.	 P.V. Falade, Decoding the threat landscape: Chatgpt, fraudgpt, and 
+wormgpt in social engineering attacks. arXiv preprint (2023) arXiv: 
+2310.05595
+	347.	 N. Carlini, F. Tramer, E. Wallace, M. Jagielski, A. Herbert-Voss, K. Lee, A. 
+Roberts, T. Brown, D. Song, U. Erlingsson et al., Extracting training data 
+from large language models. in 30th USENIX Security Symposium (USENIX 
+Security 21) (USENIX, Berkeley, CA, 2021), pp. 2633–2650
+	348.	 G.M. Currie, Academic integrity and artificial intelligence: is chatgpt 
+hype, hero or heresy? in Seminars in Nuclear Medicine (Elsevier, New 
+York, NY, United States, 2023), pp. 719-730
+	349.	 L. Li, D. Song, X. Qiu, Text adversarial purification as defense against 
+adversarial attacks. arXiv preprint (2022) arXiv: 2203.14207
+	350.	 A. Robey, E. Wong, H. Hassani, G.J. Pappas, Smoothllm: Defending large 
+language models against jailbreaking attacks. arXiv preprint (2023) 
+arXiv: 2310.03684
+	351.	 Z. Xi, T. Du, C. Li, R. Pang, S. Ji, J. Chen, F. Ma, T. Wang, Defending pre-
+trained language models as few-shot learners against backdoor attacks. 
+Adv. Neural Inf. Process. Syst. 36(2024), pp. 32748-32764
+	352.	 S. Goyal, S. Doddapaneni, M.M. Khapra, B. Ravindran, A survey of adver-
+sarial defenses and robustness in nlp. ACM Comput. Surv. 55(14s), 1–39 
+(2023)
+	353.	 A. Kumar, C. Agarwal, S. Srinivas, S. Feizi, H. Lakkaraju, Certifying llm 
+safety against adversarial prompting. arXiv preprint (2023) arXiv: 
+2309.02705
+	354.	 K. Siau, W. Wang, Artificial intelligence (ai) ethics: ethics of ai and ethical 
+AI. J. Database Manag. (JDM) 31(2), 74–87 (2020)
+	355.	 E. Prem, From ethical ai frameworks to tools: a review of approaches. AI 
+Ethics 3(3), 699–716 (2023)
+	356.	 Y. Talebirad, A. Nadiri, Multi-agent collaboration: Harnessing the power 
+of intelligent llm agents. arXiv preprint (2023) arXiv: 2306.03314
+	357.	 M. Yue, J. Zhao, M. Zhang, L. Du, Z. Yao, Large language model cascades 
+with mixture of thoughts representations for cost-efficient reasoning. 
+arXiv preprint (2023) arXiv: 2310.03094
+	358.	 Z. Yang, L. Li, J. Wang, K. Lin, E. Azarnasab, F. Ahmed, Z. Liu, C. Liu, M. 
+Zeng, L. Wang, Mm-react: Prompting chatgpt for multimodal reasoning 
+and action. arXiv preprint (2023) arXiv: 2303.11381
+
+<!-- page 43 -->
+Page 43 of 43
+Li et al. Vicinagearth             (2024) 1:9 
+	
+	359.	 R. Lou, K. Zhang, W. Yin, Is prompt all you need? no. a comprehensive 
+and broader view of instruction learning. arXiv preprint (2023) arXiv: 
+2303.10475
+	360.	 A. Zeng, M. Liu, R. Lu, B. Wang, X. Liu, Y. Dong, J. Tang, Agenttuning: 
+Enabling generalized agent abilities for llms. arXiv preprint (2023) arXiv: 
+2310.12823
+	361.	 A. Glaese, N. McAleese, M. Teębacz, J. Aslanides, V. Firoiu, T. Ewalds, M. 
+Rauh, L. Weidinger, M. Chadwick, P. Thacker et al., Improving alignment 
+of dialogue agents via targeted human judgements. arXiv preprint 
+(2022) arXiv: 2209.14375
+	362.	 K. Zhang, Z. Yang, T. Başar, Multi-agent reinforcement learning: A selec-
+tive overview of theories and algorithms. Handb. in Studies in Systems, 
+Decision and Control. Springer, Cham. 325, pp. 321-384(2021)
+	363.	 E. Ostrom, Tragedy of the commons. New Palgrave Dictionary Econ. 2, 
+1–4 (2008)
+	364.	 E.I. Pas, S.L. Principio, Braess’ paradox: Some new insights. Transp. Res. B 
+Methodol. 31(3), 265–276 (1997)
+	365.	 T. Sun, Y. Shao, H. Qian, X. Huang, X. Qiu, Black-box tuning for language-
+model-as-a-service. in International Conference on Machine Learning 
+(PMLR, Baltimore, Maryland, USA, 2022), pp. 20841–20855
+	366.	 L. Yu, Q. Chen, J. Lin, L. He, Black-box prompt tuning for vision-language 
+model as a service. in Proceedings of the Thirty-Second International Joint 
+Conference on Artificial Intelligence (IJCAI, Montreal, Canada, 2023), pp. 
+1686–1694
+Publisher’s Note
+Springer Nature remains neutral with regard to jurisdictional claims in pub-
+lished maps and institutional affiliations.

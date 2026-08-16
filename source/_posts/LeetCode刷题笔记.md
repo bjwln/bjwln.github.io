@@ -5,7 +5,7 @@ tags:
 categories: 算法题
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFouAAC7AtrG5DK4EW3dVRlz4SK8AEAAwIAA3kAAzwE.png
 mathjax: true
-sticky: 4
+sticky: 1
 ---
 
 
@@ -570,6 +570,42 @@ int uniqueXorTriplets(vector<int>& nums) {
 
 emmmm，能过就是好方法[doge]
 
+### [3702. 按位异或非零的最长子序列](https://leetcode.cn/problems/longest-subsequence-with-non-zero-bitwise-xor/)
+
+脑筋急转弯，事实上所有数的XOR值只有三种情况。因为只有`A XOR B`等于0的时候当且仅当`A==B`
+
+```c++
+int longestSubsequence(vector<int>& nums) {
+        //[1,……x,x+1] 1^……^x=x+1 ->0
+        //[1,……x,x+1] 1^……^x!=x+1 ->！0
+        int t = nums.size();
+        int ans = nums[0];
+        int flag = 0;
+        if (ans != 0)
+            flag = 1;
+        for (int i = 1; i < t - 1; i++) {
+            if (nums[i] != 0)
+                flag = 1;
+            ans ^= nums[i];
+        }
+        if (t == 1) {
+            if (nums[t - 1] == 0)
+                return 0;
+            else
+                return 1;
+        } else {
+            if (ans == nums[t - 1]){
+                if(ans==0&&flag==0) return 0;
+                return t - 1;
+            }
+            else
+                return t;
+        }
+    }
+```
+
+
+
 # 字符串
 
 ## [3517. 最小回文排列 I（1357）](https://leetcode.cn/problems/smallest-palindromic-rearrangement-i)
@@ -935,6 +971,28 @@ int minimumPushes(string word) {
             x++;
         }
         return x;
+    }
+```
+
+## [3090. 每个字符最多出现两次的最长子字符串（13xx）](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/)
+
+```c++
+  int maximumLengthSubstring(string s) {
+        int ans=0;
+        for(int i=0;i<s.size();i++){
+            int temp=0;
+            int a[27]={0};
+            for(int j=i;j<s.size();j++){
+                a[s[j]-'a']++;
+                temp++;
+                if(a[s[j]-'a']>2){
+                    temp--;
+                    break;
+                }
+            }
+            ans=max(ans,temp);
+        }
+        return ans;
     }
 ```
 

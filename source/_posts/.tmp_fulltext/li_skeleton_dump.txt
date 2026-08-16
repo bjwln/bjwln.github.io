@@ -1,0 +1,426 @@
+## SECTION Abstract  (slot pid starts 0)
+  H0: Abstract
+B1: The pursuit of more intelligent and credible autonomous systems, akin to human society, has been a long-standing endeavor for humans. Leveraging the exceptional
+## SECTION 1 Introduction  (slot pid starts 2)
+  H2: 1 Introduction
+B3: Enhancing the reliability and intelligence of autonomous intelligent systems has long been regarded as a highly promising research avenue. With the advent of th
+B4: Yu Wu wuyucs@whu.edu.cn
+B5: © The Author(s) 2024. Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptatio
+B6: Large language models (LLMs) have demonstrated exceptional potential in reasoning and planning, aligning precisely with the human expectations for LLM-based age
+B7: Consequently, an increasing number of research studies employ LLM-based multi-agent systems to tackle a variety of complex tasks, such as industrial engineering
+B8: In this paper, we conduct a comprehensive and systematic survey of the field of LLM-based multi-agent systems . Specifically, following the workflow of LLM-base
+B9: Fig. 1 Overview of the general multi-agent system. Typically, in a multi-agent system, the initial step involves the creation of profiles that endow each agent 
+B10: In summary, this paper establishes a holistic yet detailed cognitive framework for existing studies within the burgeoning field of LLM-based multi-agent systems
+## SECTION 2 Background  (slot pid starts 11)
+  H11: 2 Background
+## SECTION 2.1 Single agent  (slot pid starts 12)
+  H12: 2.1 Single agent
+B13: A single-agent system consists of a single LLM-based intelligent agent capable of independently perceiving its environment and making decisions. The design of s
+B14: A notable advantage of single-agent systems lies in their focus and efficiency. Due to the concentration of system resources and computational capabilities on a
+## SECTION 2.2 Multi agents  (slot pid starts 15)
+  H15: 2.2 Multi agents
+B16: Although single-agent systems excel in specific tasks, they may encounter limitations when dealing with complex problems that require extensive collaboration an
+B17: The core advantage of MAS lies in its distributed decision-making and problem-solving capabilities. As pointed out by [22], MAS provides a modern approach to ad
+B18: The structure of MAS determines how agents organize and interact. MAS is divided into agent-level and system-level characteristics in [25]. Similarly, In [26], 
+B19: In recent years, with the rapid development of LLMs, LLM-based MAS has begun to emerge. In such systems, agents leverage the powerful capabilities of LLMs for n
+## SECTION 3 LLM-based multi-agent work  (slot pid starts 20)
+  H20: 3 LLM-based multi-agent work
+B21: The LLM-based multi-agent system has been applied to execute a variety of complex tasks and downstream scenarios . From the perspective of the system’s workflow
+B22: For each sub-task execution, the profile module in Sect. 3.1 initially generates LLM-based agents, each with specific characteristics according to the task obje
+## SECTION 3.1 Agent profile  (slot pid starts 23)
+  H23: 3.1 Agent profile
+B24: LLM-based multi-agent systems typically perform complex task execution or simulate intricate scenarios by assuming various roles [32, 40, 55]. The definition of
+## SECTION 3.1.1 Profile context  (slot pid starts 25)
+  H25: 3.1.1 Profile context
+B26: In accordance with specific contexts or user specifications , agent profiles may encompass varying types and contents of information. Serving as the fundamental
+## SECTION 3.1.2 Generation strategy  (slot pid starts 27)
+  H27: 3.1.2 Generation strategy
+B28: The selection of information to profile the agent is pre-dominantly dictated by the specific application scenarios, thereby guiding the trajectory of profile ge
+B29: Contextuliazed Generation Method. In this method, the analysis and decomposition of complex scenarios lead to the concretization of agents tasked with executing
+B30: Agent [28], immersed in the context of a software company, utilizes authored natural language descriptions to define each agent’s identity, encompassing their o
+B31: Pre-defined Method. In this method, Large Language Models (LLMs) are broadly employed to define multiple agents, collectively forming an agent pool. When faced 
+B32: Learning-based Method. In this method, a few agents are initially defined in broad terms. When specific scenarios arise, these pre-defined agents execute sub-ta
+## SECTION 3.2 Perception  (slot pid starts 33)
+  H33: 3.2 Perception
+B34: Most humans and animals acquire information through sensory organs such as the eyes, ears, and hands, which serve as crucial determinants of individual cognitio
+B35: Owing to the exceptional text processing capabilities of LLMs [64–66], previous work has predominantly utilized textual messages as the medium for information p
+B36: In this section, we discuss the sources from which LLM-based agents perceive multi-modal information in Sect. 3.2.1, and the methodologies that endow LLM-based 
+## SECTION 3.2.1 Message source  (slot pid starts 37)
+  H37: 3.2.1 Message source
+B38: When immersed in specific scenarios, LLM-based agents perceive, process, and generate messages during interactions and communications, which serve as crucial co
+B39: Entire Environment Message. This type of message conveys basic information about the agents’ surrounding environment, such as scene location, layout, and furnis
+B40: Interaction Message. This category of message encompasses information exchanged during inter-actions between agents, with content that is flexibly determined ba
+B41: Self-Reflection Message. This message typically hints at the self-reflection and self-updating processes of agents, containing a blend of historical messages ge
+B42: The behavior of the agent’s self-reflection are influenced by various factors, which may stem from userdefined task scenarios, be guided by additional LLMs thro
+## SECTION 3.2.2 Message type  (slot pid starts 43)
+  H43: 3.2.2 Message type
+B44: After taking into account various sources of information messages, we also emphasize the importance of enabling agents to receive and comprehend multiple modali
+B45: Textual Message. Text serves as a fundamental and intuitive representation of human perceptions towards the surrounding environment and their subjective experie
+B46: For LLM-based agents, the primary task is to comprehend , analyze, and synthesize complex and lengthy texts, akin to the capabilities of human experts. This lev
+B47: Visual Message. Concurrently, textual messages have predominantly served as the primary medium for information exchange and dissemination when LLM-based agents 
+B48: To equip agents with the ability of comprehending visual information, previous work has either employed visual language models(VLMs) as adapters to extract visu
+B49: Building on the impressive performance of GAN models in visual information processing, a significant part of prior work has utilized GAN architectures to encode
+B50: Another representative approach, exemplified by works like ViT and VQVAE, encodes visual information into visual tokens typically based on transformers, similar
+B51: Furthermore, to directly align image encodings with the intermediate data representations within the LLM, concurrent research has concentrated on transforming i
+B52: For video perception, compared to images, there is a greater emphasis on the continuity and variability of the temporal dimension. Typically, this method involv
+B53: Auditory Message. Audio information encompasses a diverse array of types and content, broadly classified into environmental sounds (such as birds chirping and w
+B54: Due to its unique time-frequency characteristics, audio messages convey perceptual information that text and visual data cannot replicate. Generally, audio info
+B55: Similarly, as LLM-based agents perceive visual information , their perception of audio information can be broadly categorized into three types. Previous work, s
+B56: After considering the in-depth perception and understanding of audio information by LLM-based agents, another significant focus of previous work has been levera
+B57: Face community, thereby enhancing its proficiency in understanding audio content.
+B58: As previously discussed, numerous studies have investigated perception units for text, visual, and audio inputs. Nevertheless, LLM-based agents possess the pote
+## SECTION 3.3 Self-action  (slot pid starts 59)
+  H59: 3.3 Self-action
+B60: In social contexts, the human, as an autonomous entity, processes perceived information to form memory units, construct their cognitive awareness, develop indiv
+## SECTION 3.3.1 Memory  (slot pid starts 61)
+  H61: 3.3.1 Memory
+B62: The memory module, serving as the storage and recall unit for the agent, is instrumental in allowing it to leverage existing cognitive and experiential knowledg
+B63: Fig. 2 The operational mechanism of the memory module updating the memory [129, 130]. The core functionalities of the memory visualization are illustrated in Fi
+B64: Memory Retrieval In the realm of intelligent agents, effective information retrieval is paramount for facilitating dynamic interactions within complex environme
+B65: Retrieval Methods. To maintain the flexibility and dynamic adaptability of agents, memories are retrieved in an automated manner [134, 135]. a pivotal methodolo
+B66: Retrieval Extension. Several studies have focused on employing LLM-based agents as a central control interface to facilitate downstream applications involving m
+B67: Memory Storage Storing critical information in memory constitutes the foundational knowledge base upon which agents rely to perceive and act within complex envi
+B68: Storage Format. Memory storage is typically realized through the use of natural language formed text [147– 149], although it also encompasses multi-modal inform
+B69: Using improved data storage structures, existing representative methodologies have achieved more efficient and flexible information storage within memory. Notab
+B70: Another effective approach involves adopting more intuitive data interaction methods to achieve effective memory storage. For instance, ChatDB [143]and DB-GPT [
+B71: Storage Methods. When considering the memory writing process, two predominant challenges must be meticulously addressed: the relationship between the new inform
+B72: Memory Reflection Memory Reflection is the process through which agents engage in self-improvement based on the perceived information and learned experience fro
+B73: The memory reflection process typically occurs automatically , with agents independently updating their memory based on newly acquired knowledge, thereby achiev
+B74: Fig. 3 Knowledge utilization
+B75: This central agent sends specific control signals to guide the reflection process, ensuring coherence and coordination across the network of agents. This method
+B76: After establishing the mechanisms underlying memory reflection, it is crucial to carefully consider the content of memory reflection. A significant portion of p
+## SECTION 3.3.2 Knowledge utilization  (slot pid starts 77)
+  H77: 3.3.2 Knowledge utilization
+B78: Knowledge utilization focuses on integrating external knowledge (excluding memory information) into LLM-based planning. By leveraging up-to-date textual, visual
+B79: Knowledge for LLM-based Agents The diverse nature of tasks requires varying forms of knowledge. In this section , we examine how LLM-based agents utilize textua
+B80: Textual Knowledge. Textual knowledge is the backbone of LLMs, given their training on extensive text corpora . This knowledge is vital for tasks such as natural
+B81: LLMs utilize both internal and external textual knowledge to perform these tasks [17]. Pretrained on vast datasets, LLMs can understand and generate text based 
+B82: Visual Knowledge. In LLM agents, visual knowledge is primarily represented through continuous embeddings generated by visual encoders, which are then integrated
+B83: Audio Knowledge. Audio knowledge encompasses speech and audio events, which can be represented through forms such as speech encoders and spectrogram images. Whe
+B84: Other Knowledge. Beyond text, visual, and audio data, LLMs often need to utilize specialized knowledge from specific domains such as scientific research [160, 1
+B85: In scientific domains, LLMs can assist in data analysis , hypothesis generation, and literature review. For instance, in [160], it highlights how integrating do
+B86: In the medical field, LLMs can support professionals by retrieving and synthesizing medical information from databases like PubMed [168]. This capability is cru
+B87: Knowledge Retrieval Knowledge retrieval is a critical aspect of utilizing LLMs effectively, as it involves accessing external information to supplement the mode
+B88: Database and Knowledge Base Queries. Database and knowledge base queries involve accessing structured data from repositories like Google Knowledge Graph, PubMed
+B89: Web Scraping and API Calls. Web scraping and API calls allow LLM-based agents to collect real-time information from the internet. This method is particularly us
+B90: Retrieval-Augmented Generation (RAG). RAG models combine retrieval mechanisms with generative models to produce context-rich responses [175]. This approach is e
+B91: Extraction Issues In the development and application of LLMs, a range of extraction issues are encountered, directly impacting the accuracy, applicability, and 
+B92: Edit Wrong and Outdated Knowledge. One of the primary challenges for LLM agents in knowledge extraction is ensuring the timeliness and accuracy of information .
+B93: Current approaches include leveraging external knowledge sources to supplement the knowledge base of LLMs [170, 192]. By integrating retrieved relevant informat
+B94: Hallucination. Hallucination refers to the phenomenon where LLM agents generate text that deviates from reality [196–198]. Hallucinations can occur due to overg
+B95: To address the hallucination problem, researchers have proposed various methods. One approach is to integrate external knowledge bases and fact-checking systems
+B96: Spurious Bias. In the realm of artificial intelligence, the fairness and accuracy of models are frequently compromised by serendipitous biases and class imbalan
+B97: Label bias represents another form of pseudo-bias, often stemming from class imbalance within the training dataset. This imbalance can cause models to be overly
+## SECTION 3.3.3 Agent’s ability utilization  (slot pid starts 98)
+  H98: 3.3.3 Agent’s ability utilization
+B99: The capabilities of LLM-based agents are a manifestation of their cognitive intelligence. Leveraging these abilities allows agents to analyze, synthesize percei
+B100: Reasoning and Planning Reasoning and planning involve the systematic process of leveraging historical experience, common knowledge, and current state informatio
+B101: Fig. 4 Approaches for reasoning and planning with large language models their ability to perform and interact in a manner akin to human cognitive processes. In 
+B102: Plan Structure. During the process of plan formulation , agents generally decompose an overarching task into numerous sub-tasks, and various approaches have bee
+B103: One-Step Method. In this strategy, agents decompose a complex task into several sub-tasks through a single reasoning & planning process based on the current tas
+B104: In specific, in-context learning introduces a methodology where LLMs are provided with a few reasoning and planning examples, enabling them to infer solutions f
+B105: To enhance the decision-making rationality and accuracy of LLMs, mitigating the hallucination problem that can occur during single-step reasoning, several appro
+B106: While some work focuses on employing feedback mechanisms to correct errors in the reasoning and planning processes of agents, guiding them to execute accurate r
+B107: Multi-Step Method. Unlike one-step reasoning, multi-step reasoning requires iterative invocation of LLMs for multiple reasoning cycles, where each cycle generat
+B108: Multi-stage methods dissect the planning process into distinct stages, aiming to improve LLM’s performance in complex reasoning and problem-solving tasks. Swift
+B109: External Reasoner and Planner. While LLMs exhibit powerful reasoning and planning capabilities across diverse applications, generating precise and efficient pla
+B110: These methods significantly enhance the adaptive and perceptual capabilities of LLM-based agents in navigating complex environments, thereby improving their abi
+B111: Generalization The generalization capabilities of LLM agents are critical for their effectiveness across a wide array of dynamic and unpredictable environments.
+B112: Unseen tasks refer to those that the agent did not encounter during the training phase. The dynamic nature of most application environments necessitates that mo
+B113: In-Context Learning (ICL). In-context learning involves providing examples of the current task within the input prompt, allowing the model to use these examples
+B114: Zero-Shot Learning. Zero-shot learning requires the model to perform new tasks without any specific task examples or fine-tuning, relying entirely on its pretra
+## SECTION 3.3.4 Action  (slot pid starts 115)
+  H115: 3.3.4 Action
+B116: Actions represent the tangible behavioral outcomes of agents within an interactive environment, thereby effectuating real changes in the environment and signifi
+B117: Action Creation Action creation represents the final stage where agents manifest their intelligence within multi-agent systems’ interactive environments. As the
+B118: One-Step Decision. Firstly, instant decision-making involves agents extracting recent, pertinent, and significant information from their memory banks. When nece
+B119: Pre-defined Planning. In this strategy, each action undertaken by LLM-based agents strictly adheres to predefined planning, which can either be autonomously gen
+B120: Dynamic Creation. This strategy represents a synthesis of the preceding two approaches, effectively balancing the pre-defined nature of task planning with adapt
+B121: Action Application The context of actions typically undergoes dynamic changes based on specific application scenarios. Action application refers to the direct i
+B122: Task-Driven. In this scenario, the actions of LLM-based agents are aimed at accomplishing specific subtasks , which collectively contribute to the completion of
+B123: Communication Interaction. The primary task of agent interaction revolves around engaging in discussions on a specific topic to exchange ideas or foster innovat
+B124: Environment Exploration. Environment exploration primarily entails agents collaborating to explore and adapt to dynamically changing environments, thereby expan
+B125: Upon the agents’ execution of actions, some studies consider the direct impact on the interactive environment and attempt to seamlessly integrate downstream app
+B126: This approach further expands the application scope and capabilities of the action module, facilitating more direct strategic planning and tool utilization in d
+## SECTION 3.4 Mutual-interaction  (slot pid starts 127)
+  H127: 3.4 Mutual-interaction
+B128: Mutual interaction encompasses the exchange of information and coordination of actions among agents, which is crucial for enhancing the collective intelligence 
+## SECTION 3.4.1 Message delivery  (slot pid starts 129)
+  H129: 3.4.1 Message delivery
+B130: Message delivery, an essential component for enabling communication and collaboration among agents, involves the exchange of information between agents. Message
+B131: In general, message delivery is triggered by task assignments , interaction with other agents, or external control signals. Depending on how agents access messa
+## SECTION 3.4.2 Interaction structure  (slot pid starts 132)
+  H132: 3.4.2 Interaction structure
+B133: The interaction structure delineates the communication framework within a multi-agent system, typically organized and arranged based on the content of messages,
+B134: Hierarchy. In hierarchical interaction structures, agents at different levels assume distinct roles, with a clear distinction between higher-level and lower-lev
+B135: Decentralized. Decentralized communication operates within peer-to-peer networks where agents communicate directly with each other without relying on central au
+B136: Centralized. In centralized interaction structures, a central agent or a group of central agents coordinate the system, managing and orchestrating interactions 
+B137: Fig. 5 The agent interaction scene swiftly to environmental changes. For instance, ACORM [254] introduces a centralized architecture by using a single LLM as th
+B138: Shared Message Pool. The Shared Message Pool [31] is a mechanism for information exchange among LLM agents, where agents publish and subscribe to information vi
+B139: Shared messages can be divided into central knowledge repositories and shared parameters [19]. A typical example of the former is MetaGPT [31], which maintains 
+## SECTION 3.4.3 Interaction scene  (slot pid starts 140)
+  H140: 3.4.3 Interaction scene
+B141: In multi-agent systems, the interaction scenarios among agents are crucial as they not only determine the behavior patterns of the agents but also affect the ov
+B142: MAS based on LLMs can be classified into three major categories: communication, task execution, and environment exploration.
+B143: The communication scenario is one of the most fundamental forms of interaction in MAS. Agents coordinate and make decisions by exchanging information. This info
+B144: Analyzing the interrelationships among agents in these interaction scenarios is particularly critical as these relationships dictate how agents interact and col
+B145: Cooperative. In cooperative interaction scenarios, agents work together to achieve a common goal. The basic process of cooperative MAS includes goal setting, ta
+B146: Existing multi-agent cooperation models are mainly divided into unordered cooperation and ordered cooperation [20, 262]. A typical example of unordered cooperat
+B147: Adversarial. In adversarial interaction scenarios, agents are in a competitive relationship, each pursuing the maximization of their own interests. The basic pr
+B148: Mixed. Mixed interaction scenarios combine features of both cooperative and adversarial interactions, requiring agents to find a balance between cooperation and
+B149: Overall, different interaction scenarios adopt different agent interaction strategies, greatly expanding the capabilities of agents. In cooperative scenarios, a
+## SECTION 3.5 Evolution  (slot pid starts 150)
+  H150: 3.5 Evolution
+B151: Similar to how humans continuously refine their cognitive abilities and acquire knowledge through interactions with their environment and others, evolution in a
+B152: Fig. 6 The overall workflow of the evolution module to each of these approaches, elucidating the techniques used to bolster the evolution process in agents.
+## SECTION 3.5.1 Evolution source  (slot pid starts 153)
+  H153: 3.5.1 Evolution source
+B154: Feedback received during interactions serves as indispensable reference information for agents to achieve evolution. This feedback encompasses the outcomes and 
+B155: Environment Feedback. Environment feedback refers to the information perceived by agents within either real-world or virtual environments. This type of feedback
+B156: Agents Interaction. In multi-agent systems, agent interaction information involves the exchange of collaborative information between agents. This information ty
+B157: Human Feedback. Apart from the aforementioned environmental and agent interaction feedback, human feedback constitutes a guiding signal provided by humans to di
+## SECTION 3.5.2 Evolution methods  (slot pid starts 158)
+  H158: 3.5.2 Evolution methods
+B159: Evolution methods encompass a variety of techniques designed to enhance the capabilities and adaptability of agents through self-improvement and learning from i
+B160: Fine-tuning. Fine-tuning involves updating the parameters of a pre-trained model to adapt it to new tasks or domains. This method ensures that the model is spec
+B161: (1) Full Fine-tuning: Full fine-tuning involves updating all parameters of the pre-trained model to adapt it to specific new tasks. As noted in FireAct [273], f
+B162: [288] stabilizes the training process by combining continuous prompt embeddings with discrete prompts and has achieved significant performance improvements in n
+B163: Feedback Learning. Feedback learning is an approach that employs feedback information as context, enabling an agent to “reinforce” policy generation iteratively
+B164: Prompt Engineering. Prompt engineering is a method that utilizes well-designed prompts and feedback as contextual cues. For example, Retroformer [266] enables a
+B165: Prompt engineering has a wide range of applications in large language models. For instance, AutoPrompt [295] enhances GPT-3’s performance on specific tasks by g
+B166: Prefix-tuning [285] is another prompt engineering technique that involves adding prefixes to prompts, allowing the language model to better understand and execu
+B167: Reinforcement Learning. In reinforcement learning, an agent learns the optimal strategy through interaction with the environment. Each action produces correspon
+## SECTION 3.5.3 Agents adjustment  (slot pid starts 168)
+  H168: 3.5.3 Agents adjustment
+B169: A key aspect of the evolution mechanism is the continual updating of agents’ existing knowledge and experiences, or the refinement of current decisions and beha
+B170: Memory Update. A significant approach emphasizes the expansion and deepening of agents’ self-awareness and learning experiences. This method generally involves 
+B171: Fig. 7 Diverse application of the llm-based multi-agent system observation of human demonstrations. This iterative process facilitates the construction of a com
+B172: Self-Reflection. While previous research has pre-dominantly focused on enhancing agents’ capabilities for zero-shot task decision-making and efficient execution
+B173: Dynamic Generation. In certain contexts, the focus is on the autonomous maintenance of multi-agent systems to ensure their continuous operation. Given the compl
+## SECTION 4 Application  (slot pid starts 174)
+  H174: 4 Application
+B175: The application of LLMs spans a wide array of fields, revolutionizing how tasks are performed and how virtual environments are simulated (Fig. 7). This section 
+## SECTION 4.1 Problem solving  (slot pid starts 176)
+  H176: 4.1 Problem solving
+B177: LLMs are transforming problem-solving across various domains by leveraging their advanced capabilities in natural language understanding and other application [
+B178: Software Development. In the fields of computer science and software engineering, LLM-based agents can understand, infer, and generate human-like text by levera
+B179: PENTESTGPT [305] is a specialized tool that simulates human-like behavior in penetration testing, equipped with reasoning, generation, and parsing modules, allo
+B180: Industrial Engineering. The application of LLM Agents in the industrial sector encompasses various areas such as automated production, engineering design, pro-c
+B181: Embodied Agents. With strong commonsense reasoning and language understanding capabilities, LLMs can assist robotic systems in planning, reasoning, and executin
+B182: Science Experiments. The integration of LLMs into scientific disciplines has facilitated the creation of intelligent agents capable of autonomously conducting c
+B183: Science Debate. LLM Agents excel in scientific debates, drawing from their broad training and ability to produce coherent, contextually fitting responses. Debat
+## SECTION 4.2 World simulation  (slot pid starts 184)
+  H184: 4.2 World simulation
+B185: Another primary application scenario of LLM-MA is world simulation. LLM agents can comprehend and generate coherent, semantically rich text, thereby simulating 
+B186: Gaming. The application of LLM agents in the gaming domain encompasses various roles, ranging from acting as players participating in games, simulating non-play
+B187: Societal Simulation. Within the sphere of social sciences , the utilization of LLM Agents primarily revolves around the emulation of human behavior and social i
+B188: Economy (Financial Trading). Given the enhanced text comprehension and complex decision-making capabilities of LLM-based agents, researchers endow these agents 
+B189: Recommender Systems. In the field of recommender systems, LLMs, due to their powerful domain generalization and language generation capabilities, are often used
+B190: Disease Propagation Simulation. In disease transmission and epidemiological modeling, LLMs can simulate the behaviors and interactions of various agents in dise
+## SECTION 5 Discussion  (slot pid starts 191)
+  H191: 5 Discussion
+B192: While previous work on LLM-based autonomous agents has obtained many remarkable successes, this field is still at its initial stage, and there are several signi
+## SECTION 5.1 Open problem  (slot pid starts 193)
+  H193: 5.1 Open problem
+B194: In the rapidly evolving field of AI, MAS have garnered significant attention due to their potential to tackle complex tasks through collaboration and coordinati
+B195: LLM’s Intrinsic Constraints. This section introduces the inherent limitations of LLMs, covering key issues such as the opacity of their decision-making processe
+B196: Misuse. Despite the powerful capabilities of MAS and LLMs, they can be maliciously exploited for large-scale disinformation generation [340–342], cyber-attacks 
+B197: Scaling Up the Multi-Agent System. Scaling up multiagent systems involves increasing the number of agents to achieve larger-scale social simulations and more co
+B198: Firstly, static adjustment and dynamic scaling methods are widely applied [356]. Static adjustment methods [37, 255] design systems by pre-determining the numbe
+B199: Secondly, optimization of communication and coordination mechanisms helps reduce biases and redundancies in the information dissemination process. Existing work
+B200: Lastly, innovations in system architecture and design are crucial for the stable operation of large-scale multiagent systems. This involves building system arch
+B201: Dynamics Environment Adaptation. Dynamic environment adaptation refers to the capability of AI agents to operate effectively in constantly changing environments
+B202: Regarding multi-modal data streams, existing work enhances LLM agents’ data processing and comprehension abilities through external integration and internal pro
+B203: Furthermore, to address the continual iteration of external conditions and task demands, researchers have designed flexible task execution frameworks and contin
+## SECTION 5.2 Future direction  (slot pid starts 204)
+  H204: 5.2 Future direction
+B205: Envisioning the future of LLM agents necessitates addressing the challenges and trends currently shaping this field. This section delves into three significant 
+B206: Collective Intelligence in AI Agents. Collective intelligence emphasizes integrating diverse perspectives and decision-making through collaboration and competit
+B207: A potential strategy to achieve this balance is the use of decentralized learning algorithms, where agents can learn and update their knowledge bases independen
+B208: Moreover, reinforcement learning algorithms [362] provides a powerful tool for achieving collective intelligence , allowing LLM-MA to adjust based on immediate 
+B209: LLM-based Agent System as Service. The introduction of LLM multi-agent systems as a service (AaaS) heralds a significant shift in the service model within the A
+B210: In practical implementation, AaaS must consider the coordination and communication mechanisms of agents to ensure effective cooperation among different agents, 
+B211: However, the successful implementation of AaaS also faces challenges. First, the decision-making process of agents needs to be transparent and interpretable to 
+B212: Application Expansion. In multi-modal and dynamically changing environments, the future development of MAS will focus on enhancing their adaptability and flexib
+B213: MAS will bring innovation to fields such as healthcare, traffic management, and environmental monitoring. Particularly in healthcare, MAS can provide more accur
+B214: However, MAS faces challenges in data fusion, realtime processing, and decision-making when realizing these application expansions. Future research needs to exp
+## SECTION 6 Conclusion  (slot pid starts 215)
+  H215: 6 Conclusion
+B216: In this paper, we have systematically provided an overview of LLM-based multi-agent systems, comprehensively reviewing the current research studies in this doma
+B217: Abbreviations LLMs Large language models MAS Multi-agent systems RL Reinforcement learning MLLMs Multi-modal large language models CoT Chain-of-thought VLMs Vis
+B218: ViT Vision transformer VQVAE Vector quantized variational autoencoder Q-Former Querying transformer AST Audio spectrogram transformer FIFO First-in-first-out CN
+B219: Acknowledgements We extend our gratitude to the authors of the referenced works mentioned in this paper for their invaluable contributions, which have provided 
+B220: Authors’ contributions The completion of this paper was a result of the collaborative efforts of all authors. The specific contributions of each author are enum
+B221: Funding This work was partially supported by the National Natural Science Foundation of China (Ref. No.: 62372341) and the Fundamental Research Funds for the Ce
+B222: Availability of data and materials The authors confirm that the data and materials supporting the findings of this study are available within the article. The r
+B223: Code availability Not applicable.
+## SECTION Declarations  (slot pid starts 224)
+  D:4 R:164
+D224: Ethics approval and consent to participate Not applicable.
+D225: Consent for publication Not applicable.
+D226: Competing interests The authors declare that they have no known competing financial interests or personal relationships that could have appeared to in
+D227: Received: 15 July 2024 Revised: 21 August 2024 Accepted: 28 August 2024
+R228: References 1. Y. Dong, X. Zhu, Z. Pan, L. Zhu, Y. Yang, C. ReLER, Villageragent: A graph-based multi-agent framework for coordinating complex task dep
+R229: Chen, Y. Lin et al., A survey on large language model based autonomous agents. Front. Comput. Sci. 18(6), 186345 (2024)
+R230: 18. T. Guo, X. Chen, Y. Wang, R. Chang, S. Pei, N.V. Chawla, O. Wiest, X.
+R231: Zhang, Large language model based multi-agents: A survey of progress and challenges. in 33rd International Joint Conference on Artificial Intelligence
+R232: F. Yin, J. Zhao et al., Exploring large language model based intelligent agents: Definitions, methods, and prospects. arXiv preprint (2024) arXiv:2401
+R233: Jin, E. Zhou et al., The rise and potential of large language model based agents: A survey. arXiv preprint (2023) arXiv:2309.07864 21. J. Hu, P. Bhowm
+R234: Chang, Marllib: Extending rllib for multi-agent reinforcement learning (2022). arXiv preprint arXiv:2210.13708, 2022b 25. H.V.D. Parunak, Applications
+R235: Trans. Syst. Man Cybern. 17(5), 729–740 (1987) 28. J.S. Park, J. O’Brien, C.J. Cai, M.R. Morris, P. Liang, M.S. Bernstein,
+R236: Generative agents: Interactive simulacra of human behavior. in Pro-ceedings of the 36th Annual ACM Symposium on User Interface Software and Technology
+R237: Hill, R. Fergus, Collaborating with language models for embodied reasoning. in NeurIPS 2022 Foundation Models for Decision Making Workshop (New Orlean
+R238: Cong, et al.: Chatdev: Communicative agents for software development . In: Proceedings of the 62nd Annual Meeting of the Association for Computational
+R239: Yau, Z. Lin, L. Zhou et al., Metagpt: Meta programming for multiagent collaborative framework. in The Twelfth International Conference on Learning Rep
+R240: Gan, Building cooperative embodied agents modularly with large language models. in NeurIPS 2023 Foundation Models for Decision Making Workshop (New Or
+R241: (Association for Computational Linguistics, Singapore, 2023), pp. 7572-7590 38. C.M. Chan, W. Chen, Y. Su, J. Yu, W. Xue, S. Zhang, J. Fu, Z. Liu, Cha
+R242: Towards better llm-based evaluators through multi-agent debate. in The Twelfth International Conference on Learning Representations (Vienna, Austria, 
+R243: Medagents: Large language models as collaborators for zero-shot medical reasoning. in ICLR 2024 Workshop on Large Language Model (LLM) Agents (Vienna,
+R244: Social simulacra: Creating populated prototypes for social computing systems. in Proceedings of the 35th Annual ACM Symposium on User Interface Softwa
+R245: Lyfe agents: Generative agents for low-cost real-time social interactions . arXiv preprint (2023) arXiv: 2310.02172 42. C. Li, X. Su, C. Fan, H. Han, 
+R246: Agentcf: Collaborative learning with autonomous language agents for recommender systems. in Proceedings of the ACM on Web Conference 2024 (Association
+R247: Epidemic modeling with generative agents. arXiv preprint (2023) arXiv:2307.04986 53. C. Zhang, K. Yang, S. Hu, Z. Wang, G. Li, Y. Sun, C. Zhang, Z. Zh
+R248: S.C. Zhu et al., Proagent: Building proactive cooperative ai with large language models. in Proceedings of AAAI Conference on Artificial Intelligent (
+R249: Abdulhai, A. Faust, M. Matarić, Personality traits in large language models . arXiv preprint (2023) arXiv:2307.00184
+R250: 57. S. Wang, C. Liu, Z. Zheng, S. Qi, S. Chen, Q. Yang, A. Zhao, C. Wang,
+R251: S. Song, G. Huang, Avalon’s game of thoughts: Battle against deception through recursive contemplation. arXiv preprint (2023) arXiv:2310.01320 58. D. 
+R252: Human-communication simulation with multi-modal multi-agent systems. arXiv preprint (2024) arXiv:2401.03945 59. A. Zhang, L. Sheng, Y. Chen, H. Li, Y.
+R253: A novel simulation paradigm for recommender systems. arXiv preprint (2023) arXiv:2306.0255 61. L.P. Argyle, E.C. Busby, N. Fulda, J.R. Gubler, C. Rytt
+R254: Neurosci. 19(1), 577–621 (1996) 64. J. Achiam, S. Adler, S. Agarwal, L. Ahmad, I. Akkaya, F.L. Aleman, D.
+R255: Almeida, J. Altenschmidt, S. Altman, S. Anadkat et al., Gpt-4 technical report. arXiv preprint (2023) arXiv:2303.08774 65. J. Wei, Y. Tay, R. Bommasan
+R256: M. Bosma, D. Zhou, D. Metzler et al., Emergent abilities of large language models. Transactions on Machine Learning Research (2022). 66. S. Bubeck, V.
+R257: P. Lee, Y.T. Lee, Y. Li, S. Lundberg et al., Sparks of artificial general intelligence: Early experiments with gpt-4. arXiv preprint (2023) arXiv:2303
+R258: Alfworld: Aligning text and embodied environments for interactive learning. International Conference on Learning Representation (2021) 69. Meta Fundam
+R259: N. Brown, E. Dinan, G. Farina, C. Flaherty, D. Fried, A. Goff, J. Gray, H. Hu et al., Human-level play in the game of diplomacy by combining language 
+R260: J. Tompson, Q. Vuong, T. Yu et al., Palm-e: An embodied multimodal language model. in Proceedings of the 40th International Conference on Machine Lear
+R261: Affective social anthropomorphic intelligent system. Multimed. Tools Appl. 82(23), 35059–35090 (2023) 74. A. Madasu, M. Firdaus, A. Ekbal, A unified f
+R262: Yu, W. Chung et al., A multitask, multilingual, multimodal evaluation of chatgpt on reasoning, hallucination, and interactivity. in Proceedings of the
+R263: X. Xu et al., Towards general computer control: A multimodal agent for red dead redemption ii as a case study. in ICLR 2024 Workshop on Large Language
+R264: K. Zhou et al., Octopus: Embodied vision-language programmer from environmental feedback. arXiv preprint (2023) arXiv:2310.08588 80. S. Reed, K. Zolna
+R265: Maron, M. Gimenez, Y. Sulsky, J. Kay, J.T. Springenberg et al., A generalist agent. Transactions on Machine Learning Research (2022). 81. S. Zheng, Y.
+R266: Videochat: Chat-centric video understanding. arXiv preprint (2023) arXiv:2305.06355 85. Q. Dong, L. Li, D. Dai, C. Zheng, Z. Wu, B. Chang, X. Sun, J. 
+R267: Zhou et al., Chain-of-thought prompting elicits reasoning in large language models. Adv. Neural Inf. Process. Syst. 35, 24824–24837 (2022) 87. W. Ma, 
+R268: Augmenting comparison-based learning with feature queries. in Pro-ceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (A
+R269: Q.V. Le, Finetuned language models are zero-shot learners. in International Conference on Learning Representations (2022) (Virtual Event). 94. Y. Wu, 
+R270: Pattern Anal. Mach. Intell. 45(1), 1162–1173 (2022) 95. W. Li, L. Zhu, L. Wen, Y. Yang, Decap: Decoding clip latents for zero- shot captioning via tex
+R271: Unterthiner, M. Dehghani, M. Minderer, G. Heigold, S. Gelly et al., An image is worth 16x16 words: Transformers for image recognition at scale. in Int
+R272: Hoi, Instructblip: Towards general-purpose vision-language models with instruction tuning. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 49250-49267 
+R273: Grounding multimodal large language models to the world. in The Twelfth International Conference on Learning Representations (Vienna, Austria, 2024). 
+R274: Mensch, K. Millican, M. Reynolds et al., Flamingo: a visual language model for few-shot learning. Adv. Neural Inf. Process. Syst. 35, 23716–23736 (202
+R275: M.D. Plumbley et al., Wavjourney: Compositional audio creation with large language models. arXiv preprint (2023) arXiv:2307.14335 115. Z. Borsos, R. M
+R276: D. Roblek, O. Teboul, D. Grangier, M. Tagliasacchi et al., Audiolm: a language modeling approach to audio generation. IEEE/ACM Trans. Audio, Speech an
+R277: 117. H. Zhang, X. Li, L. Bing, Video-llama: An instruction-tuned audio-visual language model for video understanding. in Proceedings of the 2023 Confe
+R278: Challenges and open problems. arXiv preprint (2024) arXiv:2402.03578 120. Y. Gong, Y.A. Chung, J. Glass, Ast: Audio spectrogram transformer. arXiv pre
+R279: Hubert: Self-supervised speech representation learning by masked pre-diction of hidden units. IEEE/ACM Trans. Audio Speech Lang. Process. 29, 3451–346
+R280: J. Liu et al., Audiogpt: Understanding and generating speech, music, sound, and talking head. in Proceedings of the AAAI Conference on Artificial Inte
+R281: X. Wang et al., Ghost in the minecraft: Generally capable agents for open-world enviroments via large language models with text-based knowledge and me
+R282: Language agents with verbal reinforcement learning. Adv. Neural Inf. Process. Syst. 36(2024). pp. 8634-8652 133. C. Packer, V. Fang, S.G. Patil, K. Li
+R283: Memgpt: Towards llms as operating systems. arXiv preprint (2023) arXiv:2310.08560 134. W. Zhong, L. Guo, Q. Gao, H. Ye, Y. Wang, Memorybank: Enhancing
+R284: 136. T.G. Karimpanal, L.B. Semage, S. Rana, H. Le, T. Tran, S. Gupta, S.
+R285: Venkatesh, Lagr-seq: Language-guided reinforcement learning with sample-efficient querying. arXiv preprint (2023) arXiv:2308.13542 137. D. Zhang, L. C
+R286: Decision transformers with internal working memory. in The Twelfth International Conference on Learning Representations (Vienna, Austria, 2024). 140. 
+R287: Efficient text-to-text transformer for long sequences. in Findings of the Association for Computational Linguistics: NAACL 2022 (Association for Compu
+R288: D. Uthus, M. Guo, J. Lee-Thorp, Y. Tay et al., Colt5: Faster long-range transformers with conditional computation. in Proceedings of the 2023 Conferen
+R289: Transparent and interactive memory management for conversational agents. in Adjunct Proceedings of the 36th Annual ACM Symposium on User Interface Sof
+R290: L.P. Kaelbling, Pddl planning with pretrained large language models. in NeurIPS 2022 foundation models for decision making workshop (New Orleans, Loui
+R291: 154. H. Liu, C. Li, Q. Wu, Y.J. Lee, Visual instruction tuning. Adv. Neural Inf.
+R292: Process. Syst. 36(2024). pp. 34892-34916 155. D. Zhang, S. Li, X. Zhang, J. Zhan, P. Wang, Y. Zhou, X. Qiu, Speechgpt:
+R293: Empowering large language models with intrinsic cross-modal conversational abilities. in Findings of the Association for Computational Linguistics: EM
+R294: Rozière, N. Goyal, E. Hambro, F. Azhar et al., Llama: Open and efficient foundation language models. arXiv preprint (2023) arXiv:2302.13971 157. C. Ly
+R295: Multi-modal language modeling with image, audio, video, and text integration. arXiv preprint (2023) arXiv:2306.09093 158. W. Yu, C. Tang, G. Sun, X. C
+R296: F.D.C. Quitry, P. Chen, D.E. Badawy, W. Han, E. Kharitonov et al., Audiopalm : A large language model that can speak and listen. arXiv preprint (2023)
+R297: Zhang, Integrating action knowledge and llms for task planning and situation handling in open worlds. Auton. Robot. 47(8), 981–997 (2023) 161. K. Cobb
+R298: J. Tworek, J. Hilton, R. Nakano et al., Training verifiers to solve math word problems. arXiv preprint (2021) arXiv:2110.14168 162. K. Singhal, S. Azi
+R299: Tanwani, H. Cole-Lewis, S. Pfohl et al., Large language models encode clinical knowledge. Nature 620, 172-180(2023). https://​doi.​org/​10.​1038/​ s41
+R300: S. Pfohl, H. Cole-Lewis, D. Neal et al., Towards expert-level medical question answering with large language models. arXiv preprint (2023) arXiv:2305.
+R301: C. Lau, R. Tanno, I. Ktena et al., Towards generalist biomedical ai. NEJM AI 1(3), AIoa2300,138 (2024) 165. F.F. Xu, U. Alon, G. Neubig, V.J. Hellendo
+R302: P. Barham, H.W. Chung, C. Sutton, S. Gehrmann et al., Palm: Scaling language modeling with pathways. J. Mach. Learn. Res. 24(240), 1–113 (2023) 169. R
+R303: H. Nakhost, R. Sinha, Z. Wang et al., Sql-palm: Improved large language model adaptation for text-to-sql (extended). arXiv preprint (2023) arXiv:2306.
+R304: Kosaraju, W. Saunders et al., Webgpt: Browser-assisted question-answering with human feedback. arXiv preprint (2021) arXiv:2112.09332 172. L. Gao, A. 
+R305: Pal: Program-aided language models. in International Conference on Machine Learning (PMLR, Honolulu, Hawaii, USA, 2023), pp. 10764–10799
+R306: 173. A. Parisi, Y. Zhao, N. Fiedel, Talm: Tool augmented language models.
+R307: arXiv preprint (2022) arXiv:2205.12255 174. S.G. Patil, T. Zhang, X. Wang, J.E. Gonzalez, Gorilla: Large language model connected with massive apis. a
+R308: M. Lewis, W.T. Yih, T. Rocktäschel et al., Retrieval-augmented generation for knowledge-intensive nlp tasks. Adv. Neural Inf. Process. Syst. 33, 9459–
+R309: Su et al., Tablegpt: Towards unifying tables, nature language and commands into one gpt. arXiv preprint (2023) arXiv:2307.08674 177. Z. Luo, C. Xu, P.
+R310: B. Hooi, G-retriever: Retrieval-augmented generation for textual graph understanding and question answering. arXiv preprint (2024) arXiv:2402.07630 17
+R311: Retrieval-augmented text generation with self-memory. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 43780-43799 180. W. Yu, D. Iter, S. Wang, Y. Xu, 
+R312: Generate rather than retrieve: Large language models are strong context generators. in The Eleventh International Conference on Learning Representatio
+R313: Neubig, Active retrieval augmented generation. in Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (Association 
+R314: Retrieval-augmented generation for large language models: A survey. arXiv preprint (2023) arXiv:2312.10997 186. S. Zhuang, B. Liu, B. Koopman, G. Zucc
+R315: 191. J. Kirkpatrick, R. Pascanu, N. Rabinowitz, J. Veness, G. Desjardins, A.A.
+R316: Rusu, K. Milan, J. Quan, T. Ramalho, A. Grabska-Barwinska et al., Overcoming catastrophic forgetting in neural networks. Proc. Natl. Acad. Sci. 114(13
+R317: Yu, W. Chen et al., Check your facts and try again: Improving large language models with external knowledge and automated feedback. arXiv preprint (20
+R318: Chen et al., Siren’s song in the ai ocean: a survey on hallucination in large language models. arXiv preprint (2023) arXiv:2309.01219 199. Z. Ji, N. L
+R319: P. Fung, Survey of hallucination in natural language generation. ACM Comput. Surv. 55(12), 1–38 (2023) 200. Z. Guo, M. Schlichtkrull, A. Vlachos, A su
+R320: Weston, Chain-of-verification reduces hallucination in large language models. in Findings of the Association for Computational Linguistics ACL 2024 (A
+R321: Zhang, S. Agarwal, K. Slama, A. Ray et al., Training language models to follow instructions with human feedback. Adv. Neural Inf. Process. Syst. 35, 2
+R322: Ostendorf, H. Hajishirzi, Fine-grained human feedback gives better rewards for language model training. Adv. Neural Inf. Process. Syst. 36 (2024). pp.
+R323: Twelfth International Conference on Learning Representations (Vienna, Austria, 2024) 210. W. Shi, X. Han, M. Lewis, Y. Tsvetkov, L. Zettlemoyer, S.W.t
+R324: F.A. Wichmann, Shortcut learning in deep neural networks. Nat. Mach. Intell. 2(11), 665–673 (2020) 212. Y. Lu, M. Bartolo, A. Moore, S. Riedel, P. Ste
+R325: (1968) 217. P.C. Wason, P.N. Johnson-Laird, Psychology of reasoning: Structure and content. Harvard University Press, Cambridge, MA, USA, 1972. 86, pp
+R326: Psychol. Bull. 105(3), 331 (1989) 219. J. Huang, K.C.C. Chang, Towards reasoning in large language models:
+R327: A survey. in Findings of the Association for Computational Linguistics: ACL 2023 (Association for Computational Linguistics, Toronto, Canada, 2023), p
+R328: Cui, O. Bousquet, Q. Le et al., Least-to-most prompting enables complex reasoning in large language models. in The Eleventh International Conference o
+R329: C. Fu, K. Gopalakrishnan, K. Hausman et al., Do as i can, not as i say: Grounding language in robotic affordances. in Conference on Robot Learning (At
+R330: Callison-Burch, Faithful chain-of-thought reasoning. in Proceedings of the 13th International Joint Conference on Natural Language Processing and the 
+R331: 228. Z. Zhang, A. Zhang, M. Li, A. Smola, Automatic chain of thought prompting in large language models. in The Eleventh International Conference on L
+R332: D. Zhou, Self-consistency improves chain of thought reasoning in language models. in The Eleventh International Conference on Learning Representations
+R333: Y. Lu, Y. Yang, Recmind: Large language model powered agent for recommendation. in Findings of the Association for Computational Linguistics: NAACL 20
+R334: Gianinazzi, J. Gajda, T. Lehmann, H. Niewiadomski, P. Nyczyk et al., Graph of thoughts: Solving elaborate problems with large language models. in Proc
+R335: R. Fox, Do embodied agents dream of pixelated sheep: Embodied decision making using language guided world modelling. in International Conference on Ma
+R336: Zhao, Tptu: Task planning and tool usage of large language model-based ai agents. in NeurIPS 2023 Foundation Models for Decision Making Workshop (New 
+R337: H. Bata, Y. Levine, K. Leyton-Brown et al., Mrkl systems: A modular, neuro-symbolic architecture that combines large language models, external knowled
+R338: Empowering large language models with optimal planning proficiency. arXiv preprint (2023) arXiv:2304.11477 240. T. Brown, B. Mann, N. Ryder, M. Subbia
+R339: Neelakantan, P. Shyam, G. Sastry, A. Askell et al., Language models are few-shot learners. Adv. Neural Inf. Process. Syst. 33, 1877–1901 (2020) 241. Z
+R340: Improving few-shot performance of language models. in International conference on machine learning (PMLR, Virtual Event, 2021), pp. 12697–12706 242. A
+R341: Taskmatrix. ai: Completing tasks by connecting foundation models with millions of apis. arXiv preprint (2023) arXiv: 2303.16434
+R342: 246. Y. Song, W. Xiong, D. Zhu, C. Li, K. Wang, Y. Tian, S. Li, Restgpt: Connect- ing large language models with real-world applications via restful a
+R343: Zettlemoyer, N. Cancedda, T. Scialom, Toolformer: Language models can teach themselves to use tools. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 68
+R344: D. Terzopoulos, L. Fei-Fei et al., Mindagent: Emergent gaming interaction . arXiv preprint (2023) arXiv: 2309.09971 249. M. Carroll, R. Shah, M.K. Ho,
+R345: Understanding the competition behaviors in large language model-based agents. arXiv preprint (2023) arXiv: 2310.17512 258. R. Hao, L. Hu, W. Qi, Q. Wu
+R346: Prompting llms for efficient parallel generation. in The Twelfth International Conference on Learning Representations (Vienna, Austria, 2024) 260. Q. 
+R347: C. Wang, Autogen: Enabling next-gen llm applications via multi-agent conversation framework. arXiv preprint (2023) arXiv: 2308.08155 261. S. Srivastav
+R348: Lian, C. Gokmen, S. Buch, K. Liu et al., Behavior: Benchmark for everyday household activities in virtual, interactive, and ecological environments. i
+R349: Wang, Embodied llm agents learn to cooperate in organized teams. arXiv preprint (2024) arXiv: 2403.12482 263. Z. Wang, S. Mao, W. Wu, T. Ge, F. Wei, H
+R350: Encouraging divergent thinking in large language models through multi-agent debate. arXiv preprint (2023) arXiv: 2305.19118 265. Z. Liu, W. Yao, J. Zh
+R351: Wu, H. Wang et al., Agentlite: A lightweight library for building and advancing task-oriented llm agent system. arXiv preprint (2024) arXiv: 2402.1553
+R352: Chen, J. Zhang, D. Arpit et al., Retroformer: Retrospective large language agents with policy gradient optimization. arXiv preprint (2023) arXiv: 2308
+R353: 269. Y. Wu, Z. Jiang, A. Khan, Y. Fu, L. Ruis, E. Grefenstette, T. Rocktäschel, Cha- tarena: Multi-agent language game environments for large language
+R354: Toward language agent fine-tuning. arXiv preprint (2023) arXiv: 2310.05915 274. A. Brock, T. Lim, J.M. Ritchie, N. Weston, Freezeout: Accelerate train
+R355: Gesmundo, M. Attariyan, S. Gelly, Parameter-efficient transfer learning for nlp. in International conference on machine learning (PMLR, Long Beach, Ca
+R356: Llm-adapters: An adapter family for parameter-efficient fine-tuning of large language models. arXiv preprint (2023) arXiv: 2304.01933 283. E.J. Hu, Y.
+R357: Lora: Low-rank adaptation of large language models. arXiv preprint (2021) arXiv: 2106.09685 284. T. Dettmers, A. Pagnoni, A. Holtzman, L. Zettlemoyer,
+R358: Language models as knowledge bases? arXiv preprint (2019) arXiv: 1909.01066 290. A. Wang, Y. Pruksachatkun, N. Nangia, A. Singh, J. Michael, F. Hill, 
+R359: S. Bowman, Superglue: A stickier benchmark for general-purpose language understanding systems. Adv. Neural Inf. Process. Syst. 32 (2019). pp. 3266-328
+R360: Goldie, A. Mirhoseini, C. McKinnon et al., Constitutional ai: Harmlessness from ai feedback. arXiv preprint (2022) arXiv: 2212.08073 292. A. Madaan, N
+R361: N. Dziri, S. Prabhumoye, Y. Yang et al., Self-refine: Iterative refinement with self-feedback. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 46534-46
+R362: Multimodal agents as smartphone users. arXiv preprint (2023) arXiv: 2312.13771 299. A. Madaan, N. Tandon, P. Clark, Y. Yang, Memory-assisted prompt ed
+R363: Autoagents: A framework for automatic agent generation. arXiv pre-print (2023) arXiv: 2309.17288 302. W. Chen, Y. Su, J. Zuo, C. Yang, C. Yuan, C. Qia
+R364: R. Xie et al., Agentverse: Facilitating multi-agent collaboration and exploring emergent behaviors in agents. arXiv preprint (2023) arXiv: 2308.10848 
+R365: Exploring llm-based general bug reproduction. in 2023 IEEE/ACM 45th International Conference on Software Engineering (ICSE) (IEEE, 2023), pp. 2312–232
+R366: Pinzger, S. Rass, Pentestgpt: An llm-empowered automatic penetration testing tool. arXiv preprint (2023) arXiv: 2308.06782 306. S. Sudhakaran, M. Gonz
+R367: S. Risi, Mariogpt: Open-ended text2level generation through large language models. Adv. Neural Inf. Process. Syst. 36 (2024). pp. 54213-54227 307. J.J
+R368: What can we learn from homo silicus? Technical report, National Bureau of Economic Research (2023) 308. E. Akata, L. Schulz, J. Coda-Forno, S.J. Oh, M
+R369: 314. S. Dai, N. Shao, H. Zhao, W. Yu, Z. Si, C. Xu, Z. Sun, X. Zhang, J. Xu,
+R370: Uncovering chatgpt’s capabilities in recommender systems. in Proceedings of the 17th ACM Conference on Recommender Systems (Association for Computing 
+R371: Towards open-world recommendation with knowledge augmentation from large language models. arXiv preprint (2023) arXiv: 2306.10933 316. Q. Liu, N. Chen
+R372: Huang, Llmrec: Large language models with graph augmentation for recommendation. in Proceedings of the 17th ACM International Conference on Web Search
+R373: Boutilier, Recsim: A configurable simulation platform for recommender systems. arXiv preprint (2019) arXiv: 1909.04847 319. N. Ghaffarzadegan, A. Maju
+R374: Generative agent-based modeling: Unveiling social system dynamics through coupling mechanistic models with generative artificial intelligence . arXiv 
+R375: Menegaz, K. Lekadir, Commentary on explainable artificial intelligence methods: Shap and lime. arXiv preprint (2023) arXiv: 2305.02012 325. L. Gao, Z.
+R376: H. Lee, D.C. Juan et al., Rarr: Researching and revising what language models say, using language models. arXiv preprint (2022) arXiv: 2210.08726 326.
+R377: Yu, R. Zhang, N.K. Ahmed, Bias and fairness in large language models: A survey. Computational Linguistics 2024. 50(3), 1097–1179. 328. H. Kotek, R. Do
+R378: 334. H. Liu, J. Dacon, W. Fan, H. Liu, Z. Liu, J. Tang, Does gender matter?
+R379: towards fairness in dialogue systems. arXiv preprint (2019) arXiv: 1910.10486 335. D. Saunders, R. Sallis, B. Byrne, First the worst: Finding better g
+R380: Cent. Secur. Emerg. Technol. 1(1), 2 (2021) 341. Y. Pan, L. Pan, W. Chen, P. Nakov, M.Y. Kan, W.Y. Wang, On the risk of mis- information pollution wit
+R381: Wang, Poisoning scientific knowledge using large language models. bioRxiv (2023). https://​doi.​org/​10.​1101/​2023.​11.​06.​565928 343. P. Charan, H.
+R382: Roberts, T. Brown, D. Song, U. Erlingsson et al., Extracting training data from large language models. in 30th USENIX Security Symposium (USENIX Secur
+R383: AI. J. Database Manag. (JDM) 31(2), 74–87 (2020) 355. E. Prem, From ethical ai frameworks to tools: a review of approaches. AI
+R384: Ethics 3(3), 699–716 (2023) 356. Y. Talebirad, A. Nadiri, Multi-agent collaboration: Harnessing the power of intelligent llm agents. arXiv preprint (2
+R385: Zeng, L. Wang, Mm-react: Prompting chatgpt for multimodal reasoning and action. arXiv preprint (2023) arXiv: 2303.11381
+R386: 359. R. Lou, K. Zhang, W. Yin, Is prompt all you need? no. a comprehensive and broader view of instruction learning. arXiv preprint (2023) arXiv: 2303
+R387: Enabling generalized agent abilities for llms. arXiv preprint (2023) arXiv: 2310.12823 361. A. Glaese, N. McAleese, M. Teębacz, J. Aslanides, V. Firoi
+R388: Rauh, L. Weidinger, M. Chadwick, P. Thacker et al., Improving alignment of dialogue agents via targeted human judgements. arXiv preprint (2022) arXiv:
+R389: 1–4 (2008) 364. E.I. Pas, S.L. Principio, Braess’ paradox: Some new insights. Transp. Res. B
+R390: Methodol. 31(3), 265–276 (1997) 365. T. Sun, Y. Shao, H. Qian, X. Huang, X. Qiu, Black-box tuning for language- model-as-a-service. in International C
+R391: Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.

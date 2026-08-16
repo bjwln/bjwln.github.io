@@ -1,0 +1,18 @@
+﻿=== LI ===
+pages: 43
+page 2 table 0 rows 1
+   | 
+
+=== GUO ===
+pages: 15
+page 6 table 0 rows 33
+  ResearchDomain&Goals |  | Work | Agents-Env. Interface | AgentsProfiling |  | Agents Communication |  | 
+   |  |  |  | Profiling methods | Profiles (examples) | Paradigms | Structure | Feedbackfrom
+  Softwaredevelopment |  | [Qianetal.,2023] | Sandbox | Pre-defined, Model-Generated | CTO, programmer | Cooperative | Layered | Environment, Agentinteraction, Human
+   |  | [Hongetal.,2023] | Sandbox | Pre-defined | ProductManager, Engineer | Cooperative | Layered, SharedMessagePool | Environment, Agentinteraction, Human
+page 9 table 0 rows 9
+  Domain | DatasetsandBenchmarks | Usedby
+  SoftwareDevelopment | HumanEval MBPP SoftwareDev | [Hongetal.,2023] [Hongetal.,2023] [Hongetal.,2023]
+  EmbodiedAI | RoCoBench CommunicativeWatch-And-Help(C-WAH) Three | [Mandietal.,2023] [Zhangetal.,2023c] [Zhangetal.,2
+  ScienceDebate | MMLU MedQA PubMedQA GSM8K StrategyQA ChessMoveVali | [Tangetal.,2023] [Tangetal.,2023] [Tangetal.,2023]
+
