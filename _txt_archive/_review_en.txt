@@ -224,7 +224,7 @@ References
 Appendix notes
 All references in this manuscript come from the 108 records newly imported on August 15, 2026, and the 136 records previously in the Zotero "智能体文献" folder. Of the 108 new records, 104 now have PDF attachments in Zotero; the remaining 4 lack full-text PDFs and are listed with titles and links in the companion file Multi-Agent_for_MDT_未获取论文清单.md. The Ni et al. (2026) record has a PDF attachment but still lacks a DOI or link and should be completed before submission. Before formal submission, author names, volume/issue/page numbers, and preprint citation policies should be harmonized according to the target journal.
 
-===== TABLE 1 =====
+===== TABLE 0 =====
 System | Architecture | Primary clinical scenario | Representative evidence/results
 MedAgents | Collaborative | Medical reasoning, role-based discussion | Multi-role collaboration improves zero-shot medical reasoning (Tang et al., 2024)
 MDAgents | Adaptive/hierarchical | Medical decision-making | Automatically selects solo or team collaboration by task difficulty (Kim et al., 2024)
@@ -241,7 +241,7 @@ OncMDT | Hybrid/self-evolving | Oncology MDT consultation | Decision concordance
 GI Multi-Agent | Hierarchical | Multimodal gastrointestinal oncology | Expert composite score 4.60/5.00 (Zhang et al., 2025)
 Agentic breast cancer system | Hybrid tool-based | Breast cancer treatment recommendations | Best global score 0.594; clinically relevant errors remain (Almeida et al., 2026)
 
-===== TABLE 2 =====
+===== TABLE 1 =====
 Benchmark/dataset | Category | Data/environment | Stated availability
 MedAgentBench | Virtual clinical environment | Virtual EHR workflows | Publicly available
 AgentClinic | Virtual clinical environment | Multimodal simulated patient-physician interaction | Publicly available
