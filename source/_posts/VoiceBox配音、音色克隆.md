@@ -17,13 +17,13 @@ Voicebox 由 Spacedrive 的开发者 Jamie Pine 主导，定位是"本地优先�
 
 https://github.com/jamiepine/voicebox
 
-![image-20260531185601136](/images/image-20260531185601136.png)
+![image-20260531185601136](../images/image-20260531185601136.png)
 
-![image-20260531193317795](/images/image-20260531193317795.png)
+![image-20260531193317795](../images/image-20260531193317795.png)
 
 左侧导航栏介绍
 
-![image-20260531211101281](/images/image-20260531211101281.png)
+![image-20260531211101281](../images/image-20260531211101281.png)
 
 # 加速方法
 
@@ -36,14 +36,14 @@ https://github.com/jamiepine/voicebox
 
 # 模型调用
 
-![image-20260601105128575](/images/image-20260601105128575.png)
+![image-20260601105128575](../images/image-20260601105128575.png)
 
-![image-20260601105650013](/images/image-20260601105650013.png)
+![image-20260601105650013](../images/image-20260601105650013.png)
 
 软件连不上github下载不了cuda，可以用cpu跑，但是跑起来会慢一点。
 
 # 生成语音
 
-![image-20260601110636303](/images/image-20260601110636303.png)
+![image-20260601110636303](../images/image-20260601110636303.png)
 
-![image-20260601110745297](/images/image-20260601110745297.png)
+![image-20260601110745297](../images/image-20260601110745297.png)

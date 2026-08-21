@@ -51,43 +51,43 @@ wsl --install
 
 根据官网提供的安全文档来安装这个系统
 
-![image-20260530221427015](/images/image-20260530221427015.png)
+![image-20260530221427015](../images/image-20260530221427015.png)
 
-安装完成后会询问：此操作有一定的风险![image-20260530225159993](/images/image-20260530225159993.png)
+安装完成后会询问：此操作有一定的风险![image-20260530225159993](../images/image-20260530225159993.png)
 
 然后选择大语言模型，配置API
 
-![image-20260530225557862](/images/image-20260530225557862.png)
+![image-20260530225557862](../images/image-20260530225557862.png)
 
-![image-20260530225726332](/images/image-20260530225726332.png)
+![image-20260530225726332](../images/image-20260530225726332.png)
 
 选择Keep current 
 
-![image-20260530225835367](/images/image-20260530225835367.png)
+![image-20260530225835367](../images/image-20260530225835367.png)
 
 选`Skip for now (You can add channels later via: openclaw channels add)`，跳过移动端接入，回车
 
-![image-20260530225930809](/images/image-20260530225930809.png)
+![image-20260530225930809](../images/image-20260530225930809.png)
 
-然后继续Skip for now![image-20260530230010277](/images/image-20260530230010277.png)
+然后继续Skip for now![image-20260530230010277](../images/image-20260530230010277.png)
 
 不接入skill，等去github上拉几个好玩的再安装
 
-![image-20260530230102512](/images/image-20260530230102512.png)
+![image-20260530230102512](../images/image-20260530230102512.png)
 
 钩子也不用现在装
 
-![image-20260530230119503](/images/image-20260530230119503.png)
+![image-20260530230119503](../images/image-20260530230119503.png)
 
 你想从哪打开openclaw：选择终端（Terminal）
 
-![image-20260530230500840](/images/image-20260530230500840.png)
+![image-20260530230500840](../images/image-20260530230500840.png)
 
 可以从上方进入浏览器的open claw的UI界面，复制Web UI（with token）给的地址进入
 
-![image-20260530230709784](/images/image-20260530230709784.png)
+![image-20260530230709784](../images/image-20260530230709784.png)
 
-![image-20260530230825220](/images/image-20260530230825220.png)
+![image-20260530230825220](../images/image-20260530230825220.png)
 
 # ③为龙虾配置Skill
 
@@ -95,18 +95,18 @@ wsl --install
 
 常用指令：powershell里输入这些命令
 
-![image-20260530232252456](/images/image-20260530232252456.png)
+![image-20260530232252456](../images/image-20260530232252456.png)
 
 例如配置Tavily Searchskill，首先在技能市场搜索Tavily Search
 
-![image-20260530232444206](/images/image-20260530232444206.png)
+![image-20260530232444206](../images/image-20260530232444206.png)
 
-![image-20260530232603970](/images/image-20260530232603970.png)
+![image-20260530232603970](../images/image-20260530232603970.png)
 
-![image-20260530232709517](/images/image-20260530232709517.png)
+![image-20260530232709517](../images/image-20260530232709517.png)
 
-![image-20260530233153120](/images/image-20260530233153120.png)
+![image-20260530233153120](../images/image-20260530233153120.png)
 
-![image-20260530233452619](/images/image-20260530233452619.png)
+![image-20260530233452619](../images/image-20260530233452619.png)
 
 接下来可问一些天气，股票之类的问题。openclaw会自动联网搜索并给你结果

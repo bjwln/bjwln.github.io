@@ -17,41 +17,41 @@ irm https://daheiai.com/cc.ps1 | iex
 //来自：b站up主人工大黑
 ```
 
-![image-20260527113304701](/images/image-20260527113304701.png)
+![image-20260527113304701](../images/image-20260527113304701.png)
 
 # ③配置环境变量
 
 <span style="color:red">作用：告诉操作系统在哪里可以找到可执行文件，这样你就可以在任何目录下直接运行命令，而不需要输入完整的文件路径。</span>
 
-![image-20260527113856618](/images/image-20260527113856618.png)
+![image-20260527113856618](../images/image-20260527113856618.png)
 
 输入Claude就可以快捷打开了
 
-![image-20260527114027766](/images/image-20260527114027766.png)
+![image-20260527114027766](../images/image-20260527114027766.png)
 
 # ④改变Claude code的依赖接口
 
 安装CCswitch，用于改变Claude围绕的中间AI模型
 
-![image-20260527114709612](/images/image-20260527114709612.png)
+![image-20260527114709612](../images/image-20260527114709612.png)
 
 Claude、GPT 等模型可通过**[API中转站](https://api.daheiai.com/)**接入。
 
 然后添加模型
 
-![image-20260527123658656](/images/image-20260527123658656.png)
+![image-20260527123658656](../images/image-20260527123658656.png)
 
 添加完模型之后就会发现命令行中可以正常使用
 
-![image-20260527123211088](/images/image-20260527123211088.png)
+![image-20260527123211088](../images/image-20260527123211088.png)
 
-![image-20260527115647133](/images/image-20260527115647133.png)
+![image-20260527115647133](../images/image-20260527115647133.png)
 
 # ⑤用法：用于项目指导
 
-![image-20260527124108036](/images/image-20260527124108036.png)
+![image-20260527124108036](../images/image-20260527124108036.png)
 
-![image-20260527124212256](/images/image-20260527124212256.png)
+![image-20260527124212256](../images/image-20260527124212256.png)
 
 <span style="color:red">当关闭掉终端，然后再回来的时候，可以输入`/resume`命令来找到之前的对话内容。</span>
 
@@ -69,23 +69,23 @@ Claude、GPT 等模型可通过**[API中转站](https://api.daheiai.com/)**接�
    https://zotero-chinese.com/plugins/#search=%E5%B8%82%E5%9C%BA
    ```
 
-   ![image-20260527210859468](/images/image-20260527210859468.png)
+   ![image-20260527210859468](../images/image-20260527210859468.png)
 
 2. 文献的初抓取
 
    - 安装浏览器扩展（zotero的官方链接，下图所示），安装茉莉花插件（从市场插件中安装）
 
-   ![image-20260527212156114](/images/image-20260527212156114.png)
+   ![image-20260527212156114](../images/image-20260527212156114.png)
 
    - 找到一篇文章：https://arxiv.org/
 
-   - 用浏览器的插件抓取到zotero中![image-20260527212952370](/images/image-20260527212952370.png)
+   - 用浏览器的插件抓取到zotero中![image-20260527212952370](../images/image-20260527212952370.png)
 
-     ![image-20260527213043138](/images/image-20260527213043138.png)
+     ![image-20260527213043138](../images/image-20260527213043138.png)
 
    - 如果抓取失败（反扒机制很好），那么只需要手动下载pdf，然后拖到zotero中就可以了
 
-     ![image-20260527214359297](/images/image-20260527214359297.png)
+     ![image-20260527214359297](../images/image-20260527214359297.png)
 
 
 
@@ -101,7 +101,7 @@ Claude、GPT 等模型可通过**[API中转站](https://api.daheiai.com/)**接�
 
    2. 打开zotero setup
 
-      ![image-20260527214904059](/images/image-20260527214904059.png)
+      ![image-20260527214904059](../images/image-20260527214904059.png)
 
    3. 然后直接让CC给你查就行了
 

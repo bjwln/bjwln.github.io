@@ -517,11 +517,11 @@ n=5时，n=6时，n=6时.最多到7就没了
 
 n=8，9，10，11，12，13，14，15时，最高到15就没了
 
-![image-20260727142026967](image-20260727142026967.png)
+![image-20260727142026967](LeetCode刷题笔记/image-20260727142026967.png)
 
 这么说.....
 
-![image-20260727142134553](image-20260727142134553.png)
+![image-20260727142134553](LeetCode刷题笔记/image-20260727142134553.png)
 
 ```c++
 int uniqueXorTriplets(vector<int>& nums) {
@@ -536,9 +536,9 @@ int uniqueXorTriplets(vector<int>& nums) {
 }
 ```
 
-![image-20260727142640488](image-20260727142640488.png)
+![image-20260727142640488](LeetCode刷题笔记/image-20260727142640488.png)
 
-![image-20260727142717545](image-20260727142717545.png)
+![image-20260727142717545](LeetCode刷题笔记/image-20260727142717545.png)
 
 后来发现....
 
@@ -566,7 +566,7 @@ int uniqueXorTriplets(vector<int>& nums) {
 }
 ```
 
-![image-20260729183615933](image-20260729183615933.png)
+![image-20260729183615933](LeetCode刷题笔记/image-20260729183615933.png)
 
 emmmm，能过就是好方法[doge]
 
@@ -692,9 +692,130 @@ int minimumPushes(string word) {
 
 # 滑动窗口
 
-### 
+
+
+# 贪心
+
+## [1386. 安排电影院座位（1637）](https://leetcode.cn/problems/cinema-seat-allocation/)
+
+```c++
+class Solution {
+public:
+    int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
+        sort(reservedSeats.begin(), reservedSeats.end(),
+             [](const vector<int>& a, const vector<int>& b) {
+                 if (a[0] != b[0])
+                     return a[0] < b[0];
+                 else
+                     return a[1] < b[1];
+             });
+        int ans = 0;
+        int now = reservedSeats[0][0];
+        int seat = n;
+        int seatcount[11] = {0};
+        int family[3] = {2, 4, 6};
+        for (int i = 0; i < reservedSeats.size(); i++) {
+            if (reservedSeats[i][0] != now || i == reservedSeats.size() - 1) {//这里是不能加上|| i == reservedSeats.size() - 1的，因为这个分支的作用是进行上一行的计算，**更新条件只能是换行**，也就是reservedSeats[i][0] != now 。如果加上|| i == reservedSeats.size() - 1。那么就导致没有触发换行条件就进行上一行的更新
+                
+                if (i == reservedSeats.size() - 1) { 
+                    //没有触发换行条件就进行上一行的更新就会导致下一行里面有上一行的状态信息（因为我是想：比如now=1，当第二行的时候now改为2的同时处理第一行的数据，直到now改为185的时候处理第184行的数据。然后更新我的seatcount=0，当186行的时候处理第185行的数据。但是没有第186行，所以我加上了i == reservedSeats.size() - 1，但是如果这样的话这个分支里面的 seatcount[reservedSeats[i][1]] = 1;就会在第184行加上第185行的数据）
+                    seatcount[reservedSeats[i][1]] = 1;
+                }
+               
+                now = reservedSeats[i][0];
+                seat--;
+                int ok = -1;
+                for (int j = 0; j <= 2; j++) {
+                    if (j > 0 && family[j - 1] == ok) {
+                        continue;
+                    }
+                    for (int k = 0; k <= 3; k++) {
+                        if (seatcount[family[j] + k] != 0)
+                            break;
+                        if (k == 3) {
+                            cout << family[j] << endl;
+                            ans++;
+                            ok = family[j];
+                        }
+                    }
+                }
+                memset(seatcount, 0, sizeof(seatcount));
+            }
+            seatcount[reservedSeats[i][1]] = 1;
+        }
+        ans += seat * 2;
+
+        return ans;
+    }
+};
+```
+
+解决方法要么把最后的处理方法拿出来，要么加上一个第n+1行的完美行的数据作为空数据强行出触发行的更替，最后再减去2（因为我这里写的是完美行）就可以了
+
+```c++
+ int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
+        sort(reservedSeats.begin(), reservedSeats.end(),
+             [](const vector<int>& a, const vector<int>& b) {
+                 if (a[0] != b[0])
+                     return a[0] < b[0];
+                 else
+                     return a[1] < b[1];
+             });
+        int ans = 0;
+        int now = reservedSeats[0][0];
+        int seat = n;
+        int seatcount[11] = {0};
+        int family[3] = {2, 4, 6};
+        for (int i = 0; i < reservedSeats.size(); i++) {
+            if (reservedSeats[i][0] != now) {
+                now = reservedSeats[i][0];
+                seat--;
+                int ok = -1;
+                for (int j = 0; j <= 2; j++) {
+                    if (j > 0 && family[j - 1] == ok) {
+                        continue;
+                    }
+                    for (int k = 0; k <= 3; k++) {
+                        if (seatcount[family[j] + k] != 0)
+                            break;
+                        if (k == 3) {
+                            cout << family[j] << endl;
+                            ans++;
+                            ok = family[j];
+                        }
+                    }
+                }
+                memset(seatcount, 0, sizeof(seatcount));
+            }
+            seatcount[reservedSeats[i][1]] = 1;
+        }
+        seat--;
+        int ok = -1;
+        for (int j = 0; j <= 2; j++) {
+            if (j > 0 && family[j - 1] == ok) {
+                continue;
+            }
+            for (int k = 0; k <= 3; k++) {
+                if (seatcount[family[j] + k] != 0)
+                    break;
+                if (k == 3) {
+                    cout << family[j] << endl;
+                    ans++;
+                    ok = family[j];
+                }
+            }
+        }
+        ans += seat * 2;
+
+        return ans;
+    }
+```
+
+
 
 # 模拟
+
+
 
 ## [2958. 最多 K 个重复元素的最长子数组（）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/)
 
@@ -816,7 +937,7 @@ int maxActiveSectionsAfterTrade(string s) {
 }
 ```
 
-![image-20260721191419331](image-20260721191419331.png)
+![image-20260721191419331](LeetCode刷题笔记/image-20260721191419331.png)
 
 emmmmm优化一下
 
@@ -974,7 +1095,7 @@ int minimumPushes(string word) {
     }
 ```
 
-## [3090. 每个字符最多出现两次的最长子字符串（13xx）](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/)
+## [3090. 每个字符最多出现两次的最长子字符串（1329）](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/)
 
 ```c++
   int maximumLengthSubstring(string s) {
@@ -994,5 +1115,30 @@ int minimumPushes(string word) {
         }
         return ans;
     }
+```
+
+## 
+
+## [3069. 将元素分配到两个数组中 I(1024)](https://leetcode.cn/problems/distribute-elements-into-two-arrays-i/)
+
+```c++
+    vector<int> resultArray(vector<int>& nums) {
+        vector<int> arr1;
+        vector<int> arr2;
+        vector<int> result;
+        arr1.push_back(nums[0]);
+        arr2.push_back(nums[1]);
+        for(int i=2;i<nums.size();i++){
+            if(arr1[arr1.size()-1]>arr2[arr2.size()-1])
+                arr1.push_back(nums[i]);
+            else
+                arr2.push_back(nums[i]);
+            
+        };
+        for(int i=0;i<arr1.size();i++) result.push_back(arr1[i]);
+        for(int i=0;i<arr2.size();i++) result.push_back(arr2[i]);
+        return result;
+    }
+    
 ```
 

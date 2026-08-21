@@ -4,7 +4,7 @@ date: 2026-07-06 22:32:38
 tags:
 categories: 大模型
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkm5qS8NDlfFZOMGDTDL4luD4bBZMzAACyAxrGyYwWEYAAfZklzpwScwBAAMCAAN5AAM8BA.png
-sticky:2
+sticky: 2
 ---
 
 # 神经网络初识
@@ -28,9 +28,9 @@ sticky:2
 
 同层不同神经元之间拿不到彼此的数据
 
-![image-20260708213628849](image-20260708213628849.png)
+![image-20260708213628849](<PyTorch 进阶—人工神经网络/image-20260708213628849.png>)
 
-![image-20260708215423816](image-20260708215423816.png)
+![image-20260708215423816](<PyTorch 进阶—人工神经网络/image-20260708215423816.png>)
 
 [神经网络的演示地址](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=4,2&seed=0.76260&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false)
 
@@ -42,7 +42,7 @@ sticky:2
 
 ## Sigmoid函数
 
-![image-20260708221936864](image-20260708221936864.png)
+![image-20260708221936864](<PyTorch 进阶—人工神经网络/image-20260708221936864.png>)
 
 ```python
  x = torch.linspace(-10, 10, 1000, requires_grad=True)  # requires_grad=True 需梯度以便求导
@@ -96,13 +96,13 @@ sticky:2
 
 ## Tanh函数
 
-.![image-20260710213809369](image-20260710213809369.png)
+.![image-20260710213809369](<PyTorch 进阶—人工神经网络/image-20260710213809369.png>)
 
 
 
 ## RULU函数
 
-![image-20260709212520505](image-20260709212520505.png)
+![image-20260709212520505](<PyTorch 进阶—人工神经网络/image-20260709212520505.png>)
 
 ```python
     fig, ax = plt.subplots(1, 2)
@@ -125,7 +125,7 @@ sticky:2
 
 ## Softmax
 
-![image-20260710213432249](image-20260710213432249.png)
+![image-20260710213432249](<PyTorch 进阶—人工神经网络/image-20260710213432249.png>)
 
 可以直接调用
 
@@ -196,7 +196,7 @@ print("每行之和：", output2.sum(dim=1))  # 均为 1
 
 所有权重参数初始化为一个常数，即
 
-![image-20260712102632372](image-20260712102632372.png)
+![image-20260712102632372](<PyTorch 进阶—人工神经网络/image-20260712102632372.png>)
 
 这里 `J` 为全1矩阵，*`k` 为初始化的常数。
 
@@ -206,7 +206,7 @@ print("每行之和：", output2.sum(dim=1))  # 均为 1
 
 权重参数初始化为单位矩阵，即
 
-![image-20260712102903862](image-20260712102903862.png)
+![image-20260712102903862](<PyTorch 进阶—人工神经网络/image-20260712102903862.png>)
 
 这里 *I* 为单位矩阵，即主对角线上元素为 1，其它元素为 0。秩初始化多用于 `RNN` 等需要保持恒等映射的场景，全连接层中较少使用。
 
@@ -217,7 +217,7 @@ print("每行之和：", output2.sum(dim=1))  # 均为 1
 
 其概率密度函数为：
 
-![image-20260712103447941](image-20260712103447941.png)
+![image-20260712103447941](<PyTorch 进阶—人工神经网络/image-20260712103447941.png>)
 
 ## 均匀分布初始化
 
@@ -225,13 +225,13 @@ print("每行之和：", output2.sum(dim=1))  # 均为 1
 
 其概率密度函数为：
 
-![image-20260712103513348](image-20260712103513348.png)
+![image-20260712103513348](<PyTorch 进阶—人工神经网络/image-20260712103513348.png>)
 
 ## Xavier 初始化（Glorot 初始化）
 
 Xavier初始化根据输入和输出的神经元数量调整权重的初始范围，确保每一层的输出方差与输入方差相近。
 
-![image-20260712103604198](image-20260712103604198.png)
+![image-20260712103604198](<PyTorch 进阶—人工神经网络/image-20260712103604198.png>)
 
 Xavier 初始化参数适用于 Sigmoid 和 Tanh 等激活函数，能有效缓解梯度消失或爆炸问题。其推导假设激活函数在 0 附近近似线性且对称，因此不适用于 ReLU（输出恒非负，破坏了对称性）。
 
@@ -239,13 +239,13 @@ Xavier 初始化参数适用于 Sigmoid 和 Tanh 等激活函数，能有效缓�
 
 He初始化根据输入的神经元数量调整权重的初始范围。其方差为 Xavier 的 2 倍，以补偿 ReLU 将一半神经元置零导致的方差减半。
 
-![image-20260712103953768](image-20260712103953768.png)
+![image-20260712103953768](<PyTorch 进阶—人工神经网络/image-20260712103953768.png>)
 
 He 初始化参数主要适用于 ReLU 及其变体（如 Leaky ReLU）激活函数。
 
 # 搭建神经网络
 
-![image-20260712113502295](image-20260712113502295.png)
+![image-20260712113502295](<PyTorch 进阶—人工神经网络/image-20260712113502295.png>)
 
 ## 自定义模型
 
@@ -392,7 +392,7 @@ y2 = w21·x1 + w22·x2 + w23·x3 + b2
 
 `in × out`(权重)+ `out`(偏置)= `3 × 2 + 2` = `6 + 2` = `8` 个参数,正好是表格里 Linear-2 那行的 `Param #`。
 
-![image-20260715231158202](image-20260715231158202.png)
+![image-20260715231158202](<PyTorch 进阶—人工神经网络/image-20260715231158202.png>)
 
 **总结**
 
@@ -426,15 +426,15 @@ y2 = w21·x1 + w22·x2 + w23·x3 + b2
 
 ### 二分类任务损失函数
 
-![image-20260720193339409](image-20260720193339409.png)
+![image-20260720193339409](<PyTorch 进阶—人工神经网络/image-20260720193339409.png>)
 
 ### 多分类损失函数自带`Softmax`,其具体公式如下
 
-![image-20260718210801468](image-20260718210801468.png)
+![image-20260718210801468](<PyTorch 进阶—人工神经网络/image-20260718210801468.png>)
 
 **具体执行流程如下**
 
-![image-20260718211404551](image-20260718211404551.png)
+![image-20260718211404551](<PyTorch 进阶—人工神经网络/image-20260718211404551.png>)
 
 ## 回归任务
 
@@ -442,17 +442,17 @@ y2 = w21·x1 + w22·x2 + w23·x3 + b2
 
 描述预测值与真实值之间差值绝对值的平均
 
-![image-20260720194155017](image-20260720194155017.png)
+![image-20260720194155017](<PyTorch 进阶—人工神经网络/image-20260720194155017.png>)
 
 ### MSE
 
-![image-20260720203508451](image-20260720203508451.png)
+![image-20260720203508451](<PyTorch 进阶—人工神经网络/image-20260720203508451.png>)
 
 ### Smooth L1
 
 可以理解为平滑L1函数：
 
-![image-20260720204206276](image-20260720204206276.png)
+![image-20260720204206276](<PyTorch 进阶—人工神经网络/image-20260720204206276.png>)
 
 当误差较小时（预测值与真实值之差的绝对值小于1），使用L2 Loss，使得损失函数平滑可导。
 
@@ -462,6 +462,6 @@ y2 = w21·x1 + w22·x2 + w23·x3 + b2
 
 **梯度下降法（Gradient Descent）**是一种用于**最小化目标函数的迭代优化算法**。核心是沿着目标函数（如损失函数）的负梯度方向逐步调整参数，从而逼近函数的最小值。梯度方向指示了函数增长最快的方向，因此负梯度方向是函数下降最快的方向。所以有：
 
-![image-20260720211512214](PyTorch 进阶—人工神经网络/image-20260720211512214.png)
+![image-20260720211512214](<PyTorch 进阶—人工神经网络/image-20260720211512214.png>)
 
 其中，`η`是学习率，如果学习率太小，那么每次训练之后得到的效果都太小，增大训练的时间成本。如果，学习率太大，那就有可能直接跳过最优解，进入无限的训练中。解决的方法就是，学习率也需要随着训练的进行而变化。

@@ -8,7 +8,7 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjwlqMAhYr0WtDkEzS2sUfJtQ1nLE_
 
 Codex是2025年10月[OpenAI](https://baike.baidu.com/item/OpenAI/19758408?fromModule=lemma_inlink)公司开发的AI代码生成训练模型，基于[GPT-3](https://baike.baidu.com/item/GPT-3/63687636?fromModule=lemma_inlink)架构改进，专注于将自然语言指令转换为多种编程语言代码。该模型通过混合训练自然语言和公开代码数据构建，采用[Transformer](https://baike.baidu.com/item/Transformer/64429264?fromModule=lemma_inlink)架构并具备14KB代码记忆容量，支持[Python](https://baike.baidu.com/item/Python/407313?fromModule=lemma_inlink)、[JavaScript](https://baike.baidu.com/item/JavaScript/321142?fromModule=lemma_inlink)、[Java](https://baike.baidu.com/item/Java/85979?fromModule=lemma_inlink)等主流语言，作为[GitHub Copilot](https://baike.baidu.com/item/GitHub Copilot/57754203?fromModule=lemma_inlink)的技术基础，核心功能包括代码生成、补全优化及多语言翻译。2025年5月升级为云端软件工程代理后，新增并行处理代码编写、调试和测试功能，集成至[ChatGPT](https://baike.baidu.com/item/ChatGPT/62446358?fromModule=lemma_inlink)生态并向企业用户开放。同年6月通过ChatGPT Codex子系统实现多方案生成功能，允许用户为单一任务获取多个代码方案并自主选择最优解。
 
-![image-20260615222538979](image-20260615222538979.png)
+![image-20260615222538979](Codex/image-20260615222538979.png)
 
 # 术语介绍
 
@@ -20,7 +20,7 @@ vpn的本质为**封装**（把一个 IP 数据报塞进另一个 IP 数据报�
 
 当不用vpn的时候，数据报的样子为：
 
-![image-20260716184659477](image-20260716184659477.png)
+![image-20260716184659477](Codex/image-20260716184659477.png)
 
 其中GFW可以看到
 
@@ -43,7 +43,7 @@ vpn的本质为**封装**（把一个 IP 数据报塞进另一个 IP 数据报�
 
    结果是这样的（以 tunnel 模式为例）：
 
-   ![image-20260716185728158](image-20260716185728158.png)
+   ![image-20260716185728158](Codex/image-20260716185728158.png)
 
 3. 这个外层数据报从物理网卡（`wlan0`）正常发出，经过你的运营商到达 VPN 服务器。
 
@@ -143,15 +143,15 @@ CC Switch是跨平台开源的‌**AI 编程 CLI 统一配置管理与路由代�
 
 `npm install -g @openai/codex`
 
-![image-20260615152335348](image-20260615152335348.png)
+![image-20260615152335348](Codex/image-20260615152335348.png)
 
 ## 官网下载
 
 https://openai.com/zh-Hans-CN/codex/（需要魔法）也可直接从Microsoft Store下载
 
-![image-20260716205700212](image-20260716205700212.png)
+![image-20260716205700212](Codex/image-20260716205700212.png)
 
-![image-20260615152316000](image-20260615152316000.png)
+![image-20260615152316000](Codex/image-20260615152316000.png)
 
 # 登录
 
@@ -159,7 +159,7 @@ https://openai.com/zh-Hans-CN/codex/（需要魔法）也可直接从Microsoft S
 
 输入codex自动进入登陆界面，大部分情况用用自己的APIkey登录，也就是Provide your own APIkey.
 
-![image-20260615153155820](image-20260615153155820.png)
+![image-20260615153155820](Codex/image-20260615153155820.png)
 
 登录后，认证信息会保存在`~/.codex/auth.json` 文件中
 
@@ -167,7 +167,7 @@ https://openai.com/zh-Hans-CN/codex/（需要魔法）也可直接从Microsoft S
 
 点击桌面的codex，可以选择用APIkey和用OpenAI的Chatgpt登录，大部分情况用用自己的APIkey登录，也就是Enter API key
 
-![image-20260716210636972](image-20260716210636972.png)
+![image-20260716210636972](Codex/image-20260716210636972.png)
 
 # 一些Question
 
@@ -177,7 +177,7 @@ https://openai.com/zh-Hans-CN/codex/（需要魔法）也可直接从Microsoft S
 
 Codex（OpenAI 的代码助手 CLI）**原生只支持 OpenAI 自己的 Responses API 和 GPT 系列模型**，它本身不认识 DeepSeek、Kimi 这类第三方模型，也不认识 CodingPlan 的 API。
 
-![image-20260615163317770](image-20260615163317770.png)
+![image-20260615163317770](Codex/image-20260615163317770.png)
 
 开启了「需要本地路由映射」，CC-Switch 正在做一件事：
 
@@ -186,7 +186,7 @@ Codex（OpenAI 的代码助手 CLI）**原生只支持 OpenAI 自己的 Response
 
 <span style="color:#FF00FF">那么ccswitch提供的自添加模型名就是修改codex给你显示的他所认为的模型名为实际调用的模型名称</span>
 
-![image-20260615164311228](image-20260615164311228.png)
+![image-20260615164311228](Codex/image-20260615164311228.png)
 
 
 
@@ -194,13 +194,13 @@ Codex（OpenAI 的代码助手 CLI）**原生只支持 OpenAI 自己的 Response
 
 **Q：在注册ChatGPT的时候，需要国外的手机验证码**
 
-![image-20260615205123522](image-20260615205123522.png)
+![image-20260615205123522](Codex/image-20260615205123522.png)
 
 目前主流的绕开验证码的方式全都失效了，唯一能用的就是接码平台了。但是接码平台的号码无法二次验证。很可能有二次验证的时候这个号就废了。看看以后会不会有更好的解决方法。**目前先用第三方API吧**
 
 ## 重新连接5/5
 
-![image-20260615210046180](image-20260615210046180.png)
+![image-20260615210046180](Codex/image-20260615210046180.png)
 
 这种情况就是开梯子了，VPN 开启时会自动写入系统全局代理环境变量 `HTTP_PROXY / HTTPS_PROXY`； Codex、Ccswitch 会自动读取这组变量，强行把本地路由请求再次走外网代理，链路彻底断裂。
 

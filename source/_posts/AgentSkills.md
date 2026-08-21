@@ -12,7 +12,7 @@ github：https://github.com/microsoft/playwright#playwright-test
 
 ## 项目结构
 
-![image-20260619144158845](image-20260619144158845.png)
+![image-20260619144158845](AgentSkills/image-20260619144158845.png)
 
 支持两种自动化方式：
 
@@ -76,17 +76,17 @@ github：https://github.com/microsoft/playwright#playwright-test
 
 
 
-![image-20260619145132762](image-20260619145132762.png)
+![image-20260619145132762](AgentSkills/image-20260619145132762.png)
 
-![image-20260619145215571](image-20260619145215571.png)
+![image-20260619145215571](AgentSkills/image-20260619145215571.png)
 
-![image-20260619145246414](image-20260619145246414.png)
+![image-20260619145246414](AgentSkills/image-20260619145246414.png)
 
-![image-20260619145326455](image-20260619145326455.png)
+![image-20260619145326455](AgentSkills/image-20260619145326455.png)
 
-![image-20260619145410323](image-20260619145410323.png)
+![image-20260619145410323](AgentSkills/image-20260619145410323.png)
 
-![image-20260619145506319](image-20260619145506319.png)
+![image-20260619145506319](AgentSkills/image-20260619145506319.png)
 
 接下来可以：
 
@@ -119,9 +119,9 @@ github：https://github.com/microsoft/playwright#playwright-test
 
 ### 之前学selenium的有福了
 
-![217218a46f54f174ea59fcec0e58be11](217218a46f54f174ea59fcec0e58be11.png)
+![217218a46f54f174ea59fcec0e58be11](AgentSkills/217218a46f54f174ea59fcec0e58be11.png)
 
-![9dce66425daa08bde43a239fe81fefd5](9dce66425daa08bde43a239fe81fefd5.png)
+![9dce66425daa08bde43a239fe81fefd5](AgentSkills/9dce66425daa08bde43a239fe81fefd5.png)
 
 
 
