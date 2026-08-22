@@ -2,7 +2,7 @@
 title: Codex
 date: 2026-06-15 15:03:43
 tags:
-categories: Tools
+categories: 大模型
 cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjwlqMAhYr0WtDkEzS2sUfJtQ1nLE_QACIAxrG3UggUV20latvjMWjAEAAwIAA3gAAzwE.png
 ---
 

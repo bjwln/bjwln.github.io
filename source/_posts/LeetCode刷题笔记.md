@@ -1142,3 +1142,19 @@ int minimumPushes(string word) {
     
 ```
 
+## [3622. 判断整除性（1149）](https://leetcode.cn/problems/check-divisibility-by-digit-sum-and-product/)
+
+```c++
+ bool checkDivisibility(int n) {
+        int ji=1,sum=0;
+        int temp=n;
+        while(n){
+            int t=n%10;
+            ji*=t;
+            sum+=t;
+            n/=10;
+        }
+        return ((temp%(ji+sum))==0?1:0);
+    }
+```
+
