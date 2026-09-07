@@ -13,3 +13,5 @@ search.json
 blogInfoList.json
 yarn-error.log
 _admin-config.yml
+/css/
+/js/

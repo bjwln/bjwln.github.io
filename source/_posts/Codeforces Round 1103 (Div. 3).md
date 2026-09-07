@@ -1,9 +1,9 @@
 ---
 title: Codeforces Round 1103 (Div. 3)
 date: 2026-06-20 11:25:17
-tags:
+tags: [算法, Codeforces]
 categories: 算法题
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkG1qO7dKG3J9zwMmUJ3_VRqSjDXGPwAC9AtrG5DK4EX9JjuwHnIWOQEAAwIAA3kAAzwE.png
+cover: cover.jpg
 ---
 
 [题目地址](https://codeforces.com/contest/2236)
@@ -400,4 +400,3 @@ void solve() {
 
 }
 ```
-

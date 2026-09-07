@@ -1,9 +1,9 @@
 ---
 title: Codeforces Round 1109 (Div. 3)
 date: 2026-07-22 18:43:22
-tags:
+tags: [算法, Codeforces]
 categories: 算法题
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkG1qO7dKG3J9zwMmUJ3_VRqSjDXGPwAC9AtrG5DK4EX9JjuwHnIWOQEAAwIAA3kAAzwE.png
+cover: cover.jpg
 ---
 
 # A. Iskander and Drawings
@@ -348,4 +348,3 @@ signed main() {
 	solve();
 }
 ```
-

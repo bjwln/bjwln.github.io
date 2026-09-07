@@ -4,9 +4,10 @@
   font-display: swap;
   font-weight: lighter;
 } */
+/* 站点标题/菜单/文章标题：恢复原竹子手写体 ZhuZiAYuanJWD（用户要求沿用改版前样式） */
 @font-face {
     font-family: ZhuZiAYuanJWD;
-    src: url(https://npm.elemecdn.com/anzhiyu-blog@1.1.6/fonts/ZhuZiAWan.woff2);
+    src: url(/fonts/ZhuZiAWan.woff2);
     font-display: swap;
     font-weight: lighter;
 }
@@ -25,13 +26,15 @@ h1.post-title {
     font-family: ZhuZiAYuanJWD;
 }
 
-.iconfont {
-    font-family: "iconfont" !important;
-    font-size: 3em;
-    /* 可以定义图标大小 */
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+/* 文章标题字号锁回改版前大小（主题按 2.5em 相对全站字号计算，全站字号已从 14px 调至 16px） */
+#post-info .post-title {
+    font-size: 35px;
+}
+
+@media screen and (max-width: 768px) {
+    #post-info .post-title {
+        font-size: 29px;
+    }
 }
 
 /* 时间轴生肖icon */
@@ -45,60 +48,14 @@ svg.icon {
     overflow: hidden;
 }
 
-.icon-zhongbiao::before {
-    color: #f7c768;
-}
-
-/* bilibli番剧插件 */
-#article-container .bangumi-tab.bangumi-active {
-    background: var(--anzhiyu-theme);
-    color: var(--anzhiyu-ahoverbg);
-    border-radius: 10px;
-}
-a.bangumi-tab:hover {
-    text-decoration: none !important;
-}
-.bangumi-button:hover {
-    background: var(--anzhiyu-theme) !important;
-    border-radius: 10px !important;
-    color: var(--anzhiyu-ahoverbg) !important;
-}
-a.bangumi-button.bangumi-nextpage:hover {
-    text-decoration: none !important;
-}
-.bangumi-button {
-    padding: 5px 10px !important;
-}
-
-a.bangumi-tab {
-    padding: 5px 10px !important;
-}
-svg.icon.faa-tada {
-    font-size: 1.1em;
-}
-.bangumi-info-item {
-    border-right: 1px solid #f2b94b;
-}
-.bangumi-info-item span {
-    color: #f2b94b;
-}
-.bangumi-info-item em {
-    color: #f2b94b;
-}
-
-/* 解决artitalk的图标问题 */
-#uploadSource > svg {
-    width: 1.19em;
-    height: 1.5em;
-}
-
 /*top-img黑色透明玻璃效果移除，不建议加，除非你执着于完全一图流或者背景图对比色明显 */
 #page-header:not(.not-top-img):before {
     background-color: transparent !important;
 }
 
-/* 首页文章卡片 */
-#recent-posts > .recent-post-item {
+/* 卡片恢复半透明，透出全屏背景图（2026-09 Typora 改版时曾改为实底白，现按用户要求还原） */
+/* 首页文章卡片（Butterfly 5.5 在 #recent-posts 与卡片之间有一层 .recent-post-items 包装，须用后代选择器） */
+#recent-posts .recent-post-item {
     background: rgba(255, 255, 255, 0.9);
 }
 
@@ -132,41 +89,58 @@ div#category {
     background: rgba(255, 255, 255, 0.9);
 }
 
-/*夜间模式伪类遮罩层透明*/
-[data-theme="dark"] #recent-posts > .recent-post-item {
-    background: #121212;
+/*夜间模式：Typora Night 适配，卡片深灰 + 细边框*/
+[data-theme="dark"] #recent-posts .recent-post-item {
+    background: #282828;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .card-widget {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] div#post {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] div#tag {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] div#archive {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] div#page {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] div#category {
-    background: #121212 !important;
+    background: #282828 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
-[data-theme="dark"] div#category {
-    background: transparent !important;
-}
-/* 页脚透明 */
+/* 页脚透明（原配背景图/蓝色底时文字为白色，纸面风格下改为灰色保证可读） */
 #footer {
     background: transparent !important;
+    color: #8590a6;
+}
+
+#footer a,
+#footer div,
+#footer span {
+    color: #8590a6;
+}
+
+[data-theme="dark"] #footer,
+[data-theme="dark"] #footer a,
+[data-theme="dark"] #footer div,
+[data-theme="dark"] #footer span {
+    color: #8b949e;
 }
 
 /* 移除页面底部多余空间 */
@@ -179,10 +153,8 @@ div#category {
     padding-bottom: 0 !important;
 }
 
-/* 头图透明 */
-#page-header {
-    background: transparent !important;
-}
+/* 头图：恢复主题默认（横幅显示文章封面图）。
+   原来这里的 background:transparent 是配合已移除的全屏背景图（一图流）用的，已删除 */
 
 /* 禁止横向滚动条 */
 html {
@@ -192,6 +164,8 @@ html {
 body {
     margin-bottom: 0 !important;
     overflow-x: hidden;
+    /* Typora 行距（原主题为 2） */
+    line-height: 1.6;
 }
 
 /* 背景图 */
@@ -233,7 +207,6 @@ body {
 #rightside {
     position: fixed;
     z-index: 99999;
-}
 }
 
 /* 右侧工具栏 — 固定在右侧，隐藏时贴边，鼠标靠近或移动时弹出 */
@@ -313,7 +286,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #3b70fc;
+    background-color: #c4c6cc;
     border-radius: 2em;
 }
 
@@ -322,49 +295,8 @@ body {
 }
 
 ::-moz-selection {
-    color: #fff;
-    background-color: #3b70fc;
-}
-
-/* 音乐播放器 */
-
-/* .aplayer .aplayer-lrc {
-  display: none !important;
-} */
-
-.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
-    left: -66px !important;
-    transition: all 0.3s;
-    /* 默认情况下缩进左侧66px，只留一点箭头部分 */
-}
-
-.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
-    left: 0 !important;
-    transition: all 0.3s;
-    /* 鼠标悬停是左侧缩进归零，完全显示按钮 */
-}
-
-.aplayer.aplayer-fixed {
-    z-index: 999999 !important;
-}
-
-/* 评论框  */
-.vwrap {
-    box-shadow: 2px 2px 5px #bbb;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    padding: 30px;
-    margin: 30px 0px 30px 0px;
-}
-
-/* 设置评论框 */
-
-.vcard {
-    box-shadow: 2px 2px 5px #bbb;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    padding: 30px;
-    margin: 30px 0px 0px 0px;
+    color: inherit;
+    background-color: rgba(9, 105, 218, 0.25);
 }
 
 /* md网站下划线 */
@@ -491,9 +423,46 @@ body {
     display: none;
 }
 
-/* 代码框主题 */
+/* 代码框主题：Typora 小圆角 */
 #article-container figure.highlight {
-    border-radius: 10px;
+    border-radius: 4px;
+}
+
+/* 头图：完全透明，让全屏固定背景图自然透出（一图流效果，和主页背景无缝相连） */
+#page-header {
+    background: transparent !important;
+}
+
+/* 文章页信息块（标题+meta）：改用文档流贴顶显示（复刻原站视觉：标题在横幅顶部而非底部）。
+   原理：原站粒子特效的 * { position: relative } 意外覆盖了主题的绝对定位，此为该效果的等效还原 */
+#page-header #nav,
+#page-header #post-info {
+    position: relative;
+}
+
+/* 窄屏目录面板：贴近右侧边缘（原 55px），给左侧正文多留空间 */
+@media screen and (max-width: 900px) {
+    #aside-content #card-toc {
+        right: 15px;
+    }
+    /* 窄屏取消信息块相对定位的 bottom 上移，避免标题与导航栏重叠 */
+    #page-header #post-info {
+        top: 0;
+    }
+}
+
+/* Typora 风格 ==高亮== ：过滤器将其转为 <mark>，此处补足样式 */
+#article-container mark {
+    padding: 0 2px;
+    border-radius: 3px;
+    background: rgba(255, 212, 0, 0.4);
+    color: inherit;
+}
+
+/* 热门页统计条：透明融入卡片（原站页面底色与统计条同色故隐形，现页面底色改浅需显式透明） */
+#page #hot-summary {
+    background: transparent;
+    box-shadow: none;
 }
 
 /* 文章页目录：JS 控制 position:fixed，此处仅限制高度 */
@@ -503,9 +472,14 @@ body {
     overflow-y: auto !important;
 }
 
-/* 分类/归档页面文章列表日期颜色设为白色 */
+/* 文章信息行（发表于/更新于/分类/阅读量）：保持原有小字样式 */
+#post-info #post-meta {
+    font-size: 14px;
+}
+
+/* 分类/归档页面文章列表日期颜色：灰色（原白色是配合背景图的，白底上会看不见） */
 .article-sort-item-time time {
-    color: #fff !important;
+    color: #8590a6 !important;
 }
 
 /* 文章内视频自适应宽度，防止撑大页面 */

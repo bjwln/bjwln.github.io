@@ -1,9 +1,9 @@
 ---
 title: Codex
 date: 2026-06-15 15:03:43
-tags:
+tags: [AI, Codex]
 categories: 大模型
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBjwlqMAhYr0WtDkEzS2sUfJtQ1nLE_QACIAxrG3UggUV20latvjMWjAEAAwIAA3gAAzwE.png
+cover: cover.jpg
 ---
 
 Codex是2025年10月[OpenAI](https://baike.baidu.com/item/OpenAI/19758408?fromModule=lemma_inlink)公司开发的AI代码生成训练模型，基于[GPT-3](https://baike.baidu.com/item/GPT-3/63687636?fromModule=lemma_inlink)架构改进，专注于将自然语言指令转换为多种编程语言代码。该模型通过混合训练自然语言和公开代码数据构建，采用[Transformer](https://baike.baidu.com/item/Transformer/64429264?fromModule=lemma_inlink)架构并具备14KB代码记忆容量，支持[Python](https://baike.baidu.com/item/Python/407313?fromModule=lemma_inlink)、[JavaScript](https://baike.baidu.com/item/JavaScript/321142?fromModule=lemma_inlink)、[Java](https://baike.baidu.com/item/Java/85979?fromModule=lemma_inlink)等主流语言，作为[GitHub Copilot](https://baike.baidu.com/item/GitHub Copilot/57754203?fromModule=lemma_inlink)的技术基础，核心功能包括代码生成、补全优化及多语言翻译。2025年5月升级为云端软件工程代理后，新增并行处理代码编写、调试和测试功能，集成至[ChatGPT](https://baike.baidu.com/item/ChatGPT/62446358?fromModule=lemma_inlink)生态并向企业用户开放。同年6月通过ChatGPT Codex子系统实现多方案生成功能，允许用户为单一任务获取多个代码方案并自主选择最优解。
@@ -203,4 +203,3 @@ Codex（OpenAI 的代码助手 CLI）**原生只支持 OpenAI 自己的 Response
 ![image-20260615210046180](Codex/image-20260615210046180.png)
 
 这种情况就是开梯子了，VPN 开启时会自动写入系统全局代理环境变量 `HTTP_PROXY / HTTPS_PROXY`； Codex、Ccswitch 会自动读取这组变量，强行把本地路由请求再次走外网代理，链路彻底断裂。
-

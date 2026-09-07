@@ -1,9 +1,9 @@
 ---
 title: pizza
 date: 2026-07-15 21:44:58
-tags:
+tags: [菜谱]
 categories: Cooking
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBk-VqV5pIzZ3HpmRrc8mUZtTZ2uc3WAACOw1rG0fcwEYjoy-urAXiKgEAAwIAA3cAAz0E.png
+cover: cover.jpg
 ---
 
 将以下材料混合至碗 / 盆中

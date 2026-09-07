@@ -1,0 +1,192 @@
+/* ============================================================
+   Typora 风格 - 文章正文 Markdown 渲染
+   亮色 = Typora 默认 GitHub 主题观感
+   暗色 = Typora Night 适配版（跟随 [data-theme='dark'] 切换）
+   仅作用于文章正文 #article-container.post-content，不影响侧栏/评论/首页
+   ============================================================ */
+
+/* ---------- 变量 ---------- */
+#article-container.post-content {
+  /* Typora/GitHub 亮色 */
+  --typora-text: #24292f;
+  --typora-text-muted: #6a737d;
+  --typora-border: #eaecef;        /* 标题/hr 分隔线 */
+  --typora-border-strong: #d0d7de; /* 表格边框 */
+  --typora-link: #0969da;
+  --typora-code-bg: rgba(175, 184, 193, 0.2);
+  --typora-quote-border: #d0d7de;
+  --typora-selection: rgba(9, 105, 218, 0.2);
+  /* 覆盖主题代码块变量（CSS 变量按元素继承，锁定在正文容器内生效） */
+  --hl-bg: #f6f8fa;
+  --hl-color: #24292f;
+  --hltools-bg: #f6f8fa;
+  --hltools-color: #6a737d;
+  --hlnumber-bg: #f6f8fa;
+  --hlnumber-color: #9ca3af;
+  --hlscrollbar-bg: #c8ced6;
+
+  color: var(--typora-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+[data-theme="dark"] #article-container.post-content {
+  /* Typora Night 适配暗色 */
+  --typora-text: #c9d1d9;
+  --typora-text-muted: #8b949e;
+  --typora-border: #3d3d3d;
+  --typora-border-strong: #505965;
+  --typora-link: #58a6ff;
+  --typora-code-bg: rgba(110, 118, 129, 0.4);
+  --typora-quote-border: #4b5563;
+  --typora-selection: rgba(88, 166, 255, 0.35);
+  --hl-bg: #1b1b1b;
+  --hl-color: rgba(255, 255, 255, 0.78);
+  --hltools-bg: #1b1b1b;
+  --hltools-color: #9d9d9d;
+  --hlnumber-bg: #1b1b1b;
+  --hlnumber-color: rgba(255, 255, 255, 0.35);
+  --hlscrollbar-bg: #4a4a4a;
+}
+
+/* ---------- 标题：GitHub 层级，h1/h2 带下分隔线 ---------- */
+#article-container.post-content h1,
+#article-container.post-content h2,
+#article-container.post-content h3,
+#article-container.post-content h4,
+#article-container.post-content h5,
+#article-container.post-content h6 {
+  margin: 24px 0 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit;
+}
+
+#article-container.post-content h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--typora-border);
+}
+
+#article-container.post-content h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--typora-border);
+}
+
+#article-container.post-content h3 { font-size: 1.25em; }
+#article-container.post-content h4 { font-size: 1em; }
+#article-container.post-content h5 { font-size: 0.875em; }
+#article-container.post-content h6 {
+  font-size: 0.85em;
+  color: var(--typora-text-muted);
+}
+
+/* ---------- 链接 / 加粗 / 选中 ---------- */
+#article-container.post-content a {
+  color: var(--typora-link);
+}
+
+#article-container.post-content b,
+#article-container.post-content strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+#article-container.post-content ::selection {
+  background: var(--typora-selection);
+  color: inherit;
+}
+
+/* ---------- 行内代码：深灰文字 + 浅灰底（去掉主题的红色字） ---------- */
+#article-container.post-content pre,
+#article-container.post-content code {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, "Courier New", monospace !important;
+  font-size: 0.9em;
+}
+
+#article-container.post-content code:not(pre code) {
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  background: var(--typora-code-bg);
+  color: inherit;
+}
+
+/* ---------- 代码块：浅灰底 + 细边框，保留工具栏与行号 ---------- */
+#article-container.post-content figure.highlight {
+  margin: 0 0 16px;
+  border: 1px solid var(--typora-border);
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+#article-container.post-content pre code,
+#article-container.post-content figure.highlight pre code {
+  font-size: inherit;
+}
+
+/* 工具栏（复制/语言标签/折叠按钮）与行号列配色走上面的 --hltools/--hlnumber 变量 */
+
+/* ---------- 引用块：灰色左边框 + 灰色文字，无背景 ---------- */
+#article-container.post-content blockquote {
+  margin: 0 0 16px;
+  padding: 0 1em;
+  border-left: 4px solid var(--typora-quote-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--typora-text-muted);
+}
+
+#article-container.post-content blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- 表格：GitHub 风格细边框 ----------
+   只作用于 Markdown 表格容器 .table-wrap，
+   不能碰代码块内部的 table（否则会顶掉主题折叠时的 display:none） */
+#article-container.post-content .table-wrap {
+  overflow-x: auto;
+  margin: 0 0 16px;
+  border-radius: 0;
+}
+
+#article-container.post-content .table-wrap table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid var(--typora-border-strong);
+}
+
+#article-container.post-content .table-wrap th,
+#article-container.post-content .table-wrap td {
+  padding: 6px 13px;
+  border: 1px solid var(--typora-border-strong);
+}
+
+#article-container.post-content .table-wrap thead {
+  background: transparent;
+}
+
+#article-container.post-content .table-wrap th {
+  font-weight: 600;
+}
+
+/* ---------- 列表 ---------- */
+#article-container.post-content li + li {
+  margin-top: 0.25em;
+}
+
+/* ---------- 分隔线：1px 浅灰线 ---------- */
+#article-container.post-content hr {
+  height: 1px;
+  margin: 24px 0;
+  border: none;
+  background: var(--typora-border);
+}
+
+/* ---------- 图片：Typora 原样，无圆角 ---------- */
+#article-container.post-content img {
+  border-radius: 0;
+}

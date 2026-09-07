@@ -1,8 +1,8 @@
 ---
 title: 那些年那些事那些bug
 date: 2026-08-13 16:44:25
-tags:
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNVqfZIjlAxBmRG3FpZMqEkCahXTZgACWQxrG3sF6Efun34yU9GdugEAAwIAA3kAAz0E.png
+tags: [随笔]
+cover: cover.jpg
 sticky: 3
 ---
 

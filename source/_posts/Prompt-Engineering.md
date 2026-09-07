@@ -1,9 +1,9 @@
 ---
 title: Prompt Engineering
 date: 2026-08-13 18:52:27
-tags:
+tags: [AI, Prompt]
 categories: 大模型
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBnNlqfaL9bqIiUZwoCMF8LIrlAAHw7RsAAigMaxukDPFHrlkGQFVlSNIBAAMCAAN4AAM9BA.png
+cover: cover.jpg
 ---
 
 # 一个项目的提示词（220k stars）[英文]
@@ -145,4 +145,3 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 清晰可落地的成功标准，可以自主迭代；模糊的目标（例如 “把它弄好”）则需要反复确认需求。
 
 **这套准则生效的标志**：代码差异中无效改动变少；因过度设计而返工的情况减少；疑问和确认发生在编码之前，而非出错之后。
-

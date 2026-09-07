@@ -1,0 +1,10 @@
+/* 星空粒子层：位于 #web_bg(-999) 之上、正文内容之下，不响应鼠标 */
+#starfield-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -998;
+    pointer-events: none;
+}

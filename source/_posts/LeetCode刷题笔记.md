@@ -1,20 +1,606 @@
 ---
 title: LeetCode刷题笔记
 date: 2026-06-24 18:38:58
-tags:
+tags: [算法, LeetCode]
 categories: 算法题
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBkGVqO7WC4DGzDgSFbhiu1wiq6DFouAAC7AtrG5DK4EW3dVRlz4SK8AEAAwIAA3kAAzwE.png
+cover: cover.jpg
 mathjax: true
 sticky: 1
 ---
 
+# 基础算法
+
+## 位运算
+
+### XOR 性质
+
+#### [3513. 不同 XOR 三元组的数目 I（1663）](https://leetcode.cn/problems/number-of-unique-xor-triplets-i)
+
+最终答案肯定包含n，因为三个相同的数XOR出来是这个数本身且两个下标相同 时 a XOR a XOR b = b，仍然包括在n里面
+
+**那么能XOR出来n外面的值只能通过三个下标不同的数XOR。**
+
+n=4时
+
+XOR出来0 ：1 XOR 2 XOR 3
+
+XOR出来n+1 ：  2 XOR 3 XOR 4
+
+XOR出来n+2 ：  1 XOR 3 XOR 4
+
+XOR出来n+3 ：  1 XOR 2 XOR 4
+
+n=5时，n=6时，n=6时.最多到7就没了
+
+n=8，9，10，11，12，13，14，15时，最高到15就没了
+
+![image-20260727142026967](LeetCode刷题笔记/image-20260727142026967.png)
+
+这么说.....
+
+![image-20260727142134553](LeetCode刷题笔记/image-20260727142134553.png)
+
+```c++
+int uniqueXorTriplets(vector<int>& nums) {
+	if(nums.size()==2) return 2;
+	else if(nums.size()==1) return 1;
+	else {
+		int a=nums.size();
+		int b=1;
+		while(b<=a) b*=2;
+		return b;
+	};
+}
+```
+
+![image-20260727142640488](LeetCode刷题笔记/image-20260727142640488.png)
+
+![image-20260727142717545](LeetCode刷题笔记/image-20260727142717545.png)
+
+后来发现....
+
+> 对于 n ≥ 3，所有可能的 XOR 值恰好覆盖 [0, 2^k - 1]，其中 2^k 是大于 n 的最小 2 的幂。
+
+#### [3514. 不同 XOR 三元组的数目 II（1884）](https://leetcode.cn/problems/number-of-unique-xor-triplets-ii)
+
+一开始想的dp，后来发现用不到，只需要开个set然后枚举就能过了。这是1884的题？
+
+```c++
+int uniqueXorTriplets(vector<int>& nums) {
+	 unordered_set<int> nums2;
+	 unordered_set<int> nums3;
+	 for(int i=0;i<nums.size();i++){
+		 for(int j=0;j<nums.size();j++){
+			 nums2.insert(nums[i]^nums[j]);
+		 }
+	 }
+	 for(auto v:nums2){
+		 for(int i=0;i<nums.size();i++){
+			 nums3.insert(nums[i]^v);
+		 }
+	 }
+	 return nums3.size();
+}
+```
+
+![image-20260729183615933](LeetCode刷题笔记/image-20260729183615933.png)
+
+emmmm，能过就是好方法[doge]
+
+#### [3702. 按位异或非零的最长子序列](https://leetcode.cn/problems/longest-subsequence-with-non-zero-bitwise-xor/)
+
+脑筋急转弯，事实上所有数的XOR值只有三种情况。因为只有`A XOR B`等于0的时候当且仅当`A==B`
+
+```c++
+int longestSubsequence(vector<int>& nums) {
+        //[1,……x,x+1] 1^……^x=x+1 ->0
+        //[1,……x,x+1] 1^……^x!=x+1 ->！0
+        int t = nums.size();
+        int ans = nums[0];
+        int flag = 0;
+        if (ans != 0)
+            flag = 1;
+        for (int i = 1; i < t - 1; i++) {
+            if (nums[i] != 0)
+                flag = 1;
+            ans ^= nums[i];
+        }
+        if (t == 1) {
+            if (nums[t - 1] == 0)
+                return 0;
+            else
+                return 1;
+        } else {
+            if (ans == nums[t - 1]){
+                if(ans==0&&flag==0) return 0;
+                return t - 1;
+            }
+            else
+                return t;
+        }
+    }
+```
+
+## 区间合并
+
+### 删除被覆盖区间
+
+我们只要确定了左端点从小到大排序，那么就确保了**接下来的区间的左端点一定位于前面已经遍历过区间左端点的后面**。那么只要本轮的右端点小于前面区间右端点的最大值，就可以把本轮区间消除掉。
+
+如果左端点相等，我们尽量让右端点值大的排在前面。因为⬆的假设就是由大区间逐渐包裹小区间的算法过程。
+
+```c++
+int removeCoveredIntervals(vector<vector<int>>& intervals) {
+	sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
+		if (a[0] != b[0])
+			return a[0] < b[0];
+		else return a[1] > b[1];
+	});
+	int maxx = 0;
+	int ans = intervals.size();
+	for (auto& v : intervals) {
+		if (v[1] <= maxx) ans--;
+		maxx = max(v[1], maxx);
+	}
+	return ans;
+}
+```
+
+## 字符串
+
+### [3517. 最小回文排列 I（1357）](https://leetcode.cn/problems/smallest-palindromic-rearrangement-i)
+
+```c++
+string smallestPalindrome(string s) {
+	string beginn = "";
+	string endd = "";
+	int ant[27] = {0};
+	for (int i = 0; i < s.size(); i++) {
+		ant[s[i] - 'a']++;
+	}
+	char pre;
+	int flag = 0;
+	for (int i = 26; i >= 0; i--) {
+		if (ant[i] % 2 != 0) {
+			pre = 'a' + i;
+			ant[i]--;
+			flag = 1;
+		}
+		while (ant[i] > 0) {
+			ant[i] -= 2;
+			char temp = 'a' + i;
+//			cout<<ant[i]<<endl;
+			beginn += temp;
+			endd += temp;
+		}
+	}
+	reverse(beginn.begin(), beginn.end());
+	if (flag)
+		beginn = beginn + pre + endd;
+	else beginn += endd;
+	return beginn;
+
+}
+```
+
+**这段代码内存会超限**
+
+```c++
+ans = temp + ans + temp;
+```
+
+它在循环里每次都在构造一个新字符串，并且把当前 `ans` 完整地复制一遍。假设字符串长度是 n，这个循环大概执行 n/2 次，每次平均复制 O(n) 个字符，总时间和临时内存开销都是 **O(n²)**。当 n 很大时（比如 10⁵），中间产生的大量临时字符串对象会把内存顶爆，LeetCode 就报 MLE 了。
+
+### [ 3016. 输入单词需要的最少按键次数 II（1534）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-ii)
+
+能过就是好方法
+
+```c++
+int minimumPushes(string word) {
+	sort(word.begin(), word.end());
+	cout<<word<<endl;
+	int out[27];
+	int ant=0;
+	int ans = 1;
+	int step = 1;
+	int button = 2;
+	char pre = word[0];
+	for (int i = 1; i < word.size(); i++,ans++) {
+		if (word[i] != pre) {
+			pre=word[i];
+			out[ant++]=ans;
+            ans=0;
+		}
+	}
+    out[ant++]=ans;
+	ans=0;
+	sort(out,out+ant);
+	for(int i=ant-1;i>=0;i--,button++){
+		if(button==10){
+			button=2;
+			step++;
+		}
+		ans+=out[i]*step;
+	}
+	return ans;
+}
+```
+
+## 滑动窗口
+
+## 模拟
 
 
-# 栈和队列
 
-## 单调栈
+### [2958. 最多 K 个重复元素的最长子数组（）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/)
 
-### [1081. 不同字符的最小子序列（2185）](https://leetcode.cn/problems/smallest-subsequence-of-distinct-characters)
+```c++
+class Solution {
+public:
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        map<int, int> mp;
+        int ans = 1;
+        int temp = 0;
+        int j = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            mp[nums[i]]++;
+            temp++;
+            while (mp[nums[i]] > k && j < i) {
+                temp--;
+                mp[nums[j]]--;
+                j++;
+            }
+            ans = max(ans, temp);
+        }
+        return ans;
+    }
+};
+```
+
+
+
+### [3867.数对的最大公约数之和](https://leetcode.cn/problems/sum-of-gcd-of-formed-pairs/description/?envType=daily-question&envId=2026-07-16)
+
+```c++
+class Solution {
+public:
+    int gcd(int x,int y){
+        return y==0?x:gcd(y,x%y);
+    }
+    long long gcdSum(vector<int>& nums) {
+        vector<int> prefixGcd(nums.size());
+        int mx=0;
+        long long sum=0;
+        for(int i=0;i<nums.size();i++){
+        mx=max(mx,nums[i]);
+            prefixGcd[i]=gcd(nums[i],mx);
+        }
+        sort(prefixGcd.begin(),prefixGcd.end(),[](const int &a,const int &b){
+            return a<b;
+        });
+        for(int i=0,j=nums.size()-1;i<nums.size()/2;i++,j--){
+            if(i==j) break;
+            sum+=gcd(prefixGcd[i],prefixGcd[j]);
+        }
+        return sum;
+    }
+};
+```
+
+### [1260. 二维网格迁移（1337）](https://leetcode.cn/problems/shift-2d-grid)
+
+把二维网格展开成一串，比如样例一我们可以展开成：
+
+`1 2 3 4 5 6 7 8 9`，然后每个数的实际位置为`i*n+j`，移动后的实际位置为`(i*n+j+k)%(m*n)`。然后再复原回矩阵形式就行了。
+
+**AC代码  **
+
+```c++
+vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
+
+	int m=grid.size();
+	int n=grid[0].size();
+	vector<vector<int>> grid2(m,vector<int>(n));
+	for(int i=0;i<m;i++){
+		for(int j=0;j<n;j++){
+			int fact=(i*n+j+k)%(m*n);
+			int i1=fact/n;
+			int j1=fact-i1*n;
+			grid2[i1][j1]=grid[i][j];
+		}
+	}
+	return grid2;
+}
+```
+
+### [3499. 操作后最大活跃区段数 I（1729）](https://leetcode.cn/problems/maximize-active-section-with-trade-i/)
+
+操作的本质是：
+  - 损失：选中那个 1 块的长度（它变成 0 了）
+  - 收获：选中那个 1 块左右两侧的 0 块长度之和（它们变成 1 了）
+
+**其实选中那个 1 块是不会变化的**，因为首先它变成0，然后又变成1.相当于不加不减。我们收获的得到的就是这个1块周围0的长度之和.**注意题目没有说`1`的区间必须连续，也就是比如`111111101111100`的最大活跃区间有12个`1`**
+
+那么我们的算法目的就出现了：原始 1 的个数 + max(左右 0 块长度之和)
+
+**AC代码**
+
+```c++
+int maxActiveSectionsAfterTrade(string s) {
+	int ones = count(s.begin(), s.end(), '1');
+	vector<pair<int, int>> blocks;
+	char com = s[0];
+	int tem = 1;
+	for (int i = 1; i < s.size(); i++) {
+		if (com == s[i]) {
+			tem++;
+		} else {
+            blocks.push_back({com-'0',tem});
+			com=s[i];
+			tem=1;
+		}
+	}
+	  blocks.push_back({s[s.size()-1]-'0',tem});
+	int maxx=0;
+	for (int idx = 1; idx + 1 < blocks.size(); idx++) {
+		if (blocks[idx].first == 1) {
+			int gain = blocks[idx - 1].second + blocks[idx + 1].second;
+			maxx = max(maxx, gain);
+		}
+	}
+	return ones+maxx;
+}
+```
+
+![image-20260721191419331](LeetCode刷题笔记/image-20260721191419331.png)
+
+emmmmm优化一下
+
+- **`vector<pair<int,int>> blocks`** — 原来要先建块数组再二次遍历，n=10^5 时 push_back 有多次扩容和堆分配。改成单遍扫描，只维护 `prev0`/`cur0` 两个滑动变量，零动态分配
+- **合并 `count` 遍历** — 原来 `count(s.begin(), s.end(), '1')` 单独扫一遍，现在在主循环里顺便累加 `ones`
+
+```c++
+class Solution {
+public:
+    int maxActiveSectionsAfterTrade(const string& s) {
+        int n = s.size();
+        int ones = 0;
+        int prev0 = 0, cur0 = 0;
+        int max2 = 0;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '1') {
+                ones++;
+                if (cur0 > 0) {
+                    if (prev0 > 0) max2 = max(max2, prev0 + cur0);
+                    prev0 = cur0;
+                    cur0 = 0;
+                }
+            } else {
+                cur0++;
+            }
+        }
+        if (cur0 > 0 && prev0 > 0) max2 = max(max2, prev0 + cur0);
+        return ones + max2;
+    }
+};
+```
+
+### [3536. 两个数字的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-two-digits)
+
+简单模拟
+
+```c++
+ int maxProduct(int n) {
+        int ans[10] = {0};
+        while (n != 0) {
+            ans[n % 10]++;
+            n /= 10;
+        }
+        int anss = 0;
+        for (int i = 9; i >= 0; i--) {
+            if (ans[i] >= 1) {
+                if (anss == 0 && ans[i] >= 2)
+                    return i * i;
+                if (anss != 0)
+                    return anss * i;
+                else {
+                    anss = i;
+                    ans[i]--;
+                }
+            }
+        }
+        return anss;
+    }
+```
+
+### [628. 三个数的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-three-numbers/description/?envType=daily-question&envId=2026-07-27)
+
+简单模拟
+
+```c++
+int maximumProduct(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        return max(nums[nums.size() - 1] * nums[nums.size() - 2] *
+                       nums[nums.size() - 3],
+                   nums[nums.size() - 1] * nums[0] * nums[1]);
+    }
+```
+
+### [1464. 数组中两元素的最大乘积(1121)](https://leetcode.cn/problems/maximum-product-of-two-elements-in-an-array)
+
+同上
+
+```c++
+int maxProduct(vector<int>& nums) {
+	sort(nums.begin(),nums.end());
+	return max((nums[nums.size()-1]-1)*(nums[nums.size()-2]-1),(nums[0]-1)*(nums[1]-1));
+}
+```
+
+### [3014. 输入单词需要的最少按键次数 I（1324）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-i)
+
+简单模拟
+
+```c++
+int minimumPushes(string word) {
+	sort(word.begin(), word.end());
+	int ans = 0, step = 1, button = 2;
+	char pre = word[0];
+	ans += step;
+	for (int i = 1; i < word.size(); i++) {
+		word[i] != pre ? (button + 1 == 10 ? (button = 2, step++) : (button += 1)) : 1;
+		ans += step;
+	}
+	return ans;
+}
+```
+
+### [3731. 找出缺失的元素（1217）](https://leetcode.cn/problems/find-missing-elements/)
+
+```c++
+    vector<int> findMissingElements(vector<int>& nums) {
+        vector<int> ans;
+        sort(nums.begin(), nums.end());
+        int temp = nums[0];
+        for (int i = 0; i < nums.size(); i++,temp++) {
+            while (nums[i] != temp) {
+                ans.push_back(temp);
+                temp++;
+            }
+        }
+        return ans;
+    }
+```
+
+### [3345. 最小可整除数位乘积 I（1200）](https://leetcode.cn/problems/smallest-divisible-digit-product-i/)
+
+```c++
+    int smallestNumber(int n, int t) {
+        for (int i = n;; i++) {
+            int ans = 1;
+            int temp = i;
+            while (temp > 0) {
+                ans *= (temp % 10);
+                temp /= 10;
+            }
+            if (ans % t == 0)
+                return i;
+        }
+    }
+```
+
+### [2996. 大于等于顺序前缀和的最小缺失整数（1406）](https://leetcode.cn/problems/smallest-missing-integer-greater-than-sequential-prefix-sum/)
+
+```c++
+    int missingInteger(vector<int>& nums) {
+        unordered_set<int> st(nums.begin(), nums.end());
+        int sum = nums[0];
+        for(int i = 1; i < nums.size(); ++i){
+            if(nums[i] == nums[i-1] + 1){
+                sum += nums[i];
+            }else{
+                break;
+            }
+        }
+        int x = sum;
+        while(st.count(x)){
+            x++;
+        }
+        return x;
+    }
+```
+
+### [3090. 每个字符最多出现两次的最长子字符串（1329）](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/)
+
+```c++
+  int maximumLengthSubstring(string s) {
+        int ans=0;
+        for(int i=0;i<s.size();i++){
+            int temp=0;
+            int a[27]={0};
+            for(int j=i;j<s.size();j++){
+                a[s[j]-'a']++;
+                temp++;
+                if(a[s[j]-'a']>2){
+                    temp--;
+                    break;
+                }
+            }
+            ans=max(ans,temp);
+        }
+        return ans;
+    }
+```
+
+###
+
+### [3069. 将元素分配到两个数组中 I(1024)](https://leetcode.cn/problems/distribute-elements-into-two-arrays-i/)
+
+```c++
+    vector<int> resultArray(vector<int>& nums) {
+        vector<int> arr1;
+        vector<int> arr2;
+        vector<int> result;
+        arr1.push_back(nums[0]);
+        arr2.push_back(nums[1]);
+        for(int i=2;i<nums.size();i++){
+            if(arr1[arr1.size()-1]>arr2[arr2.size()-1])
+                arr1.push_back(nums[i]);
+            else
+                arr2.push_back(nums[i]);
+
+        };
+        for(int i=0;i<arr1.size();i++) result.push_back(arr1[i]);
+        for(int i=0;i<arr2.size();i++) result.push_back(arr2[i]);
+        return result;
+    }
+
+```
+
+### [3622. 判断整除性（1149）](https://leetcode.cn/problems/check-divisibility-by-digit-sum-and-product/)
+
+```c++
+ bool checkDivisibility(int n) {
+        int ji=1,sum=0;
+        int temp=n;
+        while(n){
+            int t=n%10;
+            ji*=t;
+            sum+=t;
+            n/=10;
+        }
+        return ((temp%(ji+sum))==0?1:0);
+    }
+```
+
+### [3718. 缺失的最小倍数（1228）](https://leetcode.cn/problems/smallest-missing-multiple-of-k/)
+
+```c++
+int missingMultiple(vector<int>& nums, int k) {
+        sort(nums.begin(),nums.end());
+        int max=nums[nums.size()-1];
+        set<int> se;
+        for(int i=0;i<nums.size();i++){
+            se.insert(nums[i]);
+        }
+        int temp=1;
+        while(temp*k<=max){
+            if(se.find(temp*k)==se.end()) return temp*k;
+            temp++;a
+        }
+        return temp*k;
+    }
+```
+
+
+
+# 数据结构
+
+## 栈和队列
+
+### 单调栈
+
+#### [1081. 不同字符的最小子序列（2185）](https://leetcode.cn/problems/smallest-subsequence-of-distinct-characters)
 
 本题当我们遍历到一个新的位置的时候，思考这个字符串是作为一个新的子串的开头，还是作为一个旧的子串的延续？
 
@@ -96,9 +682,101 @@ sticky: 1
 		}
 ```
 
+# 数学知识
+
+## 约数
+
+### 辗转相除法
+
+#### [奇数和与偶数和的最大公约数](https://leetcode.cn/problems/gcd-of-odd-and-even-sums/solutions/3993675/qi-shu-he-yu-ou-shu-he-de-zui-da-gong-yu-f3os/?envType=daily-question&envId=2026-07-15)
+
+辗转相除法的核心原理是：两个整数的最大公约数等于**第二个数**与**第一个数除以第二个数所得余数**的最大公约数，其数学表达式如下：
+$$
+\gcd(a,b) = \gcd(b,\; a \bmod b)
+$$
+`sumOdd`和`sumEven`用等差数列求和
+
+```c++
+class Solution {
+public:
+    int gcd(int x, int y) {
+        return y == 0 ? x : gcd(y, x % y);
+    }
+    int gcdOfOddEvenSums(int n) {
+        return gcd(n * n, n * (n + 1));
+    }
+};
+```
+
+## 博弈论
+
+### [1927. 求和游戏（2005）](https://leetcode.cn/problems/sum-game/)
+
+来源：[D. Ticket Game（1700）](https://codeforces.com/contest/1215/problem/D)
+
+我还以为一点之前能做出来的，哭。
+
+![image-20260823021305405](LeetCode刷题笔记/image-20260823021305405.png)
+
+```c++
+bool sumGame(string num) {
+        if (num.find('?') == -1) {
+            int ans1 = 0, ans2 = 0;
+            for (int i = 0, j = num.size() / 2; i < num.size() / 2; i++, j++) {
+                ans1 += (num[i] - '0');
+                ans2 += (num[j] - '0');
+            }
+            return ans1 != ans2;
+        } else {
+            int ans1 = 0, ans2 = 0;
+            int sum1 = 0, sum2 = 0;
+            for (int i = 0, j = num.size() / 2; i < num.size() / 2; i++, j++) {
+                ans1 += (num[i] == '?');
+                ans2 += (num[j] == '?');
+                if (num[i] != '?')
+                    sum1 += (num[i] - '0');
+                if (num[j] != '?')
+                    sum2 += (num[j] - '0');
+            }
+            if (ans1 < ans2) {
+                swap(ans1, ans2);
+                swap(sum1, sum2);
+            }
+            ans1 -= ans2;
+            if (sum1 > sum2) {
+                // 1.左边的值>右边的值
+                // 最优策略可以简化为两边都加9，右边的所有？被左边消除掉
+                // 最后左边的?由alice先选,alice肯定选9拉大左边的值，而bob不能选负数，所以bob必输
+                return 1;
+            } else if (sum1 < sum2) {
+                // 2.左边的值<右边的值
+                // 最优策略可以简化为两边都加9，右边的所有？被左边消除掉
+                // 最后左边的?由alice先选,alice选0拉小左边的值,或者选9拉大左边的值
+                // 而bob选9拉大，bob只要能在剩下的?/2次拉大到sum2，就可以赢
+                // 或者alice拉大不到比右边还要大
+                int bob = ans1 / 2;
+                int alice = (ans1 + 1) / 2;
+                int ok1 = bob * 9 >= (sum2 - sum1); // ok1=1代表bob能补回来
+                int ok2 =
+                    alice * 9 + sum1 >
+                    sum2; // ok2=1代表alice拉大到了比sum2更大,不能加等号，因为bob可以选0
+                cout << alice * 9 << ' ' << sum2 << endl;
+                return (!ok1 || ok2);
+            } else {
+                // 如果两边相等，只要有alice的回合，bob必输，因为bob不能选负数
+                if (ans1 > 0)
+                    return 1;
+                else
+                    return 0;
+            }
+        }
+        return 0;
+    }
+```
 
 
-# DP
+
+# 动态规划
 
 ## 锯齿形状数组的总数Ⅱ
 
@@ -440,260 +1118,6 @@ bool stoneGame(vector<int>& piles) {
 
 ### [1406. 石子游戏 III（2027）](https://leetcode.cn/problems/stone-game-iii)
 
-
-
-# 区间处理
-
-## 删除被覆盖区间
-
-我们只要确定了左端点从小到大排序，那么就确保了**接下来的区间的左端点一定位于前面已经遍历过区间左端点的后面**。那么只要本轮的右端点小于前面区间右端点的最大值，就可以把本轮区间消除掉。
-
-如果左端点相等，我们尽量让右端点值大的排在前面。因为⬆的假设就是由大区间逐渐包裹小区间的算法过程。
-
-```c++
-int removeCoveredIntervals(vector<vector<int>>& intervals) {
-	sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
-		if (a[0] != b[0])
-			return a[0] < b[0];
-		else return a[1] > b[1];
-	});
-	int maxx = 0;
-	int ans = intervals.size();
-	for (auto& v : intervals) {
-		if (v[1] <= maxx) ans--;
-		maxx = max(v[1], maxx);
-	}
-	return ans;
-}
-```
-
-
-
-# 数论
-
-## 辗转相除法
-
-### [奇数和与偶数和的最大公约数](https://leetcode.cn/problems/gcd-of-odd-and-even-sums/solutions/3993675/qi-shu-he-yu-ou-shu-he-de-zui-da-gong-yu-f3os/?envType=daily-question&envId=2026-07-15)
-
-辗转相除法的核心原理是：两个整数的最大公约数等于**第二个数**与**第一个数除以第二个数所得余数**的最大公约数，其数学表达式如下：
-$$
-\gcd(a,b) = \gcd(b,\; a \bmod b)
-$$
-`sumOdd`和`sumEven`用等差数列求和
-
-```c++
-class Solution {
-public:
-    int gcd(int x, int y) {
-        return y == 0 ? x : gcd(y, x % y);
-    }
-    int gcdOfOddEvenSums(int n) {
-        return gcd(n * n, n * (n + 1));
-    }
-};
-```
-
-# 位运算
-
-## XOR 性质
-
-### [3513. 不同 XOR 三元组的数目 I（1663）](https://leetcode.cn/problems/number-of-unique-xor-triplets-i)
-
-最终答案肯定包含n，因为三个相同的数XOR出来是这个数本身且两个下标相同 时 a XOR a XOR b = b，仍然包括在n里面
-
-**那么能XOR出来n外面的值只能通过三个下标不同的数XOR。**
-
-n=4时
-
-XOR出来0 ：1 XOR 2 XOR 3
-
-XOR出来n+1 ：  2 XOR 3 XOR 4
-
-XOR出来n+2 ：  1 XOR 3 XOR 4
-
-XOR出来n+3 ：  1 XOR 2 XOR 4
-
-n=5时，n=6时，n=6时.最多到7就没了
-
-n=8，9，10，11，12，13，14，15时，最高到15就没了
-
-![image-20260727142026967](LeetCode刷题笔记/image-20260727142026967.png)
-
-这么说.....
-
-![image-20260727142134553](LeetCode刷题笔记/image-20260727142134553.png)
-
-```c++
-int uniqueXorTriplets(vector<int>& nums) {
-	if(nums.size()==2) return 2;
-	else if(nums.size()==1) return 1;
-	else {
-		int a=nums.size();
-		int b=1;
-		while(b<=a) b*=2;
-		return b;
-	};
-}
-```
-
-![image-20260727142640488](LeetCode刷题笔记/image-20260727142640488.png)
-
-![image-20260727142717545](LeetCode刷题笔记/image-20260727142717545.png)
-
-后来发现....
-
-> 对于 n ≥ 3，所有可能的 XOR 值恰好覆盖 [0, 2^k - 1]，其中 2^k 是大于 n 的最小 2 的幂。
-
-### [3514. 不同 XOR 三元组的数目 II（1884）](https://leetcode.cn/problems/number-of-unique-xor-triplets-ii)
-
-一开始想的dp，后来发现用不到，只需要开个set然后枚举就能过了。这是1884的题？
-
-```c++
-int uniqueXorTriplets(vector<int>& nums) {
-	 unordered_set<int> nums2;
-	 unordered_set<int> nums3;
-	 for(int i=0;i<nums.size();i++){
-		 for(int j=0;j<nums.size();j++){
-			 nums2.insert(nums[i]^nums[j]);
-		 }
-	 }
-	 for(auto v:nums2){
-		 for(int i=0;i<nums.size();i++){
-			 nums3.insert(nums[i]^v);
-		 }
-	 }
-	 return nums3.size();
-}
-```
-
-![image-20260729183615933](LeetCode刷题笔记/image-20260729183615933.png)
-
-emmmm，能过就是好方法[doge]
-
-### [3702. 按位异或非零的最长子序列](https://leetcode.cn/problems/longest-subsequence-with-non-zero-bitwise-xor/)
-
-脑筋急转弯，事实上所有数的XOR值只有三种情况。因为只有`A XOR B`等于0的时候当且仅当`A==B`
-
-```c++
-int longestSubsequence(vector<int>& nums) {
-        //[1,……x,x+1] 1^……^x=x+1 ->0
-        //[1,……x,x+1] 1^……^x!=x+1 ->！0
-        int t = nums.size();
-        int ans = nums[0];
-        int flag = 0;
-        if (ans != 0)
-            flag = 1;
-        for (int i = 1; i < t - 1; i++) {
-            if (nums[i] != 0)
-                flag = 1;
-            ans ^= nums[i];
-        }
-        if (t == 1) {
-            if (nums[t - 1] == 0)
-                return 0;
-            else
-                return 1;
-        } else {
-            if (ans == nums[t - 1]){
-                if(ans==0&&flag==0) return 0;
-                return t - 1;
-            }
-            else
-                return t;
-        }
-    }
-```
-
-
-
-# 字符串
-
-## [3517. 最小回文排列 I（1357）](https://leetcode.cn/problems/smallest-palindromic-rearrangement-i)
-
-```c++
-string smallestPalindrome(string s) {
-	string beginn = "";
-	string endd = "";
-	int ant[27] = {0};
-	for (int i = 0; i < s.size(); i++) {
-		ant[s[i] - 'a']++;
-	}
-	char pre;
-	int flag = 0;
-	for (int i = 26; i >= 0; i--) {
-		if (ant[i] % 2 != 0) {
-			pre = 'a' + i;
-			ant[i]--;
-			flag = 1;
-		}
-		while (ant[i] > 0) {
-			ant[i] -= 2;
-			char temp = 'a' + i;
-//			cout<<ant[i]<<endl;
-			beginn += temp;
-			endd += temp;
-		}
-	}
-	reverse(beginn.begin(), beginn.end());
-	if (flag)
-		beginn = beginn + pre + endd;
-	else beginn += endd;
-	return beginn;
-
-}
-```
-
-**这段代码内存会超限**
-
-```c++
-ans = temp + ans + temp;
-```
-
-它在循环里每次都在构造一个新字符串，并且把当前 `ans` 完整地复制一遍。假设字符串长度是 n，这个循环大概执行 n/2 次，每次平均复制 O(n) 个字符，总时间和临时内存开销都是 **O(n²)**。当 n 很大时（比如 10⁵），中间产生的大量临时字符串对象会把内存顶爆，LeetCode 就报 MLE 了。
-
-## [ 3016. 输入单词需要的最少按键次数 II（1534）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-ii)
-
-能过就是好方法
-
-```c++
-int minimumPushes(string word) {
-	sort(word.begin(), word.end());
-	cout<<word<<endl;
-	int out[27];
-	int ant=0;
-	int ans = 1;
-	int step = 1;
-	int button = 2;
-	char pre = word[0];
-	for (int i = 1; i < word.size(); i++,ans++) {
-		if (word[i] != pre) {
-			pre=word[i];
-			out[ant++]=ans;
-            ans=0;
-		}
-	}
-    out[ant++]=ans;
-	ans=0;
-	sort(out,out+ant);
-	for(int i=ant-1;i>=0;i--,button++){
-		if(button==10){
-			button=2;
-			step++;
-		}
-		ans+=out[i]*step;
-	}
-	return ans;
-}
-```
-
-
-
-
-
-# 滑动窗口
-
-
-
 # 贪心
 
 ## [1386. 安排电影院座位（1637）](https://leetcode.cn/problems/cinema-seat-allocation/)
@@ -716,12 +1140,12 @@ public:
         int family[3] = {2, 4, 6};
         for (int i = 0; i < reservedSeats.size(); i++) {
             if (reservedSeats[i][0] != now || i == reservedSeats.size() - 1) {//这里是不能加上|| i == reservedSeats.size() - 1的，因为这个分支的作用是进行上一行的计算，**更新条件只能是换行**，也就是reservedSeats[i][0] != now 。如果加上|| i == reservedSeats.size() - 1。那么就导致没有触发换行条件就进行上一行的更新
-                
-                if (i == reservedSeats.size() - 1) { 
+
+                if (i == reservedSeats.size() - 1) {
                     //没有触发换行条件就进行上一行的更新就会导致下一行里面有上一行的状态信息（因为我是想：比如now=1，当第二行的时候now改为2的同时处理第一行的数据，直到now改为185的时候处理第184行的数据。然后更新我的seatcount=0，当186行的时候处理第185行的数据。但是没有第186行，所以我加上了i == reservedSeats.size() - 1，但是如果这样的话这个分支里面的 seatcount[reservedSeats[i][1]] = 1;就会在第184行加上第185行的数据）
                     seatcount[reservedSeats[i][1]] = 1;
                 }
-               
+
                 now = reservedSeats[i][0];
                 seat--;
                 int ok = -1;
@@ -810,351 +1234,3 @@ public:
         return ans;
     }
 ```
-
-
-
-# 模拟
-
-
-
-## [2958. 最多 K 个重复元素的最长子数组（）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/)
-
-```c++
-class Solution {
-public:
-    int maxSubarrayLength(vector<int>& nums, int k) {
-        map<int, int> mp;
-        int ans = 1;
-        int temp = 0;
-        int j = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            mp[nums[i]]++;
-            temp++;
-            while (mp[nums[i]] > k && j < i) {
-                temp--;
-                mp[nums[j]]--;
-                j++;
-            }
-            ans = max(ans, temp);
-        }
-        return ans;
-    }
-};
-```
-
-
-
-## [3867.数对的最大公约数之和](https://leetcode.cn/problems/sum-of-gcd-of-formed-pairs/description/?envType=daily-question&envId=2026-07-16)
-
-```c++
-class Solution {
-public:
-    int gcd(int x,int y){
-        return y==0?x:gcd(y,x%y);
-    }
-    long long gcdSum(vector<int>& nums) {
-        vector<int> prefixGcd(nums.size());
-        int mx=0;
-        long long sum=0;
-        for(int i=0;i<nums.size();i++){
-        mx=max(mx,nums[i]);
-            prefixGcd[i]=gcd(nums[i],mx);
-        }
-        sort(prefixGcd.begin(),prefixGcd.end(),[](const int &a,const int &b){
-            return a<b;
-        });
-        for(int i=0,j=nums.size()-1;i<nums.size()/2;i++,j--){
-            if(i==j) break;
-            sum+=gcd(prefixGcd[i],prefixGcd[j]);
-        }
-        return sum;
-    }
-};
-```
-
-## [1260. 二维网格迁移（1337）](https://leetcode.cn/problems/shift-2d-grid)
-
-把二维网格展开成一串，比如样例一我们可以展开成：
-
-`1 2 3 4 5 6 7 8 9`，然后每个数的实际位置为`i*n+j`，移动后的实际位置为`(i*n+j+k)%(m*n)`。然后再复原回矩阵形式就行了。
-
-**AC代码  **
-
-```c++
-vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
-	
-	int m=grid.size();
-	int n=grid[0].size();
-	vector<vector<int>> grid2(m,vector<int>(n));
-	for(int i=0;i<m;i++){
-		for(int j=0;j<n;j++){
-			int fact=(i*n+j+k)%(m*n);
-			int i1=fact/n;
-			int j1=fact-i1*n;
-			grid2[i1][j1]=grid[i][j];
-		}
-	}
-	return grid2;
-}
-```
-
-## [3499. 操作后最大活跃区段数 I（1729）](https://leetcode.cn/problems/maximize-active-section-with-trade-i/)
-
-操作的本质是：
-  - 损失：选中那个 1 块的长度（它变成 0 了）
-  - 收获：选中那个 1 块左右两侧的 0 块长度之和（它们变成 1 了）
-
-**其实选中那个 1 块是不会变化的**，因为首先它变成0，然后又变成1.相当于不加不减。我们收获的得到的就是这个1块周围0的长度之和.**注意题目没有说`1`的区间必须连续，也就是比如`111111101111100`的最大活跃区间有12个`1`**
-
-那么我们的算法目的就出现了：原始 1 的个数 + max(左右 0 块长度之和)
-
-**AC代码**
-
-```c++
-int maxActiveSectionsAfterTrade(string s) {
-	int ones = count(s.begin(), s.end(), '1');
-	vector<pair<int, int>> blocks;
-	char com = s[0];
-	int tem = 1;
-	for (int i = 1; i < s.size(); i++) {
-		if (com == s[i]) {
-			tem++;
-		} else {
-            blocks.push_back({com-'0',tem});
-			com=s[i];
-			tem=1;
-		}
-	}
-	  blocks.push_back({s[s.size()-1]-'0',tem});
-	int maxx=0;
-	for (int idx = 1; idx + 1 < blocks.size(); idx++) {
-		if (blocks[idx].first == 1) {
-			int gain = blocks[idx - 1].second + blocks[idx + 1].second;
-			maxx = max(maxx, gain);
-		}
-	}
-	return ones+maxx;
-}
-```
-
-![image-20260721191419331](LeetCode刷题笔记/image-20260721191419331.png)
-
-emmmmm优化一下
-
-- **`vector<pair<int,int>> blocks`** — 原来要先建块数组再二次遍历，n=10^5 时 push_back 有多次扩容和堆分配。改成单遍扫描，只维护 `prev0`/`cur0` 两个滑动变量，零动态分配
-- **合并 `count` 遍历** — 原来 `count(s.begin(), s.end(), '1')` 单独扫一遍，现在在主循环里顺便累加 `ones`
-
-```c++
-class Solution {
-public:
-    int maxActiveSectionsAfterTrade(const string& s) {
-        int n = s.size();
-        int ones = 0;
-        int prev0 = 0, cur0 = 0;
-        int max2 = 0;
-        for (int i = 0; i < n; i++) {
-            if (s[i] == '1') {
-                ones++;
-                if (cur0 > 0) {
-                    if (prev0 > 0) max2 = max(max2, prev0 + cur0);
-                    prev0 = cur0;
-                    cur0 = 0;
-                }
-            } else {
-                cur0++;
-            }
-        }
-        if (cur0 > 0 && prev0 > 0) max2 = max(max2, prev0 + cur0);
-        return ones + max2;
-    }
-};
-```
-
-## [3536. 两个数字的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-two-digits)
-
-简单模拟
-
-```c++
- int maxProduct(int n) {
-        int ans[10] = {0};
-        while (n != 0) {
-            ans[n % 10]++;
-            n /= 10;
-        }
-        int anss = 0;
-        for (int i = 9; i >= 0; i--) {
-            if (ans[i] >= 1) {
-                if (anss == 0 && ans[i] >= 2)
-                    return i * i;
-                if (anss != 0)
-                    return anss * i;
-                else {
-                    anss = i;
-                    ans[i]--;
-                }
-            }
-        }
-        return anss;
-    }
-```
-
-## [628. 三个数的最大乘积（1199）](https://leetcode.cn/problems/maximum-product-of-three-numbers/description/?envType=daily-question&envId=2026-07-27)
-
-简单模拟
-
-```c++
-int maximumProduct(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        return max(nums[nums.size() - 1] * nums[nums.size() - 2] *
-                       nums[nums.size() - 3],
-                   nums[nums.size() - 1] * nums[0] * nums[1]);
-    }
-```
-
-## [1464. 数组中两元素的最大乘积(1121)](https://leetcode.cn/problems/maximum-product-of-two-elements-in-an-array)
-
-同上
-
-```c++
-int maxProduct(vector<int>& nums) {
-	sort(nums.begin(),nums.end());
-	return max((nums[nums.size()-1]-1)*(nums[nums.size()-2]-1),(nums[0]-1)*(nums[1]-1));
-}
-```
-
-## [3014. 输入单词需要的最少按键次数 I（1324）](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-i)
-
-简单模拟
-
-```c++
-int minimumPushes(string word) {
-	sort(word.begin(), word.end());
-	int ans = 0, step = 1, button = 2;
-	char pre = word[0];
-	ans += step;
-	for (int i = 1; i < word.size(); i++) {
-		word[i] != pre ? (button + 1 == 10 ? (button = 2, step++) : (button += 1)) : 1;
-		ans += step;
-	}
-	return ans;
-}
-```
-
-## [3731. 找出缺失的元素（1217）](https://leetcode.cn/problems/find-missing-elements/)
-
-```c++
-    vector<int> findMissingElements(vector<int>& nums) {
-        vector<int> ans;
-        sort(nums.begin(), nums.end());
-        int temp = nums[0];
-        for (int i = 0; i < nums.size(); i++,temp++) {
-            while (nums[i] != temp) {
-                ans.push_back(temp);
-                temp++;
-            }
-        }
-        return ans;
-    }
-```
-
-## [3345. 最小可整除数位乘积 I（1200）](https://leetcode.cn/problems/smallest-divisible-digit-product-i/)
-
-```c++
-    int smallestNumber(int n, int t) {
-        for (int i = n;; i++) {
-            int ans = 1;
-            int temp = i;
-            while (temp > 0) {
-                ans *= (temp % 10);
-                temp /= 10;
-            }
-            if (ans % t == 0)
-                return i;
-        }
-    }
-```
-
-## [2996. 大于等于顺序前缀和的最小缺失整数（1406）](https://leetcode.cn/problems/smallest-missing-integer-greater-than-sequential-prefix-sum/)
-
-```c++
-    int missingInteger(vector<int>& nums) {
-        unordered_set<int> st(nums.begin(), nums.end());
-        int sum = nums[0];
-        for(int i = 1; i < nums.size(); ++i){
-            if(nums[i] == nums[i-1] + 1){
-                sum += nums[i];
-            }else{
-                break; 
-            }
-        }
-        int x = sum;
-        while(st.count(x)){
-            x++;
-        }
-        return x;
-    }
-```
-
-## [3090. 每个字符最多出现两次的最长子字符串（1329）](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/)
-
-```c++
-  int maximumLengthSubstring(string s) {
-        int ans=0;
-        for(int i=0;i<s.size();i++){
-            int temp=0;
-            int a[27]={0};
-            for(int j=i;j<s.size();j++){
-                a[s[j]-'a']++;
-                temp++;
-                if(a[s[j]-'a']>2){
-                    temp--;
-                    break;
-                }
-            }
-            ans=max(ans,temp);
-        }
-        return ans;
-    }
-```
-
-## 
-
-## [3069. 将元素分配到两个数组中 I(1024)](https://leetcode.cn/problems/distribute-elements-into-two-arrays-i/)
-
-```c++
-    vector<int> resultArray(vector<int>& nums) {
-        vector<int> arr1;
-        vector<int> arr2;
-        vector<int> result;
-        arr1.push_back(nums[0]);
-        arr2.push_back(nums[1]);
-        for(int i=2;i<nums.size();i++){
-            if(arr1[arr1.size()-1]>arr2[arr2.size()-1])
-                arr1.push_back(nums[i]);
-            else
-                arr2.push_back(nums[i]);
-            
-        };
-        for(int i=0;i<arr1.size();i++) result.push_back(arr1[i]);
-        for(int i=0;i<arr2.size();i++) result.push_back(arr2[i]);
-        return result;
-    }
-    
-```
-
-## [3622. 判断整除性（1149）](https://leetcode.cn/problems/check-divisibility-by-digit-sum-and-product/)
-
-```c++
- bool checkDivisibility(int n) {
-        int ji=1,sum=0;
-        int temp=n;
-        while(n){
-            int t=n%10;
-            ji*=t;
-            sum+=t;
-            n/=10;
-        }
-        return ((temp%(ji+sum))==0?1:0);
-    }
-```
-

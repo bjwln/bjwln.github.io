@@ -1,9 +1,10 @@
 ---
 title: OMGs论文解读
 date: 2026-08-02 14:58:59
-tags:
+tags: [多智能体, 论文]
 categories: Multi-agent system for MDT
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBmM1qbvXaJmmiG4udMCE0TW9N4RbbWwACgwxrGzeJeUcs8HfzSs6e7gEAAwIAA3gAAz0E.png
+mathjax: true
+cover: cover.jpg
 ---
 
 [Download PDF](妇科多智能体.pdf)
@@ -387,4 +388,3 @@ OMGs不定位为自主决策者，而是<u>决策支持脚手架</u>。它在综
 - 评估为离线非干预性，关注决策质量和一致性，而非对患者预后的因果效应
 - Phase IV中，改善主要反映增强的结构化文档、证据表达和失败模式暴露，需要未来随机或交叉设计来分离辅助效应与锚定效应
 - 真实世界EHR的碎片化和缺失仍是残余风险的主要来源，系统性能和安全性与输入质量紧密耦合
-
