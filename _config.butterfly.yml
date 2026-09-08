@@ -1097,7 +1097,7 @@ inject:
     # - <link rel="stylesheet" href="/xxx.css">
   bottom:
     # - <script src="xxxx"></script>
-    - <script src="/js/starfield.js?v=20260907a" defer></script>
+    - <script src="/js/starfield.js?v=20260907b" defer></script>
     # - <script src="/js/particles-stars.js" defer></script>
     - <script src="/js/rightside-auto-hide.js" defer></script>
     - <script src="/js/page-counter.js" defer></script>
