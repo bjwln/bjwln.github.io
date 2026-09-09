@@ -682,7 +682,31 @@ int missingMultiple(vector<int>& nums, int k) {
 		}
 ```
 
-# 数学知识
+# 数学
+
+## 基础数学
+
+### [3871. 统计范围内的逗号 II（1381）](https://leetcode.cn/problems/count-commas-in-range-ii/)
+
+```c++
+long long countCommas(long long n) {
+	long long  ans = 0;
+	long long flag = 1000000;
+	long long p = 1;
+	while (flag <= n) {
+		ans += ((flag - flag / 1000)) * p;
+		flag *= 1000;
+		p++;
+	}
+	flag /= 1000;
+	ans += (n - flag + 1) * p;
+
+	return (ans < 0 ? 0 : ans);
+
+}
+```
+
+
 
 ## 约数
 
