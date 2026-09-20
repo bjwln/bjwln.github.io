@@ -228,9 +228,60 @@ int minimumPushes(string word) {
 
 ## 滑动窗口
 
-## 模拟
+## 矩阵模拟
 
+### [835. 图像重叠（1970）](https://leetcode.cn/problems/image-overlap/)
 
+```c++
+int largestOverlap(vector<vector<int>>& img1, vector<vector<int>>& img2) {
+	int n = img1.size();
+	vector<pair<int, int>> A, B;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (img1[i][j] == 1) A.emplace_back(i, j);
+			if (img2[i][j] == 1) B.emplace_back(i, j);
+		}
+	}
+	int ans=0;
+	map<pair<int,int>,int> mp;
+	for (auto &a : A) {
+		for (auto &b : B) {
+			//mp记录矩阵的移动规范（pair<int,int>确定矩阵唯一一种的移动方式）
+			mp[{a.first-b.first,a.second-b.second}]++;
+			ans=max(ans,mp[{a.first-b.first,a.second-b.second}]);
+		}
+	}
+	return ans;
+}
+```
+
+### ⭐[[836. 矩形重叠（1400）](https://leetcode.cn/problems/rectangle-overlap/)](https://leetcode.cn/problems/image-overlap/)
+
+反向看矩阵不重叠的情况，其余情况全是true
+
+就是判断星星的两个地方是false
+
+![image-20260914190241339](LeetCode刷题笔记/image-20260914190241339.png)
+
+```c++
+    bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
+        int x1 = rec1[0], y1 = rec1[1], x2 = rec1[2], y2 = rec1[3];
+        int xx1 = rec2[0], yy1 = rec2[1], xx2 = rec2[2], yy2 = rec2[3];
+        if (yy1 >= y2)
+            return false;
+        if (yy2 <= y1)
+            return false;
+        if (xx1 >= x2)
+            return false;
+        if (xx2 <= x1)
+            return false;
+        return true;
+    }
+```
+
+重叠清情况：![5cc9ed2ee2b375bc68bc4850cd55460a](LeetCode刷题笔记/5cc9ed2ee2b375bc68bc4850cd55460a.png)
+
+## 签到题
 
 ### [2958. 最多 K 个重复元素的最长子数组（）](https://leetcode.cn/problems/length-of-longest-subarray-with-at-most-k-frequency/)
 
@@ -700,10 +751,20 @@ long long countCommas(long long n) {
 	}
 	flag /= 1000;
 	ans += (n - flag + 1) * p;
-
 	return (ans < 0 ? 0 : ans);
 
 }
+```
+
+### [3498. 字符串的反转度（1201）](https://leetcode.cn/problems/reverse-degree-of-a-string/)
+
+```c++
+    int reverseDegree(string s) {
+        int ans=0;
+        for(int i=0;i<s.size();i++)
+           ans=ans+(27-((int)s[i]-96))*(i+1); 
+        return ans;
+    }
 ```
 
 
