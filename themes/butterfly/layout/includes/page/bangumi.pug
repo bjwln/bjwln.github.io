@@ -1,0 +1,15 @@
+#article-container.container
+  .bangumi
+    .bangumi-grid
+      each item in site.data.bangumi.items
+        - const episodeText = item.episode === '看完' ? '看完' : `看到第 ${item.episode} 集`
+        a.bangumi-card(href=item.link target="_blank" rel="noopener noreferrer" title=item.title)
+          .bangumi-cover
+            img(src=item.image alt=item.title + '封面' loading='lazy' decoding='async')
+            if item.episode
+              span.bangumi-episode= episodeText
+          .bangumi-info
+            .bangumi-title= item.title
+            .bangumi-author= item.author
+            if item.intro
+              .bangumi-intro= item.intro

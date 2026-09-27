@@ -1,0 +1,86 @@
+.container
+  .bangumi
+    margin-bottom: 20px
+
+    .bangumi-grid
+      display: grid
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr))
+      gap: 16px
+
+      +maxWidth600()
+        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr))
+        gap: 12px
+
+    .bangumi-card
+      display: flex
+      flex-direction: column
+      overflow: hidden
+      background: var(--card-bg)
+      border-radius: 8px
+      box-shadow: var(--card-box-shadow)
+      text-decoration: none
+      transition: transform .3s ease, box-shadow .3s ease
+
+      &:hover
+        transform: translateY(-4px)
+        box-shadow: var(--card-hover-box-shadow)
+
+        .bangumi-title
+          color: var(--btn-bg)
+
+        .bangumi-cover img
+          transform: scale(1.04)
+
+      &:focus-visible
+        outline: 2px solid var(--btn-bg)
+        outline-offset: 2px
+
+    .bangumi-cover
+      position: relative
+      aspect-ratio: 2 / 3
+      overflow: hidden
+      background: var(--text-bg-hover)
+
+      img
+        display: block
+        width: 100%
+        height: 100%
+        object-fit: cover
+        transition: transform .3s ease
+
+      .bangumi-episode
+        position: absolute
+        top: 8px
+        right: 8px
+        padding: 3px 7px
+        background: rgba(0, 0, 0, .68)
+        border-radius: 6px
+        color: #fff
+        font-size: .72em
+        line-height: 1.4
+
+    .bangumi-info
+      padding: 12px 14px 14px
+
+    .bangumi-title
+      @extend .limit-one-line
+      color: var(--font-color)
+      font-size: 1em
+      font-weight: 600
+      transition: color .3s ease
+
+    .bangumi-author
+      margin-top: 4px
+      color: var(--card-meta)
+      font-size: .82em
+
+    .bangumi-intro
+      display: -webkit-box
+      overflow: hidden
+      margin-top: 8px
+      color: var(--card-meta)
+      font-size: .78em
+      line-height: 1.6
+      -webkit-box-orient: vertical
+      -webkit-line-clamp: 3
+      line-clamp: 3
