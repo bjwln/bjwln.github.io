@@ -3,6 +3,7 @@ title: Python
 date: 2026-09-20 20:16:38
 tags:
 categories: 大模型
+cover: cover.jpg
 ---
 
 # 命令
@@ -64,110 +65,177 @@ s = "   你好啊   "
 print(s.strip()) # "你好啊"，首尾空格删掉，中间不变
 ```
 
-# argparse 模块
+# 文件
 
- argparse是一个Python模块：命令行选项、参数和子命令解析器。
+## 打开文件的步骤
 
-[`argparse`](https://docs.python.org/zh-cn/3/library/argparse.html#module-argparse) 模块可以让人轻松编写用户友好的命令行接口。程序定义它需要的参数，然后 [`argparse`](https://docs.python.org/zh-cn/3/library/argparse.html#module-argparse) 将弄清如何从 [`sys.argv`](https://docs.python.org/zh-cn/3/library/sys.html#sys.argv) 解析出那些参数。 [`argparse`](https://docs.python.org/zh-cn/3/library/argparse.html#module-argparse) 模块还会自动生成帮助和使用手册，并在用户给程序传入无效参数时报出错误信息。
+这里结合`json`中的语法来演示打开文件的步骤
 
-## 使用流程
+**打开文件，然后把文件转成字符串的形式来操作**
 
-1. **创建解释器`argument`对象**
+```python
+text = file.read_text(encoding="utf-8")  # 读取文件 → 字符串
+config = json.loads(text)                      # 字符串 → Python对象
+```
 
-   ```python
-   class argparse.ArgumentParser(prog=None, usage=None, description=None, epilog=None, parents=[], formatter_class=argparse.HelpFormatter, prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, conflict_handler='error', add_help=True, allow_abbrev=True)
-   
-   ```
+`config`是`list`类型
 
-   - prog - 程序的名称（默认：sys.argv[0]）
-   - usage - 描述程序用途的字符串（默认值：从添加到解析器的参数生成）
-   - description - 在参数帮助文档之前显示的文本（默认值：无）
-   - epilog - 在参数帮助文档之后显示的文本（默认值：无）
-   - parents - 一个 ArgumentParser 对象的列表，它们的参数也应包含在内
-   - formatter_class - 用于自定义帮助文档输出格式的类
-   - prefix_chars - 可选参数的前缀字符集合（默认值：’-’）
-   - fromfile_prefix_chars - 当需要从文件中读取其他参数时，用于标识文件名的前缀字符集合（默认值：None）
-   - argument_default - 参数的全局默认值（默认值： None）
-   - conflict_handler - 解决冲突选项的策略（通常是不必要的）
-   - add_help - 为解析器添加一个 -h/--help 选项（默认值： True）
-   - allow_abbrev - 如果缩写是无歧义的，则允许缩写长选项 （默认值：True）
+**直接读取这个文件，把文件转成列表来操作**
 
-   
+```python
+with open('test1.json', encoding='utf-8') as fp:
+    pyth_list = json.load(fp)
+```
 
-   ```python
-   parser = argparse.ArgumentParser(description='Process some integers.')
-   ```
+其中，`fp`是`file`类型，`pyth_list`是`list`类型
 
-   使用 [`argparse`](https://docs.python.org/zh-cn/3/library/argparse.html#module-argparse) 的第一步是创建一个 [`ArgumentParser`](https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser) 对象。
+**两种方法可以这样写，完全等价**
 
-   [`ArgumentParser`](https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser) 对象包含将命令行解析成 Python 数据类型所需的全部信息。
+```python
+config = json.loads(LLM_CONFIG.read_text(encoding="utf-8"))
+```
 
-2. **添加参数`add_argument() `方法**
+```python
+with open(LLM_CONFIG) as fp:
+    config = json.load(fp)
+```
 
-   ```python
-   ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])
-   
-   ```
+# argparse 库
 
-   - name or flags - 一个命名或者一个选项字符串的列表，例如 foo 或 -f, --foo。
-   - action - 当参数在命令行中出现时使用的动作基本类型。
-   - nargs - 命令行参数应当消耗的数目。
-   - const - 被一些 action 和 nargs 选择所需求的常数。
-   - default - 当参数未在命令行中出现时使用的值。
-   - type - 命令行参数应当被转换成的类型。
-   - choices - 可用的参数的容器。
-   - required - 此命令行选项是否可省略 （仅选项可用）。
-   - help - 一个此选项作用的简单描述。
-   - metavar - 在使用方法消息中使用的参数值示例。
-   - dest - 被添加到 parse_args() 所返回对象上的属性名。
+`argparse` 是 Python 标准库，用来**解析命令行参数**。
 
-   
+典型用途：
 
-   给一个 [`ArgumentParser`](https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser) 添加程序参数信息是通过调用 [`add_argument()`](https://docs.python.org/zh-cn/3/library/argparse.html#argparse.ArgumentParser.add_argument) 方法完成的。
+```bash
+python main.py --model gpt-5.6 --prompt "你好"
+```
 
-   ```python
-   parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
-   ```
+Python 程序可以通过 `argparse` 获取：
 
-   - `'integers'`参数名字。解析完成后，可以通过 `args.integers` 获取这个参数的值。
+```python
+args.model
+args.prompt
+```
 
-     > 这是位置参数（不带`--`），运行脚本时必须在命令行写上，不能省略。
+## 基本使用流程
 
-   - `metavar='N'` 在帮助信息（`-h`）里显示的占位符名字，不影响变量名。 执行 `python script.py -h` 时会看到类似：
+`argparse` 的核心 **3 步**：
 
-     ```
-     positional arguments:
-       N        an integer for the accumulator
-     ```
+```python
+import argparse
 
-     如果不写 metavar，这里默认会显示 `integers`。
+# 1. 创建解析器
+parser = argparse.ArgumentParser(description="一个医学对话智能体")
 
-   - `type=int` 把传入的命令行字符串，自动转换成 `int` 类型。 如果用户输入不是数字，程序直接报错。
+# 2. 添加参数
+parser.add_argument("--model")
+parser.add_argument("--prompt")
 
-   - `nargs='+'`
+# 3. 解析命令行参数
+args = parser.parse_args()
+```
 
-     - `nargs='+'`：接收 1 个或多个参数，打包成列表 list。
-     - 必须至少给 1 个数字，不给会报错。
-     - 示例输入：`python script.py 1 2 3` → `args.integers = [1, 2, 3]`
+可以记成：
 
-     补充 nargs 常用取值对比：
+```
+ArgumentParser()
+      ↓
+add_argument()
+      ↓
+parse_args()
+      ↓
+args
+```
 
-     - `nargs='?'`：0 个或 1 个
-     - `nargs='*'`：0 个或多个（可以不传，得到空列表）
-     - `nargs='+'`：1 个或多个，不能为空
+##  ArgumentParser()
 
-   - `help='an integer for the accumulator'``-h` 帮助信息里的说明文字。
+```python
+parser = argparse.ArgumentParser(
+    description="一个医学对话智能体"  
+)
+```
 
-3. **解析参数**
+`description`：用于描述程序的功能。这也是最常用的一个参数，其他参数暂时不用记
 
-   ```python
-   >>> parser.parse_args(['--sum', '7', '-1', '42'])
-   Namespace(accumulate=<built-in function sum>, integers=[7, -1, 42])
-   ```
+## add_argument()
 
-   
+作用：告诉 `argparse`程序有哪些命令行参数
 
-# JSON
+例如：
+
+```python
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='888')
+    parser.add_argument("--name")
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    print(args.name)
+
+```
+
+![image-20260928164320253](Python/image-20260928164320253.png)
+
+## 位置参数 vs 选项参数
+
+### 位置参数:不带 `--`
+
+```python
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='888')
+    parser.add_argument("name")
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    print(args.name)
+
+```
+
+运行 `python main.py ZhangSan`正常运行
+
+![image-20260928164054541](Python/image-20260928164054541.png)
+
+但是当运行`python main.py` 会报错。
+
+![image-20260928164140242](Python/image-20260928164140242.png)
+
+### 选项参数:带 `--`
+
+```python
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='888')
+    parser.add_argument("--name") # 这里不同
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    print(args.name)
+
+```
+
+![image-20260928164320253](Python/image-20260928164320253.png)
+
+但是当去掉参数的时候不会报错，会显示None值。
+
+![image-20260928164431395](Python/image-20260928164431395.png)
+
+
+
+# JSON库
 
 JSON 文件/响应中的内容通常是 JSON 格式的文本（字符串），Python 需要用 `json` 模块把 JSON 文本解析成 Python 对象。转为字典或者列表格式
 
@@ -303,44 +371,7 @@ with open('test1.json','w',encoding='utf-8')as fp:
 
 ![image-20260923191227658](Python/image-20260923191227658.png)
 
-# 文件
-
-## 打开文件的步骤
-
-这里结合`json`中的语法来演示打开文件的步骤
-
-**打开文件，然后把文件转成字符串的形式来操作**
-
-```python
-text = file.read_text(encoding="utf-8")  # 读取文件 → 字符串
-config = json.loads(text)                      # 字符串 → Python对象
-```
-
-`config`是`list`类型
-
-**直接读取这个文件，把文件转成列表来操作**
-
-```python
-with open('test1.json', encoding='utf-8') as fp:
-    pyth_list = json.load(fp)
-```
-
-其中，`fp`是`file`类型，`pyth_list`是`list`类型
-
-**两种方法可以这样写，完全等价**
-
-```python
-config = json.loads(LLM_CONFIG.read_text(encoding="utf-8"))
-```
-
-```python
-with open(LLM_CONFIG) as fp:
-    config = json.load(fp)
-```
-
-
-
-# HTTP库
+# Http库
 
 ## HTTPX
 

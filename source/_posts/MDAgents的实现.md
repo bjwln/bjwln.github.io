@@ -3,6 +3,7 @@ title: MDAgents的实现
 date: 2026-09-20 18:09:17
 tags:
 categories: Multi-agent system for MDT
+cover: cover.jpg
 ---
 
 # main.py
@@ -209,4 +210,3 @@ self.client.chat             # 聊天相关接口模块
 self.client.chat.completions # 聊天补全接口模块
 self.client.chat.completions.create  # 创建聊天补全的方法
 ```
-
