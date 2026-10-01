@@ -398,7 +398,7 @@ httpx.Client(
 - `verify`：HTTPS 证书验证，默认是 `True`，通常不用写。
 - `proxy`：需要通过代理访问接口时使用。
 
-#### `client.get()`
+## `client.get()`
 
 使用这个工具请求某个 URL
 
