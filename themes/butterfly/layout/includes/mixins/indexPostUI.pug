@@ -9,13 +9,14 @@ mixin indexPostUI()
           - const title = article.title || _p('no_title')
           - const leftOrRight = indexLayout === 3 ? (index % 2 === 0 ? 'left' : 'right') : (indexLayout === 2 ? 'right' : '')
           - const postCover = article.cover
+          - const coverFitStyle = article.cover_fit === 'contain' ? 'object-fit: contain' : null
           - const noCover = article.cover === false || !theme.cover.index_enable ? 'no-cover' : ''
 
           if postCover && theme.cover.index_enable
             .post_cover(class=leftOrRight)
               a(href=url_for(link) title=title)
                 if article.cover_type === 'img'
-                  img.post-bg(src=url_for(postCover) onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
+                  img.post-bg(src=url_for(postCover) style=coverFitStyle onerror=`this.onerror=null;this.src='${url_for(theme.error_img.post_page)}'` alt=title)
                 else
                   div.post-bg(style=`background: ${postCover}`)
           .recent-post-info(class=noCover)

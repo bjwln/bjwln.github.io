@@ -4,6 +4,7 @@ date: 2026-09-20 20:16:38
 tags:
 categories: 大模型
 cover: cover.jpg
+cover_fit: contain
 ---
 
 # 命令
