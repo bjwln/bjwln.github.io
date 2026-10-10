@@ -1,0 +1,93 @@
+#article-container.research-container.container
+  - const research = site.data.research || {}
+  - const categoryName = page.research_category || 'Multi-agent system for MDT'
+  - const researchPosts = site.posts.filter(post => post.categories && post.categories.data.some(category => category.name === categoryName)).sort('-date').toArray()
+  - const statusText = { done: '已完成', active: '进行中', next: '规划中' }
+  - const trackCount = research.tracks ? research.tracks.length : 0
+  - const activeTrackCount = trackCount ? research.tracks.filter(track => track.status === 'active').length : 0
+  - const averageProgress = trackCount ? Math.round(research.tracks.reduce((sum, track) => sum + (Number(track.progress) || 0), 0) / trackCount) : 0
+
+  header.research-hero
+    .research-hero-main
+      .research-eyebrow
+        i.fas.fa-microscope
+        span= research.focus
+      h2.research-heading= research.project
+      p.research-description= research.description
+    .research-hero-status
+      .research-stage-label 当前阶段
+      .research-stage-value= research.current_stage
+      .research-hero-stats
+        .research-stat
+          strong= researchPosts.length
+          span 相关文章
+        .research-stat
+          strong= activeTrackCount
+          span 进行中
+        .research-stat
+          strong= `${averageProgress}%`
+          span 平均进度
+      time.research-updated(datetime=date_xml(research.updated))
+        i.far.fa-calendar-check
+        span= `更新于 ${date(research.updated, 'YYYY-MM-DD')}`
+
+  section.research-section
+    .research-section-heading
+      i.fas.fa-list-check
+      h3 科研进度
+    .research-track-grid
+      each track in research.tracks
+        article.research-track(class=`status-${track.status || 'next'}`)
+          header.research-track-header
+            .research-track-heading
+              h4= track.title
+              time(datetime=date_xml(track.date))= date(track.date, 'YYYY-MM-DD')
+            span.research-track-status= statusText[track.status || 'next']
+          p.research-track-desc= track.description
+          .research-progress-meta
+            span 进度
+            span= `${track.progress}%`
+          .research-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow=track.progress aria-label=track.title)
+            span(style=`width: ${track.progress}%`)
+          ul.research-track-details
+            each detail in track.details
+              li= detail
+          if track.links
+            .research-track-links
+              each link in track.links
+                - const linkedPost = researchPosts.find(post => post.title === link)
+                a(href=linkedPost ? url_for(linkedPost.path) : url_for(link))
+                  i.fas.fa-arrow-up-right-from-square
+                  span= link
+
+  section.research-section
+    .research-section-heading
+      i.fas.fa-newspaper
+      h3 文章索引
+    if researchPosts.length
+      .research-post-grid
+        each post in researchPosts
+          article.research-post-card
+            if post.cover
+              a.research-post-cover(href=url_for(post.path) title=post.title)
+                - const coverFit = post.cover_fit === 'contain' ? 'object-fit: contain' : null
+                img(src=url_for(post.cover) alt=post.title style=coverFit loading='lazy' decoding='async')
+            else
+              a.research-post-cover.research-post-cover-empty(href=url_for(post.path) title=post.title)
+                i.fas.fa-flask
+            .research-post-body
+              .research-post-meta
+                time(datetime=date_xml(post.date))= date(post.date, 'YYYY-MM-DD')
+                if post.tags && post.tags.length
+                  each tag in post.tags.data
+                    span.research-post-tag= tag.name
+              h4.research-post-title
+                a(href=url_for(post.path) title=post.title)= post.title
+              - const postDescription = postDesc(post)
+              if postDescription
+                p.research-post-desc!= postDescription
+              a.research-post-link(href=url_for(post.path))
+                i.fas.fa-book-open-reader
+                span 阅读文章
+    else
+      p.research-empty 暂无相关文章

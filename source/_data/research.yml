@@ -1,0 +1,35 @@
+project: Multi-agent system for MDT
+focus: 医学多智能体 / MDT 决策支持
+description: 面向 MDT 场景的多智能体系统研究，覆盖文献综述、系统实现、评测方法与论文写作。
+current_stage: 文献框架梳理与 SixSixAgents 原型实现
+updated: 2026-10-10
+tracks:
+  - title: 文献综述框架
+    status: active
+    progress: 70
+    date: 2026-10-10
+    description: 以 12 篇核心文献搭建 MAS 工作流、AI hospital、评测与审计四条线索。
+    details:
+      - 已完成 OMGs 的系统结构、评估设计与结果解读。
+      - 继续整理 MDTeamGPT、EvoMDT、MTBBench 与 TRIPOD-LLM。
+    links:
+      - 文章骨架（12篇）
+  - title: SixSixAgents 原型
+    status: active
+    progress: 35
+    date: 2026-10-10
+    description: 已建立 core、config、clients、servers、files 与 examples 的基础结构。
+    details:
+      - 已完成模型配置读取、Agent 会话与基础客户端链路。
+      - 下一步补齐 orchestrator 调度与 servers 证据链路。
+    links:
+      - SixSixAgents
+  - title: 评测与写作
+    status: next
+    progress: 10
+    date: 2026-10-10
+    description: 汇总评测缺口、部署门槛与未来方向，逐步形成综述章节。
+    details:
+      - 重点整理评测不足、报告规范与部署分级。
+    links:
+      - OMGs论文解读

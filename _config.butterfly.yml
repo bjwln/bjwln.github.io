@@ -21,6 +21,7 @@ menu:
   Home: / || fas fa-home
   热门: /hot/ || fas fa-fire
   追番: /bangumi/ || fas fa-film
+  科研: /research/ || fas fa-flask
   # List||fas fa-list:
   #   Music: /music/ || fas fa-music
   #   Movie: /movies/ || fas fa-video
