@@ -5,6 +5,8 @@ current_stage: 文献框架梳理与 SixSixAgents 原型实现
 updated: 2026-10-10
 tracks:
   - title: 文献综述框架
+    key: literature
+    axis_label: 文献
     status: active
     progress: 70
     date: 2026-10-10
@@ -15,6 +17,8 @@ tracks:
     links:
       - 文章骨架（12篇）
   - title: SixSixAgents 原型
+    key: prototype
+    axis_label: 原型
     status: active
     progress: 35
     date: 2026-10-10
@@ -25,6 +29,8 @@ tracks:
     links:
       - SixSixAgents
   - title: 评测与写作
+    key: evaluation
+    axis_label: 评测
     status: next
     progress: 10
     date: 2026-10-10
@@ -33,3 +39,35 @@ tracks:
       - 重点整理评测不足、报告规范与部署分级。
     links:
       - OMGs论文解读
+
+timeline:
+  - date: 2026-08-02
+    title: OMGs 论文解读
+    track: literature
+    summary: 完成 OMGs 的系统结构、评估框架与结果解读，确立 MDT 多智能体研究的第一个完整案例。
+    link: OMGs论文解读
+  - date: 2026-08-16
+    title: 12 篇核心文献框架
+    track: literature
+    summary: 梳理 MAS 工作流、AI hospital、评测与审计四条主线，形成综述骨架。
+    link: 文章骨架（12篇）
+  - date: 2026-09-20
+    title: SixSixAgents 原型启动
+    track: prototype
+    summary: 建立 core、config、clients、servers、files 与 examples 的基础结构，明确多专家调度与证据读取方向。
+    link: SixSixAgents
+  - date: 2026-10-01
+    title: 模型配置与 Agent 会话链路
+    track: prototype
+    summary: 打通模型配置读取、Agent 会话与基础客户端调用，验证本地多模型接入方式。
+    link: SixSixAgents
+  - date: 2026-10-04
+    title: 核心链路整理
+    track: prototype
+    summary: 整理 Agent、客户端与配置之间的关系，为 orchestrator 调度和 servers 证据链路做准备。
+    link: SixSixAgents
+  - date: 2026-10-10
+    title: 评测与写作规划
+    track: evaluation
+    summary: 开始汇总评测缺口、部署门槛与未来方向，准备进入综述成稿阶段。
+    link: 文章骨架（12篇）

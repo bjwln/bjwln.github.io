@@ -2,92 +2,103 @@
   - const research = site.data.research || {}
   - const categoryName = page.research_category || 'Multi-agent system for MDT'
   - const researchPosts = site.posts.filter(post => post.categories && post.categories.data.some(category => category.name === categoryName)).sort('-date').toArray()
-  - const statusText = { done: '已完成', active: '进行中', next: '规划中' }
-  - const trackCount = research.tracks ? research.tracks.length : 0
-  - const activeTrackCount = trackCount ? research.tracks.filter(track => track.status === 'active').length : 0
-  - const averageProgress = trackCount ? Math.round(research.tracks.reduce((sum, track) => sum + (Number(track.progress) || 0), 0) / trackCount) : 0
+  - const timeline = research.timeline || []
+  - const sortedTimeline = timeline.slice().sort((a, b) => new Date(a.date) - new Date(b.date))
+  - const timelineTracks = research.tracks || []
+  - const trackIndex = {}
+  - timelineTracks.forEach((track, index) => { trackIndex[track.key] = index })
+  - const timelineTrackLabel = key => (timelineTracks.find(track => track.key === key) || {}).axis_label || ''
+  - const labelPositions = {}
+  - const pointCountsByTrack = {}
+  - sortedTimeline.forEach(item => {
+  -   const count = pointCountsByTrack[item.track] || 0
+  -   labelPositions[`${item.track}:${item.date}`] = count % 2 === 0 ? 'above' : 'below'
+  -   pointCountsByTrack[item.track] = count + 1
+  - })
+  - const linkedTitle = item => {
+  -   const linkedPost = researchPosts.find(post => post.title === item.link)
+  -   return linkedPost ? linkedPost.title : item.title
+  - }
+  - const labelLinesFor = value => {
+  -   const text = value || ''
+  -   const chars = [...text]
+  -   if (chars.length <= 8) return [text]
+  -   const breakAt = text.search(/[（(：:]/)
+  -   if (breakAt > 0 && breakAt < chars.length - 1) return [text.slice(0, breakAt), text.slice(breakAt)]
+  -   if (chars.length <= 16) return [text]
+  -   return [chars.slice(0, 12).join(''), chars.slice(12).join('')]
+  - }
+  - const chartWidth = 1400
+  - const chartHeight = 700
+  - const chartLeft = 120
+  - const chartRight = 48
+  - const chartTop = 70
+  - const chartBottom = 100
+  - const plotWidth = chartWidth - chartLeft - chartRight
+  - const plotHeight = chartHeight - chartTop - chartBottom
+  - const minTime = sortedTimeline.length ? new Date(sortedTimeline[0].date).getTime() : 0
+  - const maxTime = sortedTimeline.length ? new Date(sortedTimeline[sortedTimeline.length - 1].date).getTime() : 0
+  - const timeRange = maxTime - minTime || 1
+  - const xForTime = time => chartLeft + ((time - minTime) / timeRange) * plotWidth
+  - const laneCount = Math.max(timelineTracks.length, 1)
+  - const laneHeight = plotHeight / laneCount
+  - const yForTrackKey = key => chartTop + laneHeight * ((trackIndex[key] || 0) + 0.5)
+  - const timelinePath = sortedTimeline.map((item, index) => {
+  -   const x = xForTime(new Date(item.date).getTime()).toFixed(1)
+  -   const y = yForTrackKey(item.track).toFixed(1)
+  -   return `${index ? 'L' : 'M'} ${x} ${y}`
+  - }).join(' ')
+  - const tickTimes = [minTime, minTime + timeRange / 2, maxTime]
+  - const activeTimelineItem = sortedTimeline[sortedTimeline.length - 1] || null
 
-  header.research-hero
-    .research-hero-main
-      .research-eyebrow
-        i.fas.fa-microscope
-        span= research.focus
-      h2.research-heading= research.project
-      p.research-description= research.description
-    .research-hero-status
-      .research-stage-label 当前阶段
-      .research-stage-value= research.current_stage
-      .research-hero-stats
-        .research-stat
-          strong= researchPosts.length
-          span 相关文章
-        .research-stat
-          strong= activeTrackCount
-          span 进行中
-        .research-stat
-          strong= `${averageProgress}%`
-          span 平均进度
-      time.research-updated(datetime=date_xml(research.updated))
-        i.far.fa-calendar-check
-        span= `更新于 ${date(research.updated, 'YYYY-MM-DD')}`
-
-  section.research-section
-    .research-section-heading
-      i.fas.fa-list-check
-      h3 科研进度
-    .research-track-grid
-      each track in research.tracks
-        article.research-track(class=`status-${track.status || 'next'}`)
-          header.research-track-header
-            .research-track-heading
-              h4= track.title
-              time(datetime=date_xml(track.date))= date(track.date, 'YYYY-MM-DD')
-            span.research-track-status= statusText[track.status || 'next']
-          p.research-track-desc= track.description
-          .research-progress-meta
-            span 进度
-            span= `${track.progress}%`
-          .research-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow=track.progress aria-label=track.title)
-            span(style=`width: ${track.progress}%`)
-          ul.research-track-details
-            each detail in track.details
-              li= detail
-          if track.links
-            .research-track-links
-              each link in track.links
-                - const linkedPost = researchPosts.find(post => post.title === link)
-                a(href=linkedPost ? url_for(linkedPost.path) : url_for(link))
-                  i.fas.fa-arrow-up-right-from-square
-                  span= link
-
-  section.research-section
-    .research-section-heading
-      i.fas.fa-newspaper
-      h3 文章索引
-    if researchPosts.length
-      .research-post-grid
-        each post in researchPosts
-          article.research-post-card
-            if post.cover
-              a.research-post-cover(href=url_for(post.path) title=post.title)
-                - const coverFit = post.cover_fit === 'contain' ? 'object-fit: contain' : null
-                img(src=url_for(post.cover) alt=post.title style=coverFit loading='lazy' decoding='async')
-            else
-              a.research-post-cover.research-post-cover-empty(href=url_for(post.path) title=post.title)
-                i.fas.fa-flask
-            .research-post-body
-              .research-post-meta
-                time(datetime=date_xml(post.date))= date(post.date, 'YYYY-MM-DD')
-                if post.tags && post.tags.length
-                  each tag in post.tags.data
-                    span.research-post-tag= tag.name
-              h4.research-post-title
-                a(href=url_for(post.path) title=post.title)= post.title
-              - const postDescription = postDesc(post)
-              if postDescription
-                p.research-post-desc!= postDescription
-              a.research-post-link(href=url_for(post.path))
-                i.fas.fa-book-open-reader
-                span 阅读文章
+  section.research-chart-section(aria-label='科研时间线')
+    if sortedTimeline.length
+      .research-timeline-chart
+        .research-timeline-viewport
+          svg(viewBox=`0 0 ${chartWidth} ${chartHeight}` role='img' aria-label='科研时间线')
+            title 科研时间线
+            line.research-timeline-axis(x1=chartLeft y1=chartHeight - chartBottom x2=chartWidth - chartRight y2=chartHeight - chartBottom)
+            each track in timelineTracks
+              - const laneY = yForTrackKey(track.key).toFixed(1)
+              line.research-timeline-lane(x1=chartLeft y1=laneY x2=chartWidth - chartRight y2=laneY)
+              text.research-timeline-lane-label(x=chartLeft - 12 y=laneY text-anchor='end' dominant-baseline='middle')= track.axis_label
+            each tickTime in tickTimes
+              - const tickX = xForTime(tickTime).toFixed(1)
+              line.research-timeline-tick(x1=tickX y1=chartHeight - chartBottom x2=tickX y2=chartHeight - chartBottom + 8)
+              text.research-timeline-tick-label(x=tickX y=chartHeight - 26 text-anchor='middle')= date(new Date(tickTime), 'YYYY-MM-DD')
+            path.research-timeline-line(d=timelinePath)
+            each item in sortedTimeline
+              - const linkedPost = researchPosts.find(post => post.title === item.link)
+              - const pointHref = linkedPost ? url_for(linkedPost.path) : url_for(item.link)
+              - const labelTitle = linkedTitle(item)
+              - const pointXNumber = xForTime(new Date(item.date).getTime())
+              - const pointYNumber = yForTrackKey(item.track)
+              - const pointX = pointXNumber.toFixed(1)
+              - const pointY = pointYNumber.toFixed(1)
+              - const labelPosition = labelPositions[`${item.track}:${item.date}`] || 'above'
+              - const labelAnchor = pointXNumber < chartLeft + 90 ? 'start' : pointXNumber > chartWidth - chartRight - 90 ? 'end' : 'middle'
+              - const labelX = (labelAnchor === 'start' ? pointXNumber + 16 : labelAnchor === 'end' ? pointXNumber - 16 : pointXNumber).toFixed(1)
+              - const labelYNumber = labelPosition === 'above' ? pointYNumber - 46 : pointYNumber + 50
+              - const labelLines = labelLinesFor(labelTitle)
+              a.research-timeline-point(class=`track-${item.track}${item === activeTimelineItem ? ' is-active' : ''}` href=pointHref data-title=labelTitle data-step-title=item.title data-date=date(item.date, 'YYYY-MM-DD') data-track-key=item.track data-track=timelineTrackLabel(item.track) data-summary=item.summary aria-label=`${labelTitle}，${date(item.date, 'YYYY-MM-DD')}`)
+                circle.research-timeline-hit(cx=pointX cy=pointY r=22)
+                circle(cx=pointX cy=pointY r=12)
+                text.research-timeline-label(x=labelX y=labelYNumber.toFixed(1) text-anchor=labelAnchor)
+                  each line, lineIndex in labelLines
+                    tspan(x=labelX dy=lineIndex ? 20 : 0)= line
+        if activeTimelineItem
+          - const activeLinkedPost = researchPosts.find(post => post.title === activeTimelineItem.link)
+          - const activeHref = activeLinkedPost ? url_for(activeLinkedPost.path) : url_for(activeTimelineItem.link)
+          aside.research-timeline-detail(aria-live='polite')
+            .research-timeline-detail-meta
+              time(datetime=date_xml(activeTimelineItem.date))= date(activeTimelineItem.date, 'YYYY-MM-DD')
+              span.research-timeline-track(class=`track-${activeTimelineItem.track}`)= timelineTrackLabel(activeTimelineItem.track)
+            h4= activeTimelineItem.title
+            p= activeTimelineItem.summary
+            a.research-timeline-link(href=activeHref title=activeLinkedPost ? activeLinkedPost.title : activeTimelineItem.link)
+              i.fas.fa-book-open-reader
+              span= activeLinkedPost ? activeLinkedPost.title : activeTimelineItem.link
     else
-      p.research-empty 暂无相关文章
+      p.research-empty 暂无时间线数据
+
+  script(src=url_for('/js/research-timeline.js') defer)
