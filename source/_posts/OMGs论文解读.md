@@ -2,7 +2,8 @@
 title: OMGs论文解读
 date: 2026-08-02 14:58:59
 tags: [多智能体, 论文]
-categories: Multi-agent system for MDT
+research: literature
+research_order: 0
 mathjax: true
 cover: cover.jpg
 ---

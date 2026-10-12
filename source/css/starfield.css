@@ -1,4 +1,4 @@
-/* 星空粒子层：位于 #web_bg(-999) 之上、正文内容之下，不响应鼠标 */
+/* 背景 canvas 层：位于 #web_bg(-9999) 之上、正文内容之下，不响应鼠标 */
 #starfield-canvas {
     position: fixed;
     top: 0;
@@ -7,4 +7,9 @@
     height: 100%;
     z-index: -998;
     pointer-events: none;
+}
+
+/* 日间模式：背景从夜间星图切换为蓝天渐变，canvas 上叠加白云与太阳 */
+[data-theme="light"] #web_bg {
+    background-image: linear-gradient(180deg, #2472c8 0%, #5aa7e8 55%, #aedff7 100%) !important;
 }

@@ -1,104 +1,169 @@
 #article-container.research-container.container
   - const research = site.data.research || {}
-  - const categoryName = page.research_category || 'Multi-agent system for MDT'
-  - const researchPosts = site.posts.filter(post => post.categories && post.categories.data.some(category => category.name === categoryName)).sort('-date').toArray()
-  - const timeline = research.timeline || []
-  - const sortedTimeline = timeline.slice().sort((a, b) => new Date(a.date) - new Date(b.date))
-  - const timelineTracks = research.tracks || []
-  - const trackIndex = {}
-  - timelineTracks.forEach((track, index) => { trackIndex[track.key] = index })
-  - const timelineTrackLabel = key => (timelineTracks.find(track => track.key === key) || {}).axis_label || ''
-  - const labelPositions = {}
-  - const pointCountsByTrack = {}
-  - sortedTimeline.forEach(item => {
-  -   const count = pointCountsByTrack[item.track] || 0
-  -   labelPositions[`${item.track}:${item.date}`] = count % 2 === 0 ? 'above' : 'below'
-  -   pointCountsByTrack[item.track] = count + 1
-  - })
-  - const linkedTitle = item => {
-  -   const linkedPost = researchPosts.find(post => post.title === item.link)
-  -   return linkedPost ? linkedPost.title : item.title
-  - }
-  - const labelLinesFor = value => {
-  -   const text = value || ''
-  -   const chars = [...text]
-  -   if (chars.length <= 8) return [text]
-  -   const breakAt = text.search(/[（(：:]/)
-  -   if (breakAt > 0 && breakAt < chars.length - 1) return [text.slice(0, breakAt), text.slice(breakAt)]
-  -   if (chars.length <= 16) return [text]
-  -   return [chars.slice(0, 12).join(''), chars.slice(12).join('')]
-  - }
+  - const researchPosts = site.posts.filter(post => post.research).sort('-date').toArray()
+  - const plans = research.plans || []
   - const chartWidth = 1400
-  - const chartHeight = 700
-  - const chartLeft = 120
-  - const chartRight = 48
-  - const chartTop = 70
-  - const chartBottom = 100
-  - const plotWidth = chartWidth - chartLeft - chartRight
+  - const chartHeight = 560
+  - const chartLeft = 160
+  - const chartRight = 56
+  - const chartTop = 64
+  - const chartBottom = 88
+  - const datePadding = 56
+  - const groupSpacing = 72
+  - const plotWidth = chartWidth - chartLeft - chartRight - datePadding * 2
   - const plotHeight = chartHeight - chartTop - chartBottom
-  - const minTime = sortedTimeline.length ? new Date(sortedTimeline[0].date).getTime() : 0
-  - const maxTime = sortedTimeline.length ? new Date(sortedTimeline[sortedTimeline.length - 1].date).getTime() : 0
-  - const timeRange = maxTime - minTime || 1
-  - const xForTime = time => chartLeft + ((time - minTime) / timeRange) * plotWidth
-  - const laneCount = Math.max(timelineTracks.length, 1)
-  - const laneHeight = plotHeight / laneCount
-  - const yForTrackKey = key => chartTop + laneHeight * ((trackIndex[key] || 0) + 0.5)
-  - const timelinePath = sortedTimeline.map((item, index) => {
-  -   const x = xForTime(new Date(item.date).getTime()).toFixed(1)
-  -   const y = yForTrackKey(item.track).toFixed(1)
-  -   return `${index ? 'L' : 'M'} ${x} ${y}`
-  - }).join(' ')
-  - const tickTimes = [minTime, minTime + timeRange / 2, maxTime]
-  - const activeTimelineItem = sortedTimeline[sortedTimeline.length - 1] || null
+  - const linkedPostFor = (posts, title) => posts.find(post => post.title === title)
+  - const wideCharPattern = /[\u1100-\u9fff\uff00-\uffef]/
+  - const charWidth = char => wideCharPattern.test(char) ? 18 : 9
+  - const textWidth = value => [...(value || '')].reduce((width, char) => width + charWidth(char), 0)
+  - const breakWideToken = (token, maxWidth) => {
+  -   const chars = [...token]
+  -   const lines = []
+  -   let line = ''
+  -   chars.forEach(char => {
+  -     if (line && textWidth(line + char) > maxWidth) {
+  -       lines.push(line)
+  -       line = char
+  -     } else {
+  -       line += char
+  -     }
+  -   })
+  -   if (line) lines.push(line)
+  -   return lines
+  - }
+  - const labelLinesFor = (value, maxWidth = 170) => {
+  -   const text = (value || '').trim()
+  -   if (!text || textWidth(text) <= maxWidth) return [text]
+  -   const tokens = text.split(/\s+/).flatMap(token => textWidth(token) > maxWidth ? breakWideToken(token, maxWidth) : [token])
+  -   const lines = []
+  -   let line = ''
+  -   tokens.forEach(token => {
+  -     const candidate = line ? `${line} ${token}` : token
+  -     if (!line || textWidth(candidate) <= maxWidth) line = candidate
+  -     else {
+  -       lines.push(line)
+  -       line = token
+  -     }
+  -   })
+  -   if (line) lines.push(line)
+  -   return lines.slice(0, 4)
+  - }
+  - const chartData = plans.map(plan => {
+  -   const timeline = (plan.timeline || []).slice().sort((a, b) => {
+  -     const dateDiff = new Date(a.date) - new Date(b.date)
+  -     return dateDiff || (Number(a.order) || 0) - (Number(b.order) || 0)
+  -   })
+  -   const tracks = plan.tracks || []
+  -   const trackIndex = {}
+  -   tracks.forEach((track, index) => { trackIndex[track.key] = index })
+  -   const trackLabel = key => (tracks.find(track => track.key === key) || {}).axis_label || ''
+  -   const pointCountsByTrack = {}
+  -   const labelPositions = {}
+  -   timeline.forEach(item => {
+  -     const count = pointCountsByTrack[item.track] || 0
+  -     labelPositions[`${item.track}:${item.date}:${item.order}`] = count % 2 === 0 ? 'above' : 'below'
+  -     pointCountsByTrack[item.track] = count + 1
+  -   })
+  -   const minTime = timeline.length ? new Date(timeline[0].date).getTime() : 0
+  -   const maxTime = timeline.length ? new Date(timeline[timeline.length - 1].date).getTime() : 0
+  -   const timeRange = maxTime - minTime || 1
+  -   const xForTime = time => chartLeft + datePadding + ((time - minTime) / timeRange) * plotWidth
+  -   const laneCount = Math.max(tracks.length, 1)
+  -   const laneHeight = plotHeight / laneCount
+  -   const yForTrackKey = key => chartTop + laneHeight * ((trackIndex[key] || 0) + 0.5)
+  -   const dateGroups = {}
+  -   timeline.forEach(item => {
+  -     const key = item.date
+  -     dateGroups[key] = dateGroups[key] || []
+  -     dateGroups[key].push(item)
+  -   })
+  -   const chartMiddle = chartLeft + (chartWidth - chartLeft - chartRight) / 2
+  -   const pointPositions = timeline.map(item => {
+  -     const dateX = xForTime(new Date(item.date).getTime())
+  -     const group = dateGroups[item.date] || [item]
+  -     const groupIndex = group.findIndex(groupItem => groupItem === item)
+  -     const extendsLeft = dateX > chartMiddle
+  -     const groupOffset = extendsLeft ? -(group.length - 1 - groupIndex) * groupSpacing : groupIndex * groupSpacing
+  -     return { item, pointX: dateX + groupOffset, pointY: yForTrackKey(item.track) }
+  -   })
+  -   const items = pointPositions.map((point, pointIndex) => {
+  -     const item = point.item
+  -     const pointXNumber = point.pointX
+  -     const pointYNumber = point.pointY
+  -     const linkedPost = linkedPostFor(researchPosts, item.link)
+  -     const labelTitle = item.label || (linkedPost ? linkedPost.title : item.title)
+  -     const labelAnchor = pointXNumber < chartLeft + 110 ? 'start' : pointXNumber > chartWidth - chartRight - 110 ? 'end' : 'middle'
+  -     const maxLabelWidth = labelAnchor === 'middle' ? 180 : Math.min(240, labelAnchor === 'start' ? chartWidth - chartRight - pointXNumber - 24 : pointXNumber - chartLeft - 24)
+  -     const labelLines = labelLinesFor(labelTitle, Math.max(90, maxLabelWidth))
+  -     let labelPosition = labelPositions[`${item.track}:${item.date}:${item.order}`] || 'above'
+  -     if (labelLines.length > 2 && tracks.length > 1) {
+  -       if ((trackIndex[item.track] || 0) === 0) labelPosition = 'below'
+  -       if ((trackIndex[item.track] || 0) === tracks.length - 1) labelPosition = 'above'
+  -     }
+  -     const labelX = (labelAnchor === 'start' ? pointXNumber + 20 : labelAnchor === 'end' ? pointXNumber - 20 : pointXNumber).toFixed(1)
+  -     const labelYNumber = labelPosition === 'above' ? pointYNumber - 38 - (labelLines.length - 1) * 22 : pointYNumber + 38 + (labelLines.length - 1) * 22
+  -     return { item, linkedPost, href: linkedPost ? url_for(linkedPost.path) : url_for(item.link), labelTitle, labelLines, labelPosition, labelAnchor, labelX, labelYNumber, pointX: pointXNumber.toFixed(1), pointY: pointYNumber.toFixed(1), trackLabel: trackLabel(item.track) }
+  -   })
+  -   const timelinePath = items.map((point, index) => `${index ? 'L' : 'M'} ${point.pointX} ${point.pointY}`).join(' ')
+  -   const tickTimes = [minTime, minTime + timeRange / 2, maxTime]
+  -   const activePoint = items[items.length - 1] || null
+  -   const completed = Number(plan.completed) || 0
+  -   const total = Number(plan.total) || 0
+  -   const percent = total ? Math.round((completed / total) * 100) : 0
+  -   const planPost = linkedPostFor(researchPosts, plan.plan_link)
+  -   return { plan, tracks, items, timelinePath, tickTimes, activePoint, completed, total, percent, planPost }
+  - })
 
-  section.research-chart-section(aria-label='科研时间线')
-    if sortedTimeline.length
-      .research-timeline-chart
-        .research-timeline-viewport
-          svg(viewBox=`0 0 ${chartWidth} ${chartHeight}` role='img' aria-label='科研时间线')
-            title 科研时间线
-            line.research-timeline-axis(x1=chartLeft y1=chartHeight - chartBottom x2=chartWidth - chartRight y2=chartHeight - chartBottom)
-            each track in timelineTracks
-              - const laneY = yForTrackKey(track.key).toFixed(1)
-              line.research-timeline-lane(x1=chartLeft y1=laneY x2=chartWidth - chartRight y2=laneY)
-              text.research-timeline-lane-label(x=chartLeft - 12 y=laneY text-anchor='end' dominant-baseline='middle')= track.axis_label
-            each tickTime in tickTimes
-              - const tickX = xForTime(tickTime).toFixed(1)
-              line.research-timeline-tick(x1=tickX y1=chartHeight - chartBottom x2=tickX y2=chartHeight - chartBottom + 8)
-              text.research-timeline-tick-label(x=tickX y=chartHeight - 26 text-anchor='middle')= date(new Date(tickTime), 'YYYY-MM-DD')
-            path.research-timeline-line(d=timelinePath)
-            each item in sortedTimeline
-              - const linkedPost = researchPosts.find(post => post.title === item.link)
-              - const pointHref = linkedPost ? url_for(linkedPost.path) : url_for(item.link)
-              - const labelTitle = linkedTitle(item)
-              - const pointXNumber = xForTime(new Date(item.date).getTime())
-              - const pointYNumber = yForTrackKey(item.track)
-              - const pointX = pointXNumber.toFixed(1)
-              - const pointY = pointYNumber.toFixed(1)
-              - const labelPosition = labelPositions[`${item.track}:${item.date}`] || 'above'
-              - const labelAnchor = pointXNumber < chartLeft + 90 ? 'start' : pointXNumber > chartWidth - chartRight - 90 ? 'end' : 'middle'
-              - const labelX = (labelAnchor === 'start' ? pointXNumber + 16 : labelAnchor === 'end' ? pointXNumber - 16 : pointXNumber).toFixed(1)
-              - const labelYNumber = labelPosition === 'above' ? pointYNumber - 46 : pointYNumber + 50
-              - const labelLines = labelLinesFor(labelTitle)
-              a.research-timeline-point(class=`track-${item.track}${item === activeTimelineItem ? ' is-active' : ''}` href=pointHref data-title=labelTitle data-step-title=item.title data-date=date(item.date, 'YYYY-MM-DD') data-track-key=item.track data-track=timelineTrackLabel(item.track) data-summary=item.summary aria-label=`${labelTitle}，${date(item.date, 'YYYY-MM-DD')}`)
-                circle.research-timeline-hit(cx=pointX cy=pointY r=22)
-                circle(cx=pointX cy=pointY r=12)
-                text.research-timeline-label(x=labelX y=labelYNumber.toFixed(1) text-anchor=labelAnchor)
-                  each line, lineIndex in labelLines
-                    tspan(x=labelX dy=lineIndex ? 20 : 0)= line
-        if activeTimelineItem
-          - const activeLinkedPost = researchPosts.find(post => post.title === activeTimelineItem.link)
-          - const activeHref = activeLinkedPost ? url_for(activeLinkedPost.path) : url_for(activeTimelineItem.link)
-          aside.research-timeline-detail(aria-live='polite')
-            .research-timeline-detail-meta
-              time(datetime=date_xml(activeTimelineItem.date))= date(activeTimelineItem.date, 'YYYY-MM-DD')
-              span.research-timeline-track(class=`track-${activeTimelineItem.track}`)= timelineTrackLabel(activeTimelineItem.track)
-            h4= activeTimelineItem.title
-            p= activeTimelineItem.summary
-            a.research-timeline-link(href=activeHref title=activeLinkedPost ? activeLinkedPost.title : activeTimelineItem.link)
-              i.fas.fa-book-open-reader
-              span= activeLinkedPost ? activeLinkedPost.title : activeTimelineItem.link
-    else
-      p.research-empty 暂无时间线数据
+  each chart in chartData
+    section.research-chart-section(class=`plan-${chart.plan.key}` aria-label=`${chart.plan.title}科研时间线`)
+      article.research-progress-card
+        header.research-progress-header
+          h3= chart.plan.title
+          span.research-progress-count= `${chart.completed}/${chart.total} ${chart.plan.unit}`
+        .research-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow=chart.percent aria-label=`${chart.plan.title}进度`)
+          span(style=`width: ${chart.percent}%`)
+        .research-progress-footer
+          span= chart.plan.goal
+          if chart.planPost
+            a.research-progress-link(href=url_for(chart.planPost.path) title=chart.planPost.title)
+              i.fas.fa-list-check
+              span 查看规划
 
-  script(src=url_for('/js/research-timeline.js') defer)
+      if chart.items.length
+        .research-timeline-chart(class=`plan-${chart.plan.key}`)
+          .research-timeline-viewport
+            svg(viewBox=`0 0 ${chartWidth} ${chartHeight}` role='img' style='min-width: 1600px;' aria-label=`${chart.plan.title}时间线`)
+              title= `${chart.plan.title}时间线`
+              line.research-timeline-axis(x1=chartLeft + datePadding y1=chartHeight - chartBottom x2=chartWidth - chartRight - datePadding y2=chartHeight - chartBottom)
+              each track in chart.tracks
+                - const laneY = (chartTop + (plotHeight / Math.max(chart.tracks.length, 1)) * (chart.tracks.indexOf(track) + 0.5)).toFixed(1)
+                line.research-timeline-lane(x1=chartLeft + datePadding y1=laneY x2=chartWidth - chartRight - datePadding y2=laneY)
+                text.research-timeline-lane-label(x=chartLeft - 28 y=laneY text-anchor='end' dominant-baseline='middle')= track.axis_label
+              each tickTime in chart.tickTimes
+                - const tickX = (chartLeft + datePadding + ((tickTime - chart.tickTimes[0]) / ((chart.tickTimes[2] - chart.tickTimes[0]) || 1)) * plotWidth).toFixed(1)
+                line.research-timeline-tick(x1=tickX y1=chartHeight - chartBottom x2=tickX y2=chartHeight - chartBottom + 8)
+                text.research-timeline-tick-label(x=tickX y=chartHeight - 30 text-anchor='middle')= date(new Date(tickTime), 'YYYY-MM-DD')
+              path.research-timeline-line(d=chart.timelinePath)
+              each point in chart.items
+                a.research-timeline-point(class=`track-${point.item.track}${point === chart.activePoint ? ' is-active' : ''}${point.item.status === 'planned' ? ' is-planned' : ''}` href=point.href data-title=point.linkedPost ? point.linkedPost.title : point.item.title data-step-title=point.item.title data-date=date(point.item.date, 'YYYY-MM-DD') data-track-key=point.item.track data-track=point.trackLabel data-summary=point.item.summary data-status=point.item.status || '' data-label-position=point.labelPosition aria-label=`${point.item.title}，${date(point.item.date, 'YYYY-MM-DD')}`)
+                  text.research-timeline-label(x=point.labelX y=point.labelYNumber.toFixed(1) text-anchor=point.labelAnchor)
+                    each line, lineIndex in point.labelLines
+                      tspan(x=point.labelX dy=lineIndex ? 22 : 0)= line
+                  circle.research-timeline-hit(cx=point.pointX cy=point.pointY r=24)
+                  circle(cx=point.pointX cy=point.pointY r=12)
+          if chart.activePoint
+            aside.research-timeline-detail(aria-live='polite')
+              .research-timeline-detail-meta
+                time(datetime=date_xml(chart.activePoint.item.date))= date(chart.activePoint.item.date, 'YYYY-MM-DD')
+                span.research-timeline-track(class=`track-${chart.activePoint.item.track}`)= chart.activePoint.trackLabel
+                if chart.activePoint.item.status === 'planned'
+                  span.research-timeline-status 规划中
+              h4= chart.activePoint.item.title
+              p= chart.activePoint.item.summary
+              a.research-timeline-link(href=chart.activePoint.href title=chart.activePoint.linkedPost ? chart.activePoint.linkedPost.title : chart.activePoint.item.title)
+                i.fas.fa-book-open-reader
+                span= chart.activePoint.linkedPost ? chart.activePoint.linkedPost.title : chart.activePoint.item.title
+      else
+        p.research-empty 暂无时间线数据
+
+  script(src=(url_for('/js/research-timeline.js') + '?v=20261011e') defer)

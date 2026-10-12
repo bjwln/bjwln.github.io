@@ -14,6 +14,81 @@
 .research-container
   margin-bottom: 24px
 
+.research-chart-section
+  margin-top: 28px
+
+  &:first-of-type
+    margin-top: 20px
+
+.research-progress-card
+  margin-bottom: 14px
+  padding: 18px 22px
+  background: var(--card-bg)
+  border-radius: 8px
+  box-shadow: var(--card-box-shadow)
+
+  +maxWidth600()
+    padding: 16px 18px
+
+.research-progress-header
+  display: flex
+  align-items: baseline
+  justify-content: space-between
+  gap: 16px
+
+  h3
+    margin: 0
+    color: var(--font-color)
+    font-size: 1.14em
+    line-height: 1.4
+
+  .research-progress-count
+    flex: none
+    color: var(--card-meta)
+    font-size: .84em
+    font-variant-numeric: tabular-nums
+
+.research-progress
+  overflow: hidden
+  height: 8px
+  margin-top: 14px
+  border-radius: 999px
+  background: var(--light-grey)
+
+  span
+    display: block
+    width: 0
+    height: 100%
+    border-radius: inherit
+    background: #3573c9
+    transition: width .3s ease
+
+  .plan-project &
+    span
+      background: #2f9e6f
+
+.research-progress-footer
+  display: flex
+  align-items: center
+  justify-content: space-between
+  gap: 14px
+  margin-top: 10px
+  color: var(--card-meta)
+  font-size: .8em
+  line-height: 1.5
+
+  span
+    min-width: 0
+
+.research-progress-link
+  display: inline-flex
+  flex: none
+  align-items: center
+  gap: 6px
+  color: var(--btn-bg)
+  font-weight: 600
+  text-decoration: none
+
 .research-timeline-chart
   display: grid
   grid-template-columns: minmax(0, 1fr) 360px
@@ -30,6 +105,21 @@
   min-width: 0
   overflow-x: auto
   padding: 28px 28px 24px
+  scrollbar-width: thin
+  scrollbar-color: rgba(128, 128, 128, .35) transparent
+
+  &::-webkit-scrollbar
+    height: 5px
+
+  &::-webkit-scrollbar-track
+    background: transparent
+
+  &::-webkit-scrollbar-thumb
+    border-radius: 999px
+    background: rgba(128, 128, 128, .35)
+
+  &::-webkit-scrollbar-thumb:hover
+    background: rgba(128, 128, 128, .55)
 
   svg
     display: block
@@ -94,6 +184,12 @@
   &.track-evaluation
     background: #b98a2f
 
+.research-timeline-status
+  padding: 2px 8px
+  border-radius: 5px
+  color: var(--card-meta)
+  background: var(--light-grey)
+
 .research-timeline-link
   display: inline-flex
   align-items: center
@@ -149,6 +245,7 @@
     fill: var(--font-color)
     font-size: 18px
     font-weight: 600
+    pointer-events: none
     paint-order: stroke fill
     stroke: var(--card-bg)
     stroke-linejoin: round
@@ -173,6 +270,9 @@
 
   &.track-evaluation circle:not(.research-timeline-hit)
     stroke: #b98a2f
+
+  &.is-planned circle:not(.research-timeline-hit)
+    stroke-dasharray: 5 5
 
 .research-empty
   padding: 40px
@@ -199,6 +299,12 @@
 
     .research-timeline-label
       stroke: var(--card-bg)
+
+    &:hover,
+    &:focus,
+    &.is-active
+      .research-timeline-label
+        fill: #6cb6ff
 
     &.track-literature circle:not(.research-timeline-hit)
       stroke: #6cb6ff

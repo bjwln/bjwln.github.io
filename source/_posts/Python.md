@@ -55,96 +55,40 @@ cover_fit: contain
 
 # 语言基础
 
+## 循环
+
+### for
+
+#### enumerate()
+
+一边遍历，一边自动帮你编号
+
+```python
+for line_no, line in enumerate(file, start=1):
+
+从文件里逐行读取 line
+同时给每一行一个编号 line_no
+编号从 1 开始
+等价于
+
+line_no = 1
+
+for line in file:
+    print(line_no, line)
+    line_no += 1
+```
+
+
+
 ## 函数
 
 ### 函数定义的语法
 
 ```python
-def safe_load_case_json(question) -> dict:
-    ...
-```
-
-这一行可以拆成 5 个部分：
-
-| 部分 | 内容 | 作用 |
-| --- | --- | --- |
-| `def` | 关键字 | 声明"这里要定义一个函数"，每个函数都以它开头 |
-| `safe_load_case_json` | 函数名 | 调用时使用的名字 |
-| `(question)` | 参数列表 | 调用时传进来的数据，这里只有一个参数 `question` |
-| `-> dict` | 返回值类型标注 | 说明这个函数"打算"返回一个字典 |
-| `:` | 冒号 | 定义行结束，下面缩进的代码就是函数体 |
-
-### 函数名怎么读：snake_case 命名法
-
-`safe_load_case_json` 不是随便拼出来的字母，它符合 Python 的函数命名规范 **snake_case（蛇形命名法）**：全部小写，单词之间用下划线 `_` 连接。
-
-把它按单词拆开：
-
-| 单词 | 中文 | 含义 |
-| --- | --- | --- |
-| `safe` | 安全的 | 前缀，表示"不会崩"的版本：出错时不抛异常，而是返回兜底值 |
-| `load` | 加载 | 动作，表示"读取 / 载入" |
-| `case` | 用例 | 加载的东西：一条用例 |
-| `json` | JSON | 从哪里加载：JSON 格式的内容 |
-
-连起来读就是：**安全地加载某条用例的 JSON**。
-
-命名习惯通常是"动词在前、对象在后"：`load`（做什么）`case_json`（对什么做）。这样不看函数体，也能猜出它大概在干什么。
-
-为什么要有 `safe` 前缀？因为读文件、解析 JSON 都可能失败（文件不存在、内容不是合法 JSON……）。普通版本 `load_case_json` 一失败就抛异常，把程序打断；`safe_` 版本会把异常接住，返回一个默认值，所以调用它更省心。
-
-### 参数：`question`
-
-括号里的 `question` 是这个函数的**参数**（形参）。调用时把真实数据传进去，函数体里就用这个名字去使用它：
-
-```python
-data = safe_load_case_json("患者发烧怎么办")
-# 函数内部的 question 就代表字符串 "患者发烧怎么办"
-```
-
-参数名同样用 snake_case，而且起名要能看出它装的是什么。
-
-### 返回值标注：`-> dict`
-
-`-> dict` 是**类型标注**（type hint），写在参数列表后面，`->` 指向返回值的类型。它的意思是"这个函数返回一个 `dict`（字典）"。
-
-要记住三点：
-
-- 它只是写给人和编辑器看的**提示**，Python 运行时**不会**强制检查。写了 `-> dict` 却返回字符串，程序照样能跑，只是不推荐。
-- 好处：编辑器能据此给出补全和类型报错，别人一看就知道该用什么类型去接收结果。
-- 常见写法还有 `-> str`、`-> int`、`-> list`；`-> None` 表示"没有返回值"。
-
-### 对照：Python 的几种命名风格（PEP 8）
-
-| 对象 | 风格 | 例子 |
-| --- | --- | --- |
-| 变量 / 函数 | snake_case（小写 + 下划线） | `safe_load_case_json`、`user_name` |
-| 类 | PascalCase（大驼峰） | `ArgumentParser`、`HttpClient` |
-| 常量 | UPPER_SNAKE_CASE（全大写 + 下划线） | `MAX_SIZE`、`DEFAULT_MODEL` |
-| 私有成员 | 前缀下划线 | `_helper`、`__internal` |
-
-所以：看到 `safe_load_case_json` 就明白它是个**函数**；看到 `ArgumentParser`（大驼峰）就知道它是个**类**。大小写本身就是一种区分。
-
-### 一个最小例子
-
-```python
-def add(a, b) -> int:
-    return a + b
-
-print(add(1, 2))   # 3
-```
-
-- `def add(a, b) -> int:` 定义一个函数，接收 `a`、`b` 两个参数，标注返回整数。
-- `return` 把结果交回给调用处。
-- 函数必须**先定义、后调用**。
-
-### 再看一个：read_jsonl
-
-```python
 def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
 ```
 
-比前面那行 `-> dict` 多了"参数标注"和"泛型"，拆开：
+拆开：
 
 - `path: str | Path`：参数 `path` 的类型标注。`str | Path` 表示"字符串或 `pathlib.Path` 两种都行"，`|` 是联合类型（Python 3.10+ 才支持；老版本要写 `Union[str, Path]`）。
 - `-> list[dict[str, Any]]`：返回值标注，从外往里读——返回一个 `list`，列表里每个元素是 `dict`，字典的值是 `Any`（任意类型，不限制）。

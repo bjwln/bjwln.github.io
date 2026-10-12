@@ -6,5 +6,5 @@ top_img: false
 aside: false
 comment: false
 description: Multi-agent system for MDT 的科研进度时间线
-research_category: Multi-agent system for MDT
+research: true
 ---

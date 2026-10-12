@@ -2,7 +2,8 @@
 title: SixSixAgents
 date: 2026-09-20 18:09:17
 tags:
-categories: Multi-agent system for MDT
+research: project
+research_order: 0
 cover: image-20261001201657982.png
 cover_fit: contain
 ---
