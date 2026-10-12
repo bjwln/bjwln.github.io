@@ -38,28 +38,28 @@ plans:
         link: 'LLM-based multi-agent systems for clinical workflows: a survey of AI hospitals'
         label: AI hospitals
         order: 2
-      - date: 2026-08-16
+      - date: 2026-09-16
         title: Accountable Orchestration：从答案生成走向可问责的协作
         track: survey
         summary: 这篇综述把医学多智能体视为临床协调基础设施，而不只是生成答案的模型组合。当多个 Agent 共同给出医疗建议时，不能只记录最终结论，还应明确结论由什么证据支持、哪些 Agent 负责哪些判断、不同意见如何处理，以及谁来审核最终结果。
         link: 'Not just one agent: LLM-based multi-agent systems for medicine from answer generation to accountable workflow orchestration'
         label: Accountable Orchestration
         order: 3
-      - date: 2026-08-16
+      - date: 2026-09-20
         title: MedAgents：让不同专家参与多轮协作推理
         track: system
         summary: 单个 LLM 可能受到专业知识覆盖不足和推理偏差的影响。MedAgents 通过提示词角色化医学专家然后经过多轮协作，尝试激发模型已有的医学知识，并整合不同视角。它不专门训练新的医学模型，而是通过提示词来组织现有 LLM 来完成任务
         link: 'MedAgents: large language models as collaborators for zero-shot medical reasoning'
         label: MedAgents
         order: 4
-      - date: 2026-08-16
+      - date: 2026-09-23
         title: MDAgents：根据任务复杂度自适应组织团队
         track: system
         summary: 如果所有医疗问题都调用相同数量的 Agent、执行相同轮数的讨论，非常浪费计算资源；反过来，简单的单模型处理方式也可能不适合复杂病例。MDAgents 根据医疗问题的复杂程度选择协作结构：低复杂度问题可以由单个基层临床角色处理，中等复杂度问题采用 MDT，高复杂度问题则采用更复杂的综合医疗团队结构。
         link: 'MDAgents: an adaptive collaboration of LLMs for medical decision-making'
         label: MDAgents
         order: 5
-      - date: 2026-08-16
+      - date: 2026-10-10
         title: MDTeamGPT：把讨论结果结构化，并积累可复用经验
         track: system
         summary: 多轮讨论会不断积累对话历史。上下文越来越长时，重要分歧可能被淹没；如果系统只是保存历史对话，也未必能有效提取有价值的经验。MDTeamGPT 将每轮讨论整理为四类信息：一致意见、冲突意见、独立观点和综合信息，并将整理后的内容存入历史共享池。它还引入 CorrectKB 和 ChainKB，分别用于积累正确答案相关知识与推理过程经验。它推动了多智能体记忆从“保存对话文本”向“提取结构化协作经验”发展，使后续讨论能够有选择地利用历史信息，而不是反复读取全部对话。
