@@ -11,10 +11,6 @@
     const viewport = chart.querySelector('.research-timeline-viewport')
 
     if (viewport) {
-      const chartWidth = svg.viewBox.baseVal.width || 2400
-      const minZoom = 0.5
-      const maxZoom = 3
-      let zoom = 1
       let dragging = false
       let moved = false
       let pointerId = null
@@ -27,20 +23,6 @@
       }
 
       viewport.style.touchAction = 'pan-y'
-
-      const setZoom = (nextZoom, clientX) => {
-        const clampedZoom = Math.min(maxZoom, Math.max(minZoom, nextZoom))
-        const viewportBox = viewport.getBoundingClientRect()
-        const pointerX = typeof clientX === 'number' ? clientX : viewportBox.left + viewport.clientWidth / 2
-        const pointerOffset = pointerX - viewportBox.left
-        const contentX = viewport.scrollLeft + pointerOffset
-        const zoomRatio = clampedZoom / zoom
-
-        zoom = clampedZoom
-        svg.style.width = `${chartWidth * zoom}px`
-        viewport.scrollLeft = contentX * zoomRatio - pointerOffset
-        updateCursor()
-      }
 
       viewport.addEventListener('pointerdown', event => {
         if (event.pointerType === 'mouse' && event.button !== 0) return
@@ -95,11 +77,6 @@
         event.stopPropagation()
       }, true)
       viewport.addEventListener('dragstart', event => event.preventDefault())
-      viewport.addEventListener('wheel', event => {
-        event.preventDefault()
-        const direction = event.deltaY < 0 ? 1 : -1
-        setZoom(zoom * (1 + direction * 0.12), event.clientX)
-      }, { passive: false })
       window.addEventListener('resize', updateCursor)
 
       updateCursor()
