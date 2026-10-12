@@ -66,6 +66,13 @@ plans:
         link: 'MDTeamGPT: a self-evolving LLM-based multi-agent framework for multi-disciplinary team medical consultation'
         label: (i) MDTeamGPT
         order: 6
+      - date: 2026-10-12
+        title:  2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer
+        track: system
+        summary: 多轮讨论会不断积累对话历史。上下文越来越长时，重要分歧可能被淹没；如果系统只是保存历史对话，也未必能有效提取有价值的经验。MDTeamGPT 将每轮讨论整理为四类信息：一致意见、冲突意见、独立观点和综合信息，并将整理后的内容存入历史共享池。它还引入 CorrectKB 和 ChainKB，分别用于积累正确答案相关知识与推理过程经验。它推动了多智能体记忆从“保存对话文本”向“提取结构化协作经验”发展，使后续讨论能够有选择地利用历史信息，而不是反复读取全部对话。
+        link: '2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer'
+        label: EvoMDT
+        order: 7
 
   - key: project
     title: SixSixAgents
