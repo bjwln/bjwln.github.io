@@ -132,7 +132,7 @@
       if chart.items.length
         .research-timeline-chart(class=`plan-${chart.plan.key}`)
           .research-timeline-viewport
-            svg(viewBox=`0 0 ${chartWidth} ${chartHeight}` role='img' style='min-width: 1600px;' aria-label=`${chart.plan.title}时间线`)
+            svg(viewBox=`0 0 ${chartWidth} ${chartHeight}` role='img' style='width: 1600px;' aria-label=`${chart.plan.title}时间线`)
               title= `${chart.plan.title}时间线`
               line.research-timeline-axis(x1=chartLeft + datePadding y1=chartHeight - chartBottom x2=chartWidth - chartRight - datePadding y2=chartHeight - chartBottom)
               each track in chart.tracks
@@ -166,4 +166,4 @@
       else
         p.research-empty 暂无时间线数据
 
-  script(src=(url_for('/js/research-timeline.js') + '?v=20261011e') defer)
+  script(src=(url_for('/js/research-timeline.js') + '?v=20261013a') defer)
