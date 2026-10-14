@@ -81,35 +81,16 @@ plans:
     unit: 项
     plan_link: SixSixAgents
     tracks:
-      - key: architecture
-        axis_label: 架构
-      - key: chain
-        axis_label: 链路
-      - key: orchestration
-        axis_label: 调度
+      - key: skill
+        axis_label: 技术
+      - key: system
+        axis_label: 系统
     timeline:
-      - date: 2026-09-20
-        title: SixSixAgents 原型启动
-        track: architecture
-        summary: 建立 core、config、clients、servers、files 与 examples 的基础结构，明确多专家调度与证据读取方向。
-        link: SixSixAgents
+      - date: 2026-10-15
+        title: 一个最小的MDAgents系统
+        track: system
+        summary: 用一个简单的数据结构跑通的MDAgents
+        link: MDAgents-Minimal
+        label: MDAgents-Minimal
         order: 0
-      - date: 2026-10-01
-        title: 模型配置与 Agent 会话链路
-        track: chain
-        summary: 打通模型配置读取、Agent 会话与基础客户端调用，验证本地多模型接入方式。
-        link: SixSixAgents
-        order: 1
-      - date: 2026-10-04
-        title: 核心链路整理
-        track: chain
-        summary: 整理 Agent、客户端与配置之间的关系，为 orchestrator 调度和 servers 证据链路做准备。
-        link: SixSixAgents
-        order: 2
-      - date: 2026-10-10
-        title: Orchestrator 与证据链路规划
-        track: orchestration
-        summary: 规划多专家调度、报告读取、证据溯源和结果输出，作为下一阶段实现目标。
-        link: SixSixAgents
-        order: 3
-        status: planned
+
