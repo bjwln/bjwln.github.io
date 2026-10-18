@@ -255,7 +255,7 @@ int largestOverlap(vector<vector<int>>& img1, vector<vector<int>>& img2) {
 }
 ```
 
-### ⭐[[836. 矩形重叠（1400）](https://leetcode.cn/problems/rectangle-overlap/)](https://leetcode.cn/problems/image-overlap/)
+### ⭐[[836. 矩形重叠（1400）]](https://leetcode.cn/problems/image-overlap/)
 
 反向看矩阵不重叠的情况，其余情况全是true
 
@@ -641,6 +641,26 @@ int missingMultiple(vector<int>& nums, int k) {
         }
         return temp*k;
     }
+```
+
+
+
+### [2913. 子数组不同元素数目的平方和 I](1297)
+
+```python
+class Solution:
+    def sumCounts(self, nums: List[int]) -> int:
+        ans=0
+        for i in range(len(nums)):
+            flag=set()
+            ok=0
+            for j in range(i,len(nums)):
+                if nums[j] not in flag:
+                    flag.add(nums[j])
+                    ok+=1
+                ans+=pow(ok,2)
+        return ans
+        
 ```
 
 

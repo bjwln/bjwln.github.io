@@ -96,6 +96,22 @@ def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
 
 这些标注和前面一样，只是给人和编辑器看的提示，不影响运行。
 
+## 列表
+
+#### 创建
+
+**根据列表A创造一个标记列表flag**
+
+其中`max_val`为列表`A`的最大长度
+
+`[0]` 是一个只有单个元素 0 的列表
+
+```python
+flag = [0] * (max_val + 1)
+```
+
+
+
 ## 异常
 
 ### raise

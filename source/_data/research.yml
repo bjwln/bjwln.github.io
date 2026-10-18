@@ -8,7 +8,7 @@ plans:
   - key: literature
     title: 文献阅读
     goal: 读完 12 篇核心文献
-    completed: 7
+    completed: 8
     total: 12
     unit: 篇
     plan_link: 文献阅读规划（12篇）
@@ -69,7 +69,7 @@ plans:
       - date: 2026-10-12
         title: 2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer
         track: system
-        summary: 多轮讨论会不断积累对话历史。上下文越来越长时，重要分歧可能被淹没；如果系统只是保存历史对话，也未必能有效提取有价值的经验。MDTeamGPT 将每轮讨论整理为四类信息：一致意见、冲突意见、独立观点和综合信息，并将整理后的内容存入历史共享池。它还引入 CorrectKB 和 ChainKB，分别用于积累正确答案相关知识与推理过程经验。它推动了多智能体记忆从“保存对话文本”向“提取结构化协作经验”发展，使后续讨论能够有选择地利用历史信息，而不是反复读取全部对话。
+        summary: EvoMDT 提出了一种面向多癌种结构化临床决策的自进化多智能体系统（MAS），其创新不仅在于将多个医学 Agent 组织起来协同推理，更在于构建了一个融合医学知识检索、专业分工、安全约束、冲突协调与持续改进的完整决策框架：系统设计了 Diagnostic、Treatment、Safety、Monitoring 和 Coordinator 五个 Agent，分别负责诊断与分期、治疗方案制定、风险与禁忌证审查、纵向疗效监测以及跨 Agent 的意见协调；同时，通过整合临床指南、医学文献和临床病例，为决策提供知识依据，并利用加权共识机制形成结构化的 MDT 建议。在此基础上，EvoMDT 进一步引入反馈驱动的自进化机制，尝试根据专家反馈和任务表现调整提示词、共识权重及检索范围，并通过公开基准、真实患者病例和医生评价验证系统表现。因此，EvoMDT 对医学 MAS 的主要贡献，是将多智能体的专业化协作从单次的诊疗建议生成，拓展为强调临床证据 grounding、安全审查、意见协调、纵向监测与反馈优化的一体化决策框架；不过，这些设计上的创新并不意味着每个模块都采用了独立的传统算法实现，其实际效果仍应结合论文实验与具体代码实现来判断。
         link: '2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer'
         label: 2026-EvoMDT
         order: 7
