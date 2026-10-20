@@ -7,9 +7,9 @@ updated: 2026-10-11
 plans:
   - key: literature
     title: 文献阅读
-    goal: 读完 12 篇核心文献
+    goal: 读完 10 篇核心文献
     completed: 8
-    total: 12
+    total: 10
     unit: 篇
     plan_link: /research/planning/
     tracks:
