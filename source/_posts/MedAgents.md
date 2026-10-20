@@ -8,6 +8,8 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 ### MedAgents的五阶段流程图
 
 ![MedAgents_Figure1_纯流程图](MedAgents_Figure1_纯流程图.png)

@@ -8,6 +8,8 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 ### <span style="color:red">论文框架</span>
 
 **一、论文把agent给拆成了五个部分：**

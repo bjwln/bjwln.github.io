@@ -8,6 +8,8 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 ### 论文框架
 
 论文提出了人工智能医院（AI hospital）的概念：

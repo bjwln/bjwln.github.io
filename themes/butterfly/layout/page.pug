@@ -1,7 +1,7 @@
 extends includes/layout.pug
 
 block content
-  - const noCardLayout = ['shuoshuo', '404', 'bangumi', 'research'].includes(page.type) ? 'nc' : ''
+  - const noCardLayout = ['shuoshuo', '404', 'bangumi', 'research', 'research-planning'].includes(page.type) ? 'nc' : ''
   - var commentsJsLoad = false
 
   mixin commentLoad
@@ -13,24 +13,27 @@ block content
     if top_img === false && page.title
       .page-title= page.title
 
-    case page.type
-      when 'tags'
-        include includes/page/tags.pug
-        +commentLoad
-      when 'link'
-        include includes/page/flink.pug
-        +commentLoad
-      when 'categories'
-        include includes/page/categories.pug
-        +commentLoad
-      when '404'
-        include includes/page/404.pug
-      when 'shuoshuo'
-        include includes/page/shuoshuo.pug
-      when 'bangumi'
-        include includes/page/bangumi.pug
-      when 'research'
-        include includes/page/research.pug
-      default
-        include includes/page/default-page.pug
-        +commentLoad
+    if page.type === 'research-planning'
+      include includes/page/research-planning.pug
+    else
+      case page.type
+        when 'tags'
+          include includes/page/tags.pug
+          +commentLoad
+        when 'link'
+          include includes/page/flink.pug
+          +commentLoad
+        when 'categories'
+          include includes/page/categories.pug
+          +commentLoad
+        when '404'
+          include includes/page/404.pug
+        when 'shuoshuo'
+          include includes/page/shuoshuo.pug
+        when 'bangumi'
+          include includes/page/bangumi.pug
+        when 'research'
+          include includes/page/research.pug
+        default
+          include includes/page/default-page.pug
+          +commentLoad

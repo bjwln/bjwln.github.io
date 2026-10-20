@@ -8,6 +8,8 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 ### 摘要
 
 医学 MAS 不应作为更大的 LLM 工作流来评估，而应作为临床协调基础设施，在人工与智能体团队之间重新分配证据、责任和风险。

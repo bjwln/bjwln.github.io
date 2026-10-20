@@ -1,0 +1,151 @@
+.type-research-planning
+  .layout.hide-aside
+    max-width: 1200px
+
+  #page.nc
+    padding: 0 28px
+
+  .page-title
+    text-align: center
+
+  +maxWidth600()
+    #page.nc
+      padding: 0 16px
+
+.research-plan-container
+  margin-bottom: 24px
+
+.research-plan-card
+  padding: 24px 26px 28px
+  background: var(--card-bg)
+  border-radius: 8px
+  box-shadow: var(--card-box-shadow)
+
+  +maxWidth600()
+    padding: 18px 16px 22px
+
+.research-plan-header
+  display: flex
+  align-items: baseline
+  justify-content: space-between
+  gap: 16px
+
+  h2
+    margin: 0
+    color: var(--font-color)
+    font-size: 1.22em
+    line-height: 1.4
+
+  .research-plan-count
+    flex: none
+    color: var(--card-meta)
+    font-size: .86em
+    font-variant-numeric: tabular-nums
+
+.research-plan-progress
+  overflow: hidden
+  height: 8px
+  margin-top: 14px
+  border-radius: 999px
+  background: var(--light-grey)
+
+  span
+    display: block
+    width: 0
+    height: 100%
+    border-radius: inherit
+    background: #3573c9
+    transition: width .3s ease
+
+.research-plan-hint
+  margin: 12px 0 0
+  color: var(--card-meta)
+  font-size: .82em
+  line-height: 1.6
+
+.research-plan-content
+  overflow-x: auto
+  margin-top: 20px
+
+  table
+    width: 100%
+    margin: 0
+    border-collapse: collapse
+
+  th,
+  td
+    padding: 12px 12px
+    border-bottom: 1px solid var(--light-grey)
+    color: var(--card-meta)
+    font-size: .88em
+    line-height: 1.65
+    vertical-align: top
+    text-align: left
+
+  th
+    color: var(--font-color)
+    font-weight: 600
+    white-space: nowrap
+
+  tr:last-child
+    td
+      border-bottom: none
+
+  tr.is-complete
+    td
+      background: rgba(47, 158, 111, .07)
+
+.research-plan-status
+  width: 92px
+  white-space: nowrap
+
+.research-plan-toggle
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  min-width: 68px
+  padding: 6px 12px
+  border: none
+  border-radius: 999px
+  background: #3573c9
+  color: #fff
+  font-family: inherit
+  font-size: .78rem
+  font-weight: 600
+  line-height: 1.4
+  text-decoration: none
+  cursor: pointer
+  transition: background .2s ease, color .2s ease
+
+  &:hover,
+  &:focus
+    background: #2c65b4
+    color: #fff
+
+  &.is-complete
+    background: #2f9e6f
+    color: #fff
+
+    &:hover,
+    &:focus
+      background: #26895f
+      color: #fff
+
+[data-theme='dark']
+  .research-plan-toggle
+    background: #4cc38a
+    color: #06170f
+
+    &:hover,
+    &:focus
+      background: #5cd496
+      color: #06170f
+
+    &.is-complete
+      background: #6ee7a8
+      color: #06170f
+
+      &:hover,
+      &:focus
+        background: #82efb4
+        color: #06170f

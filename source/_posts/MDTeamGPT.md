@@ -7,6 +7,8 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 这篇文章和之前的文章有几个共同点：
 
 1. 分诊选专家

@@ -1,9 +1,11 @@
 ---
 title: 文献阅读规划（12篇）
 date: 2026-08-16 16:38:13
-tags: [多智能体, MDT]
-research: plan
-research_order: 0
+type: research-planning
+top_img: false
+aside: false
+comment: false
+description: Multi-agent system for MDT 的文献阅读规划
 cover: cover.jpg
 cover_fit: contain
 ---

@@ -7,6 +7,8 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBtbJqzPP5Hq3BwT9ViUpgwzL9nqRag
 cover_fit: contain
 ---
 
+[英文原文 PDF](original.pdf)
+
 # 临床为什么临床决策困难
 
 ![image-20261013141910835](EvoMDT/image-20261013141910835.png)

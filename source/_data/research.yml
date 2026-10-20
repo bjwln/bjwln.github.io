@@ -11,7 +11,7 @@ plans:
     completed: 8
     total: 12
     unit: 篇
-    plan_link: 文献阅读规划（12篇）
+    plan_link: /research/planning/
     tracks:
       - key: survey
         axis_label: 综述

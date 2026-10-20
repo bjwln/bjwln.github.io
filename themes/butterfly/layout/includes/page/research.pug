@@ -111,7 +111,8 @@
   -   const total = Number(plan.total) || 0
   -   const percent = total ? Math.round((completed / total) * 100) : 0
   -   const planPost = linkedPostFor(researchPosts, plan.plan_link)
-  -   return { plan, tracks, items, timelinePath, tickTimes, activePoint, completed, total, percent, planPost }
+  -   const planHref = String(plan.plan_link || '').startsWith('/') ? url_for(plan.plan_link) : (planPost ? url_for(planPost.path) : url_for(plan.plan_link))
+  -   return { plan, tracks, items, timelinePath, tickTimes, activePoint, completed, total, percent, planPost, planHref }
   - })
 
   each chart in chartData
@@ -124,8 +125,8 @@
           span(style=`width: ${chart.percent}%`)
         .research-progress-footer
           span= chart.plan.goal
-          if chart.planPost
-            a.research-progress-link(href=url_for(chart.planPost.path) title=chart.planPost.title)
+          if chart.planHref
+            a.research-progress-link(href=chart.planHref title=chart.planPost ? chart.planPost.title : chart.plan.title)
               i.fas.fa-list-check
               span 查看规划
 
