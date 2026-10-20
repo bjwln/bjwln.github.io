@@ -73,6 +73,13 @@ plans:
         link: '2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer'
         label: 2026-EvoMDT
         order: 7
+      - date: 2026-10-18
+        title: '2025.11 - MTBBench: A Multimodal Sequential Clinical Decision-Making Benchmark in Oncology'
+        track: system
+        summary: 暂无
+        link: 'MTBBench数据集+Agent'
+        label: MTBBench数据集+Agent
+        order: 8
   - key: project
     title: SixSixAgents
     goal: 完成多专家调度、证据链路与基础评测

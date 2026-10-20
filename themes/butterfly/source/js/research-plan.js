@@ -25,11 +25,32 @@
 
   const keyFor = value => normalize(value).slice(0, 8)
 
-  const postByKey = new Map()
-  posts.forEach(post => {
-    const key = keyFor(post.title)
-    if (key) postByKey.set(key, post)
-  })
+  const postIndex = posts.map(post => ({
+    post,
+    normalizedTitle: normalize(post.title)
+  }))
+
+  const findPost = paperTitle => {
+    const normalizedTitle = normalize(paperTitle)
+    const key = keyFor(normalizedTitle)
+    if (!key) return null
+
+    const candidates = postIndex.filter(item => item.normalizedTitle.startsWith(key))
+    if (!candidates.length) return null
+
+    return candidates
+      .map(item => {
+        const exact = item.normalizedTitle === normalizedTitle
+        const prefix = item.normalizedTitle.startsWith(normalizedTitle)
+          || normalizedTitle.startsWith(item.normalizedTitle)
+        const postTokens = new Set(item.normalizedTitle.split(' '))
+        const sharedTokens = normalizedTitle.split(' ').filter(token => postTokens.has(token)).length
+        const score = (exact ? 10000 : 0) + (prefix ? 5000 : 0) + sharedTokens * 10
+        return { ...item, score }
+      })
+      .sort((a, b) => b.score - a.score || Math.abs(a.normalizedTitle.length - normalizedTitle.length) - Math.abs(b.normalizedTitle.length - normalizedTitle.length))[0]
+      .post
+  }
 
   const header = table.querySelector('thead tr') || table.querySelector('tr')
   if (header) {
@@ -39,19 +60,24 @@
     header.appendChild(statusHeader)
   }
 
+  const columnLabels = header
+    ? [...header.children].map((cell, index) => index === header.children.length - 1 ? '状态' : cell.textContent.trim())
+    : []
   const rows = [...table.querySelectorAll('tbody tr')]
   const state = {}
 
   rows.forEach((row, rowIndex) => {
     const cells = [...row.children]
+    cells.forEach((cell, index) => cell.setAttribute('data-label', columnLabels[index] || ''))
     const rowNumber = Number((cells[0] && cells[0].textContent.match(/\d+/) || [rowIndex + 1])[0])
     const paperTitle = cells[2] ? cells[2].textContent.trim() : ''
-    const post = postByKey.get(keyFor(paperTitle))
+    const post = findPost(paperTitle)
     const auto = Boolean(post)
     const manualComplete = Boolean(manual[rowNumber])
     const complete = auto || manualComplete
     const statusCell = document.createElement('td')
     statusCell.className = 'research-plan-status'
+    statusCell.setAttribute('data-label', '状态')
 
     if (auto) {
       const link = document.createElement('a')

@@ -5,7 +5,7 @@
   article.research-plan-card
     header.research-plan-header
       h2.research-plan-title= page.title
-      span.research-plan-count#research-plan-count 0/12 篇
+      span.research-plan-count#research-plan-count 0/10 篇
     .research-plan-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow='0' aria-label='文献阅读完成进度')
       span#research-plan-progress-span
     p.research-plan-hint 已上传对应文章的条目会自动标记完成；未上传的条目可以点击“完成”手动标记。
@@ -15,4 +15,4 @@
 
   script.
     window.RESEARCH_PLAN_POSTS = !{JSON.stringify(postManifest)}
-  script(src=(url_for('/js/research-plan.js') + '?v=20261020a') defer)
+  script(src=(url_for('/js/research-plan.js') + '?v=20261020c') defer)
