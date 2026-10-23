@@ -76,7 +76,7 @@ plans:
       - date: 2026-10-18
         title: '2025.11 - MTBBench: A Multimodal Sequential Clinical Decision-Making Benchmark in Oncology'
         track: system
-        summary: 暂无
+        summary: 这篇论文 MTBBench 的独特贡献在于构建了一个面向肿瘤学多学科会诊（MDT）的多模态、纵向临床决策评测基准：它不再只让模型根据单次、静态的病例文本给出诊断或治疗建议，而是将患者在不同时间点积累的临床病历、病理图像、免疫组化（IHC）图像及其他相关信息纳入连续决策过程，并通过可调用的专业工具增强模型的信息分析能力，同时模拟临床过程中逐步请求患者资料、整合新证据并更新决策的工作方式。，MTBBench 的核心创新并非单纯提出一种新的 LLM 或多智能体协作算法，而是将多模态证据、纵向患者病程、工具增强推理与连续临床决策评估整合到同一基准中，以更贴近真实肿瘤 MDT 的方式评估 AI 的临床决策能力。
         link: 'MTBBench数据集+Agent'
         label: MTBBench数据集+Agent
         order: 8

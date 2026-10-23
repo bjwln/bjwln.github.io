@@ -78,6 +78,29 @@ for line in file:
     line_no += 1
 ```
 
+#### 列表推导式
+
+```python
+"experts": [
+    {"role": expert.role, "expertise": expert.expertise}
+    for expert in experts
+],
+```
+
+它的意思是：遍历 `experts` 里的每一个 `Expert` 对象，把每一个对象转换成一个字典。
+
+```python
+expert_records = []
+
+for expert in experts:
+    expert_records.append(
+        {
+            "role": expert.role,
+            "expertise": expert.expertise,
+        }
+    )
+```
+
 
 
 ## 函数

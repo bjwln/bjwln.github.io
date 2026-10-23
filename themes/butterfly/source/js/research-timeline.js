@@ -19,26 +19,32 @@
       let moved = false
       let pointerId = null
       let startX = 0
+      let startY = 0
       let startScrollLeft = 0
+      let startScrollTop = 0
       let suppressClick = false
 
       const updateCursor = () => {
-        viewport.style.cursor = viewport.scrollWidth > viewport.clientWidth ? 'grab' : ''
+        viewport.style.cursor = viewport.scrollWidth > viewport.clientWidth || viewport.scrollHeight > viewport.clientHeight ? 'grab' : ''
       }
 
       viewport.style.touchAction = 'pan-y'
 
-      const setZoom = (nextZoom, clientX) => {
+      const setZoom = (nextZoom, clientX, clientY) => {
         const clampedZoom = Math.min(maxZoom, Math.max(minZoom, nextZoom))
         const viewportBox = viewport.getBoundingClientRect()
-        const pointerX = typeof clientX === 'number' ? clientX : viewportBox.left + viewport.clientWidth / 2
-        const pointerOffset = pointerX - viewportBox.left
-        const contentX = viewport.scrollLeft + pointerOffset
+        const hasPointerX = typeof clientX === 'number'
+        const hasPointerY = typeof clientY === 'number'
+        const pointerOffsetX = (hasPointerX ? clientX : viewportBox.left + viewport.clientWidth / 2) - viewportBox.left
+        const pointerOffsetY = (hasPointerY ? clientY : viewportBox.top + viewport.clientHeight / 2) - viewportBox.top
+        const contentX = viewport.scrollLeft + pointerOffsetX
+        const contentY = viewport.scrollTop + pointerOffsetY
         const zoomRatio = clampedZoom / zoom
 
         zoom = clampedZoom
         svg.style.width = `${baseWidth * zoom}px`
-        viewport.scrollLeft = contentX * zoomRatio - pointerOffset
+        viewport.scrollLeft = contentX * zoomRatio - pointerOffsetX
+        viewport.scrollTop = contentY * zoomRatio - pointerOffsetY
         updateCursor()
       }
 
@@ -50,7 +56,9 @@
         moved = false
         pointerId = event.pointerId
         startX = event.clientX
+        startY = event.clientY
         startScrollLeft = viewport.scrollLeft
+        startScrollTop = viewport.scrollTop
         viewport.style.cursor = 'grabbing'
         viewport.style.userSelect = 'none'
       })
@@ -59,7 +67,8 @@
         if (!dragging || event.pointerId !== pointerId) return
 
         const deltaX = event.clientX - startX
-        if (Math.abs(deltaX) > 4) moved = true
+        const deltaY = event.clientY - startY
+        if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) moved = true
         if (!moved) return
 
         if (viewport.setPointerCapture && (!viewport.hasPointerCapture || !viewport.hasPointerCapture(pointerId))) {
@@ -67,6 +76,7 @@
         }
 
         viewport.scrollLeft = startScrollLeft - deltaX
+        viewport.scrollTop = startScrollTop - deltaY
         event.preventDefault()
       })
 
@@ -76,7 +86,7 @@
         suppressClick = moved
         dragging = false
         pointerId = null
-        viewport.style.cursor = viewport.scrollWidth > viewport.clientWidth ? 'grab' : ''
+        viewport.style.cursor = viewport.scrollWidth > viewport.clientWidth || viewport.scrollHeight > viewport.clientHeight ? 'grab' : ''
         viewport.style.userSelect = ''
 
         if (event && viewport.releasePointerCapture && viewport.hasPointerCapture(event.pointerId)) {
@@ -98,7 +108,7 @@
       viewport.addEventListener('wheel', event => {
         event.preventDefault()
         const direction = event.deltaY < 0 ? 1 : -1
-        setZoom(zoom * (1 + direction * 0.12), event.clientX)
+        setZoom(zoom * (1 + direction * 0.12), event.clientX, event.clientY)
       }, { passive: false })
       window.addEventListener('resize', updateCursor)
 
