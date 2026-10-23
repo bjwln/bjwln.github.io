@@ -7,7 +7,7 @@ cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBuTlq1wLCe1jSx9ecoYWZR1bpIhNfi
 cover_fit: contain
 ---
 
- [英文原文 PDF.pdf](MTBBench数据集-Agent/..pdf) 
+[英文原文 PDF](original.pdf)
 
 # 论文贡献
 
