@@ -4,7 +4,7 @@ date: 2026-10-15 01:15:59
 tags:
 research: project
 research_order: 0
-cover: https://im.gurl.eu.org/file/AgACAgEAAxkDAAEBtqtqz7mT7oV8jjPvLHCxA37tM2gyRQACvwxrG8aFgEbORKFXikHrewEAAwIAA3kAAz0E.png
+cover: cover.jpg
 cover_fit: contain
 ---
 

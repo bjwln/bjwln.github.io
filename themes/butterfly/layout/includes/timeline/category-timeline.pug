@@ -1,7 +1,7 @@
-#article-container.timeline-container.container
-  link(rel='stylesheet' href=(url_for('/css/timeline.css') + '?v=20261026a'))
+link(rel='stylesheet' href=(url_for('/css/timeline.css') + '?v=20261027a'))
+.timeline-container
   -
-    const posts = site.posts.sort('-date').toArray()
+    const posts = page.posts.sort('-date').toArray()
     const n = posts.length
     const CARD_W = 258
     const CARD_H = 312
@@ -36,7 +36,6 @@
       return text.length > 76 ? text.slice(0, 76) + '…' : text
     }
     const normPath = p => '/' + String(p || '').replace(/^\/+/, '').replace(/index\.html$/, '').replace(/\/+$/, '')
-    const firstCat = post => post.categories && post.categories.data && post.categories.data.length ? post.categories.data[0].name : ''
     const fallbackCover = theme.cover && Array.isArray(theme.cover.default_cover) ? theme.cover.default_cover[0] : ''
     let lastYear = null
     const items = posts.map((post, i) => {
@@ -60,7 +59,6 @@
         href: url_for(post.path),
         pvPath: normPath(post.path),
         cover: post.cover || fallbackCover,
-        cat: firstCat(post),
         title: post.title || '无标题',
         excerpt: excerptOf(post),
         dateText: date(post.date, 'YYYY.MM.DD HH:mm'),
@@ -89,11 +87,11 @@
 
   header.tl-header
     .tl-header-badge
-      i.fas.fa-timeline
+      i.fas.fa-folder-open
     .tl-header-main
-      .tl-kicker= (config.author || 'blog') + ' / TIMELINE'
-      h1.tl-title= page.title || '归档'
-      p.tl-subtitle= page.description || '沿着时间轨迹回看写作记录。'
+      .tl-kicker CATEGORY / TIMELINE
+      h1.tl-title= page.category || _p('page.category')
+      p.tl-subtitle= `共 ${n} 篇文章，沿着时间轨迹回看。`
     .tl-header-meta
       span.tl-meta-vol VOL.01
       span.tl-meta-rule
@@ -103,9 +101,6 @@
     span.tl-hint
       i.fas.fa-hand-pointer
       span 按住拖动浏览 · 滚轮上下 · Shift+滚轮左右
-    a.tl-classic-link(href=url_for('/archives/'))
-      i.fas.fa-folder-open
-      span 经典归档视图
 
   if n
     .tl-viewport(style=`height: min(${stageH + 56}px, 78vh)`)
@@ -127,8 +122,6 @@
                 i.fas.fa-calendar-day
                 time(datetime=date_xml(it.post.date))= it.dateText
             .tl-card-body
-              if it.cat
-                span.tl-card-cat= it.cat
               h3.tl-card-title= it.title
               p.tl-card-desc= it.excerpt
               .tl-card-foot
@@ -138,6 +131,6 @@
                 span.tl-card-go
                   i.fas.fa-arrow-right
   else
-    p.tl-empty 暂无文章
+    p.tl-empty 该分类下暂无文章
 
-  script(src=(url_for('/js/timeline.js') + '?v=20261026a') defer)
+  script(src=(url_for('/js/timeline.js') + '?v=20261027a') defer)

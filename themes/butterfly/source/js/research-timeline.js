@@ -5,6 +5,11 @@
     const viewport = chart.querySelector('.research-timeline-viewport')
     if (!viewport) return
 
+    const strip = viewport.querySelector('.research-timeline-strip')
+    const minZoom = 0.5
+    const maxZoom = 3
+    let zoom = 1
+
     let dragging = false
     let moved = false
     let pointerId = null
@@ -22,6 +27,23 @@
     }
 
     viewport.style.touchAction = 'pan-y'
+
+    const setZoom = (nextZoom, clientX, clientY) => {
+      if (!strip) return
+      const clampedZoom = Math.min(maxZoom, Math.max(minZoom, nextZoom))
+      const viewportBox = viewport.getBoundingClientRect()
+      const offsetLeft = (typeof clientX === 'number' ? clientX : viewportBox.left + viewport.clientWidth / 2) - viewportBox.left
+      const offsetTop = (typeof clientY === 'number' ? clientY : viewportBox.top + viewport.clientHeight / 2) - viewportBox.top
+      const contentX = viewport.scrollLeft + offsetLeft
+      const contentY = viewport.scrollTop + offsetTop
+      const zoomRatio = clampedZoom / zoom
+
+      zoom = clampedZoom
+      strip.style.zoom = String(zoom)
+      viewport.scrollLeft = contentX * zoomRatio - offsetLeft
+      viewport.scrollTop = contentY * zoomRatio - offsetTop
+      updateCursor()
+    }
 
     const centerTimeline = () => {
       if (interacted) return
@@ -54,6 +76,13 @@
       viewport.style.cursor = 'grabbing'
       viewport.style.userSelect = 'none'
     })
+
+    viewport.addEventListener('wheel', event => {
+      event.preventDefault()
+      interacted = true
+      const direction = event.deltaY < 0 ? 1 : -1
+      setZoom(zoom * (1 + direction * 0.12), event.clientX, event.clientY)
+    }, { passive: false })
 
     window.addEventListener('pointermove', event => {
       if (!dragging || event.pointerId !== pointerId) return

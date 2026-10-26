@@ -1,23 +1,11 @@
-/* ========= 归档时间线 /timeline/ ========= */
+/* ========= 分类页时间线 ========= */
 
-.type-timeline .layout.hide-aside {
+.type-category .layout.hide-aside {
   max-width: 1600px;
 }
 
-.type-timeline #page.nc {
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.type-timeline #page .page-title {
-  display: none;
-}
-
 .timeline-container {
-  max-width: 1500px;
-  margin: 0 auto;
-  padding: 0 28px 46px;
+  position: relative;
   --tl-accent: #6fa1e0;
   --tl-accent-soft: rgba(111, 161, 224, 0.16);
   --tl-line: #aecdec;
@@ -48,7 +36,7 @@
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  padding: 26px 8px 12px;
+  padding: 6px 8px 12px;
 }
 
 .tl-header-badge {
@@ -79,7 +67,7 @@
 
 .tl-title {
   margin: 0;
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 700;
   line-height: 1.2;
   color: var(--tl-ink);
@@ -124,19 +112,6 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-}
-
-.tl-classic-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--tl-accent);
-  text-decoration: none;
-  opacity: 0.9;
-}
-
-.tl-classic-link:hover {
-  opacity: 1;
 }
 
 /* ---------- 可拖拽视口与舞台 ---------- */
@@ -297,13 +272,6 @@
   padding: 10px 14px 12px;
 }
 
-.tl-card-cat {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--tl-accent);
-}
-
 .tl-card-title {
   margin: 0;
   font-size: 15px;
@@ -401,12 +369,8 @@
 }
 
 @media (max-width: 600px) {
-  .timeline-container {
-    padding: 0 16px 40px;
-  }
-
   .tl-title {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .tl-header-badge {

@@ -19,7 +19,6 @@ nav:
 
 menu:
   Home: / || fas fa-home
-  归档: /timeline/ || fas fa-timeline
   热门: /hot/ || fas fa-fire
   追番: /bangumi/ || fas fa-film
   科研: /research/ || fas fa-flask
@@ -286,7 +285,7 @@ aside:
   display:
     archive: true
     tag: true
-    category: true
+    category: false
   card_author:
     enable: true
     description:
