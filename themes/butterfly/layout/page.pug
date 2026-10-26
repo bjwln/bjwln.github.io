@@ -1,7 +1,7 @@
 extends includes/layout.pug
 
 block content
-  - const noCardLayout = ['shuoshuo', '404', 'bangumi', 'research', 'research-planning'].includes(page.type) ? 'nc' : ''
+  - const noCardLayout = ['shuoshuo', '404', 'bangumi', 'research', 'research-planning', 'timeline'].includes(page.type) ? 'nc' : ''
   - var commentsJsLoad = false
 
   mixin commentLoad
@@ -34,6 +34,8 @@ block content
           include includes/page/bangumi.pug
         when 'research'
           include includes/page/research.pug
+        when 'timeline'
+          include includes/page/timeline.pug
         default
           include includes/page/default-page.pug
           +commentLoad

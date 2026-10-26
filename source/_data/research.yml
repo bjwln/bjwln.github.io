@@ -8,7 +8,7 @@ plans:
   - key: literature
     title: 文献阅读
     goal: 读完 10 篇核心文献
-    completed: 7
+    completed: 8
     total: 10
     unit: 篇
     plan_link: /research/planning/
