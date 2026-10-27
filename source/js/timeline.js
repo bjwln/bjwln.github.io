@@ -33,15 +33,20 @@
     window.addEventListener('resize', update)
 
     // 指针拖拽（鼠标 / 触摸 / 触控笔）
+    // 注意：不要用 setPointerCapture —— 它会把 click 也重定向到容器，
+    // 导致卡片 <a> 收不到点击而无法跳转；改为在 window 上监听 move/up。
     let dragging = false
     let moved = false
+    let activeId = null
     let startX = 0
     let startY = 0
     let baseX = 0
     let baseY = 0
 
     viewport.addEventListener('pointerdown', e => {
+      if (activeId !== null) return
       if (e.pointerType === 'mouse' && e.button !== 0) return
+      activeId = e.pointerId
       dragging = true
       moved = false
       startX = e.clientX
@@ -49,13 +54,10 @@
       baseX = tx
       baseY = ty
       viewport.classList.add('is-dragging')
-      try {
-        viewport.setPointerCapture(e.pointerId)
-      } catch (err) {}
     })
 
-    viewport.addEventListener('pointermove', e => {
-      if (!dragging) return
+    window.addEventListener('pointermove', e => {
+      if (!dragging || e.pointerId !== activeId) return
       const dx = e.clientX - startX
       const dy = e.clientY - startY
       if (!moved && Math.abs(dx) + Math.abs(dy) > 5) moved = true
@@ -64,12 +66,17 @@
       update()
     })
 
-    const stop = () => {
+    const stop = e => {
+      if (!dragging || (e && e.pointerId !== activeId)) return
+      activeId = null
       dragging = false
       viewport.classList.remove('is-dragging')
     }
-    viewport.addEventListener('pointerup', stop)
-    viewport.addEventListener('pointercancel', stop)
+    window.addEventListener('pointerup', stop)
+    window.addEventListener('pointercancel', stop)
+
+    // 屏蔽图片原生拖拽，避免打断手势
+    viewport.addEventListener('dragstart', e => e.preventDefault())
 
     // 拖拽结束后拦截这次 click，避免误点卡片
     viewport.addEventListener(

@@ -2,10 +2,14 @@
   const charts = [...document.querySelectorAll('.research-timeline-chart')]
 
   let popover = null
+  let popoverCard = null
   let hideTimer = null
+  let scrollFromZoom = false
+  let scrollFromZoomTimer = null
 
   const hidePopover = () => {
     clearTimeout(hideTimer)
+    popoverCard = null
     if (popover) popover.classList.remove('is-visible')
   }
 
@@ -24,7 +28,24 @@
     return popover
   }
 
-  const showPopover = card => {
+  // 按缩放系数定位：width/maxHeight 以未缩放布局值写入，视觉尺寸 = 布局尺寸 × zoomFactor
+  const placePopover = (card, zoomFactor) => {
+    const pop = ensurePopover()
+    pop.style.width = `${Math.round(Math.min(440, window.innerWidth - 24) / zoomFactor)}px`
+    pop.style.maxHeight = `${Math.round((window.innerHeight * 0.66) / zoomFactor)}px`
+    const cardBox = card.getBoundingClientRect()
+    const popW = pop.offsetWidth * zoomFactor
+    const popH = pop.offsetHeight * zoomFactor
+    const spaceBelow = window.innerHeight - cardBox.bottom
+    const spaceAbove = cardBox.top
+    let left = cardBox.left + cardBox.width / 2 - popW / 2
+    left = Math.max(10, Math.min(left, window.innerWidth - popW - 10))
+    let top = spaceBelow >= Math.min(popH + 24, spaceAbove) || spaceBelow >= popH + 24 ? cardBox.bottom + 12 : cardBox.top - 12 - popH
+    top = Math.max(12, Math.min(top, window.innerHeight - popH - 12))
+    pop.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px) scale(${zoomFactor})`
+  }
+
+  const showPopover = (card, zoomFactor) => {
     const pop = ensurePopover()
     clearTimeout(hideTimer)
     pop.textContent = ''
@@ -58,18 +79,8 @@
       pop.appendChild(paragraph)
     }
 
-    pop.classList.remove('is-visible')
-    const cardBox = card.getBoundingClientRect()
-    const popH = pop.offsetHeight
-    const popW = pop.offsetWidth
-    const spaceBelow = window.innerHeight - cardBox.bottom
-    const spaceAbove = cardBox.top
-    let left = cardBox.left + cardBox.width / 2 - popW / 2
-    left = Math.max(10, Math.min(left, window.innerWidth - popW - 10))
-    let top = spaceBelow >= Math.min(popH + 24, spaceAbove) || spaceBelow >= popH + 24 ? cardBox.bottom + 12 : cardBox.top - 12 - popH
-    top = Math.max(12, Math.min(top, window.innerHeight - popH - 12))
-    pop.style.left = `${Math.round(left)}px`
-    pop.style.top = `${Math.round(top)}px`
+    popoverCard = card
+    placePopover(card, zoomFactor)
     pop.classList.add('is-visible')
   }
 
@@ -114,7 +125,13 @@
       strip.style.zoom = String(zoom)
       viewport.scrollLeft = contentX * zoomRatio - offsetLeft
       viewport.scrollTop = contentY * zoomRatio - offsetTop
+      scrollFromZoom = true
+      clearTimeout(scrollFromZoomTimer)
+      scrollFromZoomTimer = setTimeout(() => { scrollFromZoom = false }, 90)
       updateCursor()
+      if (popoverCard && popover && popover.classList.contains('is-visible') && chart.contains(popoverCard)) {
+        placePopover(popoverCard, zoom)
+      }
     }
 
     const centerTimeline = () => {
@@ -153,11 +170,10 @@
     viewport.addEventListener('wheel', event => {
       event.preventDefault()
       interacted = true
-      hidePopover()
       const direction = event.deltaY < 0 ? 1 : -1
       setZoom(zoom * (1 + direction * 0.12), event.clientX, event.clientY)
     }, { passive: false })
-    viewport.addEventListener('scroll', hidePopover, { passive: true })
+    viewport.addEventListener('scroll', () => { if (!scrollFromZoom) hidePopover() }, { passive: true })
     window.addEventListener('scroll', hidePopover, { passive: true })
 
     window.addEventListener('pointermove', event => {
@@ -212,9 +228,9 @@
     })
 
     viewport.querySelectorAll('.research-timeline-card').forEach(card => {
-      card.addEventListener('mouseenter', () => { if (!dragging) showPopover(card) })
+      card.addEventListener('mouseenter', () => { if (!dragging) showPopover(card, zoom) })
       card.addEventListener('mouseleave', scheduleHidePopover)
-      card.addEventListener('focus', () => { if (!dragging) showPopover(card) })
+      card.addEventListener('focus', () => { if (!dragging) showPopover(card, zoom) })
       card.addEventListener('blur', scheduleHidePopover)
       card.addEventListener('click', hidePopover)
     })
