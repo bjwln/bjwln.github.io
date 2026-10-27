@@ -157,15 +157,17 @@
   opacity: 0.9;
 }
 
-/* ---------- 年份水印 ---------- */
+/* ---------- 年份水印(竖排,贴泳道左缘,避开卡片) ---------- */
 
 .tl-year {
   position: absolute;
-  left: 26px;
+  left: 12px;
   z-index: 1;
-  font-size: 46px;
+  writing-mode: vertical-rl;
+  font-size: 38px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 10px;
+  line-height: 1;
   color: var(--tl-accent);
   opacity: 0.16;
   pointer-events: none;

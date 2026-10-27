@@ -1,4 +1,4 @@
-link(rel='stylesheet' href=(url_for('/css/timeline.css') + '?v=20261027a'))
+link(rel='stylesheet' href=(url_for('/css/timeline.css') + '?v=20261028a'))
 .timeline-container
   -
     const posts = page.posts.sort('-date').toArray()
@@ -111,7 +111,7 @@ link(rel='stylesheet' href=(url_for('/css/timeline.css') + '?v=20261027a'))
               path(class=`tl-wave-line tl-wave-row-${rowIndex % 2}` d=d)
         each it in items
           if it.yearStart
-            .tl-year(style=`top: ${it.row * LANE_H + 30}px; animation-delay: ${it.delay}ms`)= it.year
+            .tl-year(style=`top: ${it.row * LANE_H + 46}px; animation-delay: ${it.delay}ms`)= it.year
           .tl-stem(class=`is-${it.side}` style=`left: ${it.x - 1}px; top: ${it.side === 'above' ? it.y - STEM : it.y}px; height: ${STEM}px; animation-delay: ${it.delay}ms`)
           .tl-node(class=`is-${it.side}` style=`left: ${it.x - 7}px; top: ${it.y - 7}px; animation-delay: ${it.delay}ms`)
           .tl-node-date(class=`is-${it.side}` style=`left: ${it.x}px; top: ${it.side === 'above' ? it.y + 20 : it.y - 40}px; animation-delay: ${it.delay}ms`)= it.dateText
