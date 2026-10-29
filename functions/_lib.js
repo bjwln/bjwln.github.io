@@ -112,6 +112,10 @@ export async function initBangumiTables(env) {
       updated_at INTEGER
     )`
   ).run();
+  // 旧库补列:total = 最新更新集数(自动同步)
+  try {
+    await env.DB.prepare(`ALTER TABLE bangumi_items ADD COLUMN total TEXT DEFAULT ''`).run();
+  } catch (e) { /* 列已存在 */ }
 }
 
 const BANGUMI_SEED_CATEGORIES = ['动态漫', '动画', '电视剧', '短剧'];

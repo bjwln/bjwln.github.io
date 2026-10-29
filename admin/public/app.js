@@ -908,8 +908,36 @@ let bgFormId = null;
 
 async function vBangumi() {
   main().innerHTML = `<div class="page-head"><h2>追番管理</h2><span class="muted">数据来自 Cloudflare D1(线上),保存后立即生效</span>
-    <div class="spacer"></div><button onclick="bgShowForm()">＋ 新增条目</button></div>
+    <div class="spacer"></div>
+    <button class="ghost" onclick="bgSync()">🔄 同步集数</button>
+    <button onclick="bgShowForm()">＋ 新增条目</button></div>
+    <div id="bg-sync" style="display:none"></div>
     <div id="bg-body"><div class="empty">加载中…</div></div>`;
+  await bgReload();
+}
+
+async function bgSync() {
+  const box = $('#bg-sync');
+  const btn = [...document.querySelectorAll('.page-head button')].find(b => b.textContent.includes('同步集数'));
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ 同步中…'; }
+  box.style.display = 'block';
+  box.innerHTML = '<div class="panel"><div class="empty">正在逐条获取最新集数(每条间隔 0.4 秒,请稍候)…</div></div>';
+  try {
+    const d = await api('/api/bangumi/sync', { json: {} });
+    const rows = d.results.map(r => {
+      const line = r.error
+        ? `<span class="muted">${esc(r.title)} — ${esc(r.error)}</span>`
+        : r.changed
+          ? `<strong>${esc(r.title)}</strong>:${esc(r.old || '无') || '无'} → <b style="color:var(--ok,#22c55e)">${esc(r.total)}</b> <span class="muted">(${esc(r.source)})</span>`
+          : `<span class="muted">${esc(r.title)} — 已是最新${r.total ? '(' + esc(r.total) + ')' : ''}</span>`;
+      return `<div style="padding:3px 0;font-size:13px">${line}</div>`;
+    }).join('');
+    box.innerHTML = `<div class="panel"><h3>同步结果(${d.results.filter(r => r.changed).length} 条有更新 / 共 ${d.results.length} 条)</h3>${rows || '<div class="empty">没有条目</div>'}</div>`;
+    toast('同步完成', 'ok');
+  } catch (e) {
+    box.innerHTML = `<div class="errbox">同步失败:${esc(e.message)}</div>`;
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '🔄 同步集数'; }
   await bgReload();
 }
 
@@ -941,7 +969,8 @@ function bgRender() {
         <input type="text" id="bg-f-author" placeholder="作者" style="width:120px">
         <select id="bg-f-cat"><option value="">未分类</option>${categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>
         <select id="bg-f-status"><option>在看</option><option>想看</option><option>看完</option><option>弃</option></select>
-        <input type="text" id="bg-f-episode" placeholder="集数" style="width:80px">
+        <input type="text" id="bg-f-episode" placeholder="看到第几集" style="width:90px">
+        <input type="text" id="bg-f-total" placeholder="更新至(自动同步)" style="width:110px">
         <input type="number" id="bg-f-sort" placeholder="排序" style="width:70px" value="0"></div>
       <div class="toolbar"><input type="text" id="bg-f-image" placeholder="封面图 URL" style="width:100%"></div>
       <div class="toolbar"><input type="text" id="bg-f-link" placeholder="播放/详情页链接" style="width:100%"></div>
@@ -949,14 +978,21 @@ function bgRender() {
       <div class="toolbar mt8"><button onclick="bgSaveItem()">保存</button>
         <button class="ghost" onclick="$('#bg-form-panel').style.display='none'">取消</button></div></div>
     <div class="panel" style="padding:0"><table><thead>
-      <tr><th style="width:56px">封面</th><th>标题</th><th style="width:110px">分类</th><th style="width:70px">状态</th><th style="width:80px">集数</th><th style="width:150px">操作</th></tr></thead><tbody>
-      ${items.length ? items.map(i => `<tr>
+      <tr><th style="width:56px">封面</th><th>标题</th><th style="width:100px">分类</th><th style="width:64px">状态</th><th style="width:60px">看到</th><th style="width:64px">更新至</th><th style="width:150px">操作</th></tr></thead><tbody>
+      ${items.length ? items.map(i => {
+        const epNum = parseFloat(i.episode), totalNum = parseFloat(i.total);
+        const hasNew = i.total && !isNaN(totalNum) && (isNaN(epNum) || totalNum > epNum);
+        return `<tr>
         <td>${i.image ? `<img class="bg-thumb" src="${esc(i.image)}" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}</td>
-        <td>${esc(i.title)}</td><td>${esc(catName(i.category_id)) || '<span class="muted">未分类</span>'}</td>
-        <td>${esc(i.status || '')}</td><td class="muted">${esc(i.episode || '')}</td>
+        <td>${esc(i.title)}${hasNew ? ' <span style="color:#f59e0b;font-weight:600;font-size:12px">有更新↑</span>' : ''}</td>
+        <td>${esc(catName(i.category_id)) || '<span class="muted">未分类</span>'}</td>
+        <td>${esc(i.status || '')}</td>
+        <td>${esc(i.episode || '')}</td>
+        <td>${esc(i.total || '')}</td>
         <td><button class="small" onclick="bgEditItem(${i.id})">编辑</button>
-            <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`).join('')
-      : '<tr><td colspan="6" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
+            <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`;
+      }).join('')
+      : '<tr><td colspan="7" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
       </tbody></table></div>`;
 }
 
@@ -969,6 +1005,7 @@ function bgShowForm(id) {
   $('#bg-f-cat').value = it && it.category_id ? it.category_id : '';
   $('#bg-f-status').value = it ? (it.status || '在看') : '在看';
   $('#bg-f-episode').value = it ? (it.episode || '') : '';
+  $('#bg-f-total').value = it ? (it.total || '') : '';
   $('#bg-f-sort').value = it ? (it.sort || 0) : 0;
   $('#bg-f-image').value = it ? (it.image || '') : '';
   $('#bg-f-link').value = it ? (it.link || '') : '';
@@ -984,7 +1021,7 @@ async function bgSaveItem() {
   if (!title) return toast('标题不能为空', 'err');
   await api('/api/cf/bangumi/action', { json: { action: 'item.save', id: bgFormId || undefined, title,
     author: $('#bg-f-author').value.trim(), image: $('#bg-f-image').value.trim(), link: $('#bg-f-link').value.trim(),
-    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), status: $('#bg-f-status').value,
+    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), total: $('#bg-f-total').value.trim(), status: $('#bg-f-status').value,
     category_id: $('#bg-f-cat').value ? Number($('#bg-f-cat').value) : null, sort: Number($('#bg-f-sort').value) || 0 } });
   toast('已保存,线上即时生效', 'ok');
   await bgReload();

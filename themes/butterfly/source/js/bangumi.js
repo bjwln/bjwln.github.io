@@ -12,10 +12,19 @@
 
   const cardHTML = item => {
     const statusColor = STATUS_COLOR[item.status] || '#71717a'
+    const epNum = parseFloat(item.episode)
+    const totalNum = parseFloat(item.total)
+    const hasNew = item.total && !isNaN(totalNum) && (isNaN(epNum) || totalNum > epNum)
+    const epBadge = item.episode
+      ? `<span class="bangumi-episode${hasNew ? ' is-new' : ''}">${esc(episodeText(item.episode))}</span>`
+      : ''
+    const totalBadge = item.total
+      ? `<span class="bangumi-total${hasNew ? ' is-new' : ''}">更新至 ${esc(item.total)} 集</span>`
+      : ''
     const inner = `<div class="bangumi-cover">
         <img src="${esc(item.image)}" alt="${esc(item.title)}封面" loading="lazy" decoding="async">
         ${item.category_name ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
-        ${item.episode ? `<span class="bangumi-episode">${esc(episodeText(item.episode))}</span>` : ''}
+        ${epBadge}${totalBadge}
       </div>
       <div class="bangumi-info">
         <div class="bangumi-title">${esc(item.title)}</div>
