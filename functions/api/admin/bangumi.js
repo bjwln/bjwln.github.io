@@ -18,7 +18,7 @@ export async function onRequestGet(context) {
   }
   const cats = await env.DB.prepare('SELECT id, name, sort FROM bangumi_categories ORDER BY sort, id').all();
   const items = await env.DB.prepare(
-    `SELECT id, title, author, image, link, intro, episode, total, status, category_id, sort
+    `SELECT id, title, author, image, link, intro, episode, total, sync_url, status, category_id, sort
      FROM bangumi_items ORDER BY sort, id`
   ).all();
   return json({ categories: cats.results || [], items: items.results || [] });
@@ -53,6 +53,7 @@ export async function onRequestPost(context) {
       intro: str(body.intro, 2000),
       episode: str(body.episode, 50),
       total: str(body.total, 50),
+      sync_url: str(body.sync_url, 500),
       status: str(body.status, 20) || '在看',
       category_id: body.category_id ? Number(body.category_id) : null,
       sort: Number(body.sort) || 0,
@@ -61,15 +62,15 @@ export async function onRequestPost(context) {
     if (body.id) {
       await db.prepare(
         `UPDATE bangumi_items SET title=?2, author=?3, image=?4, link=?5, intro=?6, episode=?7,
-         total=?8, status=?9, category_id=?10, sort=?11, updated_at=?12 WHERE id=?1`
+         total=?8, sync_url=?9, status=?10, category_id=?11, sort=?12, updated_at=?13 WHERE id=?1`
       ).bind(Number(body.id), values.title, values.author, values.image, values.link, values.intro,
-        values.episode, values.total, values.status, values.category_id, values.sort, values.updated_at).run();
+        values.episode, values.total, values.sync_url, values.status, values.category_id, values.sort, values.updated_at).run();
     } else {
       await db.prepare(
-        `INSERT INTO bangumi_items (title, author, image, link, intro, episode, total, status, category_id, sort, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)`
+        `INSERT INTO bangumi_items (title, author, image, link, intro, episode, total, sync_url, status, category_id, sort, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
       ).bind(values.title, values.author, values.image, values.link, values.intro, values.episode,
-        values.total, values.status, values.category_id, values.sort, values.updated_at).run();
+        values.total, values.sync_url, values.status, values.category_id, values.sort, values.updated_at).run();
     }
     return json({ ok: true });
   }

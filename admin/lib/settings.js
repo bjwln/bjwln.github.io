@@ -14,6 +14,7 @@ const DEFAULTS = {
   host: '127.0.0.1',                      // 改为 0.0.0.0 可局域网访问(建议同时设密码)
   port: 4001,                             // 管理端端口
   editorFontSize: 14,
+  biliCookie: '',                        // B站登录 Cookie(同步动态漫集数用,可选)
 };
 
 let cache = null;

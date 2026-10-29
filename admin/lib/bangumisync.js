@@ -6,12 +6,21 @@
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 const TIMEOUT = 12000;
 const cf = require('./cf');
+const settings = require('./settings');
 
 // B站会对无 cookie 的请求返回 412 风控:先访问首页拿 buvid,之后所有请求带上
 let jar = '';
 let jarAt = 0;
 
 async function ensureCookies() {
+  // 用户在设置里粘贴的 B站 登录 Cookie 优先(不会被风控)
+  try {
+    const s = await settings.load();
+    if (s.biliCookie) {
+      if (jar !== s.biliCookie) { jar = s.biliCookie; jarAt = Date.now(); }
+      return;
+    }
+  } catch { /* 设置读取失败则用自动 cookie */ }
   if (jar && Date.now() - jarAt < 6 * 3600e3) return;
   try {
     const r = await fetch('https://www.bilibili.com/', {
@@ -39,7 +48,7 @@ function collectCookies(resp) {
   }
 }
 
-async function fetchText(url, referer) {
+async function fetchTextOnce(url, referer) {
   await ensureCookies();
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
@@ -54,6 +63,23 @@ async function fetchText(url, referer) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+// B站风控是按请求随机拦截的:412/非JSON 时换 UA 指纹重试最多 3 次
+async function fetchText(url, referer) {
+  let lastErr;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const text = await fetchTextOnce(url, i === 0 ? referer : undefined);
+      if (/<!DOCTYPE html/i.test(text.slice(0, 60))) throw new Error('命中风控页');
+      return text;
+    } catch (e) {
+      lastErr = e;
+      if (String(e.message).indexOf('abort') !== -1) throw e;
+      await new Promise(r => setTimeout(r, 1200));
+    }
+  }
+  throw lastErr || new Error('请求失败');
 }
 
 async function fetchJson(url, referer) {
@@ -156,13 +182,53 @@ async function fromHtml(link) {
   return m ? { total: m[1], source: '网页解析' } : null;
 }
 
+// UP主空间链接(sync_url):按发布时间取该 UP 最新投稿,从标题解析最新集数
+async function totalFromSpace(syncUrl) {
+  const m = String(syncUrl || '').match(/space\.bilibili\.com\/(\d+)/);
+  if (!m) return null;
+  const mid = m[1];
+  // 两个通道:本机直连 → Cloudflare Worker 出口(空间接口按请求随机风控)
+  const sources = [
+    async () => fetchJson('https://api.bilibili.com/x/series/recArchivesByKeywords?mid=' + mid + '&ps=30'),
+    async () => {
+      const r = await cf.spaceArchives(mid);
+      if (!r || r.code !== 0 || !r.data) throw new Error((r && r.message) || '线上空间接口无数据');
+      return r;
+    },
+  ];
+  let lastErr;
+  for (const attempt of sources) {
+    try {
+      const d = await attempt();
+      if (d.code !== 0 || !d.data) throw new Error((d && d.message) || 'UP主空间数据为空');
+      const archives = d.data.archives || [];
+      if (!archives.length) return null;
+      // 按发布时间倒序(接口默认),取最近投稿里能解析出的最大集数
+      const n = maxEpFromTitles(archives.map(a => a.title || ''));
+      if (n != null) return { total: String(n), source: 'UP主空间最新投稿' };
+      return null;
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error('UP主空间接口不可用');
+}
+
 // 入口:返回 { total, source } 或 null(无法识别)
-async function fetchTotal(link, fallbackTitle) {
+async function fetchTotal(link, fallbackTitle, syncUrl) {
+  // 用户显式提供的同步源(UP主空间)优先级最高
+  if (syncUrl && /space\.bilibili\.com/.test(syncUrl)) {
+    const r = await totalFromSpace(syncUrl);
+    if (r) return r;
+  }
   if (!link) throw new Error('没有填写链接');
   let r = await fromBangumiPage(link);
   if (r) return r;
   const bv = link.match(/video\/(BV[0-9A-Za-z]+)/);
   if (bv) r = await totalFromVideo(bv[1], fallbackTitle);
+  if (r) return r;
+  // 空间链接存在但上面没解析出集数时,再试一次网页兜底(用空间地址本身)
+  if (syncUrl && /^https?:\/\//.test(syncUrl)) r = await fromHtml(syncUrl);
   if (r) return r;
   if (/^https?:\/\//.test(link)) r = await fromHtml(link);
   return r;

@@ -112,9 +112,12 @@ export async function initBangumiTables(env) {
       updated_at INTEGER
     )`
   ).run();
-  // 旧库补列:total = 最新更新集数(自动同步)
+  // 旧库补列:total = 最新更新集数(自动同步);sync_url = 同步源链接(UP主空间等)
   try {
     await env.DB.prepare(`ALTER TABLE bangumi_items ADD COLUMN total TEXT DEFAULT ''`).run();
+  } catch (e) { /* 列已存在 */ }
+  try {
+    await env.DB.prepare(`ALTER TABLE bangumi_items ADD COLUMN sync_url TEXT DEFAULT ''`).run();
   } catch (e) { /* 列已存在 */ }
 }
 

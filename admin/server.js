@@ -134,7 +134,7 @@ app.post('/api/bangumi/sync', U.wrap(async (req, res) => {
   for (const item of (list.items || [])) {
     const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '' };
     try {
-      const r = await bangumisync.fetchTotal(item.link || '', item.title || '');
+      const r = await bangumisync.fetchTotal(item.link || '', item.title || '', item.sync_url || '');
       if (r && r.total != null) {
         row.total = String(r.total);
         row.source = r.source;

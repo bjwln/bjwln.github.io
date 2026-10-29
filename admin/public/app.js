@@ -844,6 +844,9 @@ async function vSettings() {
         <label class="wide">ADMIN_TOKEN(即线上管理密码)<input type="password" id="s-cftoken" value="${esc(s.cfToken)}" placeholder="Cloudflare Pages 环境变量 ADMIN_TOKEN"></label>
       </div>
       <p class="muted" style="font-size:12px">Token 保存在本机 admin/data/settings.json(已 gitignore),仅本机服务使用。</p></div>
+    <div class="panel"><h3>B站 Cookie(追番集数同步用,可选)</h3>
+      <div class="flex"><textarea id="s-bilicookie" rows="2" class="w3" placeholder="浏览器登录B站后,F12 → 网络 → 任一请求 → 复制请求头里的 Cookie 值">${esc(s.biliCookie || '')}</textarea></div>
+      <p class="muted" style="font-size:12px">动态漫条目的 view 接口常被 B 站风控(412),填入登录 Cookie 可大幅提高同步成功率。保存在本机,不会上传。</p></div>
     <div class="panel"><h3>数据备份(Cloudflare D1)</h3>
       <div class="flex"><button onclick="backupDB()">⬇ 导出备份到本机</button>
         <span class="muted" style="font-size:12px">备份浏览量/评论/追番数据,保存到 admin/data/backups/(已 gitignore,建议定期导出)</span></div>
@@ -873,6 +876,7 @@ async function saveSettings() {
     port: Number($('#s-port').value) || 4001,
     previewPort: Number($('#s-pvport').value) || 4000,
     editorFontSize: Number($('#s-font').value) || 14,
+    biliCookie: $('#s-bilicookie').value.trim(),
   } });
   toast('设置已保存', 'ok');
 }
@@ -971,6 +975,7 @@ function bgRender() {
         <select id="bg-f-status"><option>在看</option><option>想看</option><option>看完</option><option>弃</option></select>
         <input type="text" id="bg-f-episode" placeholder="看到第几集" style="width:90px">
         <input type="text" id="bg-f-total" placeholder="更新至(自动同步)" style="width:110px">
+        <input type="text" id="bg-f-syncurl" placeholder="同步源:UP主空间链接(可选)" style="width:200px">
         <input type="number" id="bg-f-sort" placeholder="排序" style="width:70px" value="0"></div>
       <div class="toolbar"><input type="text" id="bg-f-image" placeholder="封面图 URL" style="width:100%"></div>
       <div class="toolbar"><input type="text" id="bg-f-link" placeholder="播放/详情页链接" style="width:100%"></div>
@@ -1006,6 +1011,7 @@ function bgShowForm(id) {
   $('#bg-f-status').value = it ? (it.status || '在看') : '在看';
   $('#bg-f-episode').value = it ? (it.episode || '') : '';
   $('#bg-f-total').value = it ? (it.total || '') : '';
+  $('#bg-f-syncurl').value = it ? (it.sync_url || '') : '';
   $('#bg-f-sort').value = it ? (it.sort || 0) : 0;
   $('#bg-f-image').value = it ? (it.image || '') : '';
   $('#bg-f-link').value = it ? (it.link || '') : '';
@@ -1021,7 +1027,7 @@ async function bgSaveItem() {
   if (!title) return toast('标题不能为空', 'err');
   await api('/api/cf/bangumi/action', { json: { action: 'item.save', id: bgFormId || undefined, title,
     author: $('#bg-f-author').value.trim(), image: $('#bg-f-image').value.trim(), link: $('#bg-f-link').value.trim(),
-    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), total: $('#bg-f-total').value.trim(), status: $('#bg-f-status').value,
+    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), total: $('#bg-f-total').value.trim(), sync_url: $('#bg-f-syncurl').value.trim(), status: $('#bg-f-status').value,
     category_id: $('#bg-f-cat').value ? Number($('#bg-f-cat').value) : null, sort: Number($('#bg-f-sort').value) || 0 } });
   toast('已保存,线上即时生效', 'ok');
   await bgReload();
