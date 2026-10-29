@@ -7,7 +7,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/10/12/EvoMDT/original.pdf)
 
 # 临床为什么临床决策困难
 

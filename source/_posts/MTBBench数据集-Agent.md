@@ -7,7 +7,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/10/18/MTBBench数据集-Agent/original.pdf)
 
 # 论文贡献
 

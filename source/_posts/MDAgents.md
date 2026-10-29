@@ -7,7 +7,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/08/16/MDAgents/original.pdf)
 
 从单个的llm创造多个会话来模拟医生到创建agent来管理，然后演变为多个agent互相协调，最后提出不应该用LLM 工作流来评估这个工作流程，而是使用AI加医生
 

@@ -129,29 +129,7 @@ app.get('/api/cf/bangumi', U.wrap(async (req, res) => res.json(await cf.listBang
 app.post('/api/cf/bangumi/action', U.wrap(async (req, res) => res.json(await cf.bangumiAction(req.body || {}))));
 // 自动同步「更新至」集数:遍历条目,按链接类型抓取最新集数并写回线上
 app.post('/api/bangumi/sync', U.wrap(async (req, res) => {
-  const list = await cf.listBangumi();
-  const results = [];
-  for (const item of (list.items || [])) {
-    const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '' };
-    try {
-      const r = await bangumisync.fetchTotal(item.link || '', item.title || '', item.sync_url || '');
-      if (r && r.total != null) {
-        row.total = String(r.total);
-        row.source = r.source;
-        row.changed = String(r.total) !== String(item.total || '');
-        if (row.changed) {
-          await cf.bangumiAction({ action: 'item.setTotal', id: item.id, total: row.total });
-        }
-      } else {
-        row.error = '无法从链接识别集数';
-      }
-    } catch (e) {
-      row.error = e.message;
-    }
-    results.push(row);
-    await new Promise(r2 => setTimeout(r2, 400)); // 温和限速,避免触发B站风控
-  }
-  res.json({ results });
+  res.json(await bangumisync.syncAll());
 }));
 app.get('/api/cf/export', U.wrap(async (req, res) => {
   const data = await cf.exportAll();
@@ -185,6 +163,19 @@ app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
   res.status(err.status || 500).json({ error: err.message || '服务器内部错误' });
 });
+
+// ---------- 追番自动同步(启动 30 秒后先跑一次,之后每 6 小时) ----------
+async function autoBangumiSync() {
+  try {
+    const r = await bangumisync.syncAll();
+    const changed = r.results.filter(x => x.changed).length;
+    console.log('[追番自动同步] 完成:共 ' + r.results.length + ' 条,更新 ' + changed + ' 条');
+  } catch (e) {
+    console.error('[追番自动同步] 失败: ' + e.message);
+  }
+}
+setTimeout(autoBangumiSync, 30 * 1000);
+setInterval(autoBangumiSync, 6 * 60 * 60 * 1000);
 
 (async () => {
   const s = await settings.load();

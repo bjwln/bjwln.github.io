@@ -75,6 +75,17 @@ export async function onRequestPost(context) {
     return json({ ok: true });
   }
 
+  // 一键追平:把「看到」直接设为「更新至」
+  if (action === 'item.catchup') {
+    const id = Number(body.id);
+    if (!id) return json({ error: 'missing id' }, 400);
+    const row = await db.prepare('SELECT total FROM bangumi_items WHERE id = ?1').bind(id).first();
+    if (!row || !row.total) return json({ error: '该条目没有「更新至」数据' }, 400);
+    await db.prepare('UPDATE bangumi_items SET episode = ?2, updated_at = ?3 WHERE id = ?1')
+      .bind(id, row.total, Date.now()).run();
+    return json({ ok: true, episode: row.total });
+  }
+
   // 自动同步:只更新最新集数,不动其他字段
   if (action === 'item.setTotal') {
     const id = Number(body.id);

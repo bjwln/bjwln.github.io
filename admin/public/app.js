@@ -993,12 +993,22 @@ function bgRender() {
         <td>${esc(catName(i.category_id)) || '<span class="muted">未分类</span>'}</td>
         <td>${esc(i.status || '')}</td>
         <td>${esc(i.episode || '')}</td>
-        <td>${esc(i.total || '')}</td>
+        <td>${esc(i.total || '')}${i.sync_url ? ' <span title="已设置同步源" style="color:var(--ok,#22c55e)">🌐</span>' : ''}</td>
         <td><button class="small" onclick="bgEditItem(${i.id})">编辑</button>
+            ${hasNew ? `<button class="small" onclick="bgCatchup(${i.id})">追平</button>` : ''}
             <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`;
       }).join('')
       : '<tr><td colspan="7" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
       </tbody></table></div>`;
+}
+
+async function bgCatchup(id) {
+  const it = bgData.items.find(x => x.id === id);
+  if (!it || !it.total) return;
+  if (!(await confirmBox(`把「${it.title}」的看到集数一键追平到 ${it.total} 集?`))) return;
+  await api('/api/cf/bangumi/action', { json: { action: 'item.catchup', id } });
+  toast(`已追平至 ${it.total} 集`, 'ok');
+  await bgReload();
 }
 
 function bgShowForm(id) {

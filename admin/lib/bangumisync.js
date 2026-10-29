@@ -7,6 +7,7 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const TIMEOUT = 12000;
 const cf = require('./cf');
 const settings = require('./settings');
+const { execFile } = require('child_process');
 
 // B站会对无 cookie 的请求返回 412 风控:先访问首页拿 buvid,之后所有请求带上
 let jar = '';
@@ -66,17 +67,39 @@ async function fetchTextOnce(url, referer) {
 }
 
 // B站风控是按请求随机拦截的:412/非JSON 时换 UA 指纹重试最多 3 次
+// Node 的 TLS 指纹会被B站风控识别(412/风控页),本机 curl.exe 不会:优先走 curl
+function curlFetch(url, referer, withCookie) {
+  return new Promise((resolve, reject) => {
+    const args = ['-s', '-L', '--max-time', String(TIMEOUT / 1000), '-A', UA,
+      '-H', 'Referer: ' + (referer || 'https://www.bilibili.com/'),
+      '-H', 'Accept-Language: zh-CN,zh;q=0.9'];
+    if (withCookie && jar) args.push('-H', 'Cookie: ' + jar);
+    args.push(url);
+    execFile('curl', args, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, windowsHide: true, timeout: TIMEOUT + 3000 },
+      (err, stdout) => {
+        if (!stdout) return reject(err || new Error('curl 无输出'));
+        resolve(stdout);
+      });
+  });
+}
+
 async function fetchText(url, referer) {
+  await ensureCookies();
   let lastErr;
-  for (let i = 0; i < 3; i++) {
+  const attempts = [
+    () => curlFetch(url, referer, true),   // curl + cookie
+    () => curlFetch(url, referer, false),  // curl 无 cookie
+    () => fetchTextOnce(url, referer),     // Node fetch 兜底
+  ];
+  for (let i = 0; i < attempts.length; i++) {
     try {
-      const text = await fetchTextOnce(url, i === 0 ? referer : undefined);
+      const text = await attempts[i]();
       if (/<!DOCTYPE html/i.test(text.slice(0, 60))) throw new Error('命中风控页');
       return text;
     } catch (e) {
       lastErr = e;
       if (String(e.message).indexOf('abort') !== -1) throw e;
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise(r => setTimeout(r, 1000));
     }
   }
   throw lastErr || new Error('请求失败');
@@ -234,4 +257,31 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
   return r;
 }
 
-module.exports = { fetchTotal };
+// 全量同步:遍历所有条目抓取「更新至」,有变化就写回线上(路由与定时器共用)
+async function syncAll() {
+  const list = await cf.listBangumi();
+  const results = [];
+  for (const item of (list.items || [])) {
+    const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '' };
+    try {
+      const r = await fetchTotal(item.link || '', item.title || '', item.sync_url || '');
+      if (r && r.total != null) {
+        row.total = String(r.total);
+        row.source = r.source;
+        row.changed = String(r.total) !== String(item.total || '');
+        if (row.changed) {
+          await cf.bangumiAction({ action: 'item.setTotal', id: item.id, total: row.total });
+        }
+      } else {
+        row.error = '无法从链接识别集数';
+      }
+    } catch (e) {
+      row.error = e.message;
+    }
+    results.push(row);
+    await new Promise(r2 => setTimeout(r2, 400)); // 温和限速,避免触发B站风控
+  }
+  return { results };
+}
+
+module.exports = { fetchTotal, syncAll };

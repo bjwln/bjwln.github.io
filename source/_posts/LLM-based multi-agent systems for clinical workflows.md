@@ -8,7 +8,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/08/16/LLM-based multi-agent systems for clinical workflows/original.pdf)
 
 ### 论文框架
 

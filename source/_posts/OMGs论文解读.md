@@ -8,7 +8,7 @@ mathjax: true
 cover: cover.jpg
 ---
 
-[Download PDF](妇科多智能体.pdf)
+[Download PDF](/2026/08/02/OMGs论文解读/妇科多智能体.pdf)
 
 # 背景
 

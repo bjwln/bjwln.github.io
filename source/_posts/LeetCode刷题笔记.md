@@ -645,7 +645,7 @@ int missingMultiple(vector<int>& nums, int k) {
 
 
 
-### [2913. 子数组不同元素数目的平方和 I](1297)
+### [2913. 子数组不同元素数目的平方和 I](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-i/)
 
 ```python
 class Solution:

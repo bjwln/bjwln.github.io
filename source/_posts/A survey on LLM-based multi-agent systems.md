@@ -8,7 +8,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/08/16/A survey on LLM-based multi-agent systems/original.pdf)
 
 ### <span style="color:red">论文框架</span>
 

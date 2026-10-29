@@ -7,7 +7,7 @@ cover: cover.jpg
 cover_fit: contain
 ---
 
-[英文原文 PDF](original.pdf)
+[英文原文 PDF](/2026/08/16/MDTeamGPT/original.pdf)
 
 这篇文章和之前的文章有几个共同点：
 
