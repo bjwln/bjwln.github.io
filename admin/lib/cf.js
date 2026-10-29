@@ -26,6 +26,9 @@ const deleteComment = id => call('/api/comment/delete', { method: 'POST', body: 
 const listPages = () => call('/api/admin/pages').then(d => d.data || []);
 const updatePage = (path, pv, uv) => call('/api/admin/pages/update', { method: 'POST', body: { path, pv, uv } });
 const deletePage = path => call('/api/admin/pages/delete', { method: 'POST', body: { path } });
+const listBangumi = () => call('/api/admin/bangumi');
+const bangumiAction = body => call('/api/admin/bangumi', { method: 'POST', body });
+const exportAll = () => call('/api/admin/export');
 
 // 仪表盘汇总
 async function summary() {
@@ -35,4 +38,4 @@ async function summary() {
   return { totalPv, totalUv, pageCount: pages.length, commentCount: comments.length };
 }
 
-module.exports = { listComments, deleteComment, listPages, updatePage, deletePage, summary };
+module.exports = { listComments, deleteComment, listPages, updatePage, deletePage, listBangumi, bangumiAction, exportAll, summary };

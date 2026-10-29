@@ -133,3 +133,5 @@ code { font-family: Consolas, monospace; color: #79b8ff; font-size: 12.5px; back
 .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mb8 { margin-bottom: 8px; }
 .flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .inline-input { width: 120px; }
+
+.bg-thumb { width: 34px; height: 48px; object-fit: cover; border-radius: 4px; display: block; background: var(--bg3); }

@@ -1,0 +1,46 @@
+/* ==========================================================
+   卡片弹性弹出动画 —— 视口触发版
+   卡片在被滚动到即将进入视野时才逐个弹出
+   JS（pop-reveal.js）负责监听进入视口并触发 .pop-play
+   ========================================================== */
+
+@keyframes pop-spring {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.94);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 等待进入视口（由 JS 添加，无 JS 时页面保持正常显示） */
+.pop-wait {
+  opacity: 0;
+}
+
+/* 触发弹出 */
+.pop-play {
+  animation: pop-spring 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* 热门页卡片是 JS 动态渲染的，默认隐藏避免闪烁（无 JS 时本页本就无内容） */
+.hot-grid .hot-card {
+  opacity: 0;
+}
+
+/* 系统开启"减少动态效果"：全部直接显示 */
+@media (prefers-reduced-motion: reduce) {
+  .pop-wait,
+  .hot-grid .hot-card {
+    opacity: 1 !important;
+  }
+  .pop-play {
+    animation: none !important;
+  }
+}

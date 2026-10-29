@@ -118,12 +118,23 @@ app.post('/api/build/preview/start', U.wrap(async (req, res) => res.json(await b
 app.post('/api/build/preview/stop', U.wrap(async (req, res) => res.json(await build.previewStop())));
 app.get('/api/build/status', U.wrap(async (req, res) => res.json(await build.previewStatus())));
 
-// ---------- Cloudflare(评论/统计) ----------
+// ---------- Cloudflare(评论/统计/追番) ----------
 app.get('/api/cf/comments', U.wrap(async (req, res) => res.json(await cf.listComments())));
 app.post('/api/cf/comments/delete', U.wrap(async (req, res) => res.json(await cf.deleteComment(req.body?.id))));
 app.get('/api/cf/pages', U.wrap(async (req, res) => res.json(await cf.listPages())));
 app.post('/api/cf/pages/update', U.wrap(async (req, res) => res.json(await cf.updatePage(req.body?.path, req.body?.pv, req.body?.uv))));
 app.post('/api/cf/pages/delete', U.wrap(async (req, res) => res.json(await cf.deletePage(req.body?.path))));
+app.get('/api/cf/bangumi', U.wrap(async (req, res) => res.json(await cf.listBangumi())));
+app.post('/api/cf/bangumi/action', U.wrap(async (req, res) => res.json(await cf.bangumiAction(req.body || {}))));
+app.get('/api/cf/export', U.wrap(async (req, res) => {
+  const data = await cf.exportAll();
+  const file = 'd1-backup-' + U.fmtDate(new Date()).replace(/[: ]/g, '-') + '.json';
+  const dir = path.join(U.ROOT, 'admin', 'data', 'backups');
+  await U.ensureDir(dir);
+  await U.atomicWrite(path.join(dir, file), JSON.stringify(data, null, 2));
+  const counts = Object.fromEntries(Object.entries(data.tables).map(([k, v]) => [k, v.length]));
+  res.json({ ok: true, file, counts });
+}));
 
 // ---------- 设置 ----------
 app.get('/api/settings', U.wrap(async (req, res) => res.json(await settings.load())));

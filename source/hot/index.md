@@ -3,50 +3,92 @@ title: 热门文章
 date: 2026-08-10 00:00:00
 top_img: false
 comment: false
-description: 按浏览量排序的文章列表
+description: 按浏览量排序的文章卡片墙
 ---
 
 <style>
-#hot-posts-page { max-width: 820px; margin: 0 auto; }
+#hot-posts-page { max-width: 1100px; margin: 0 auto; }
 
-#hot-summary {
+/* ---------- 搜索 + 分类筛选 ---------- */
+.hot-toolbar {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 32px;
-  padding: 24px;
+  gap: 16px;
   margin-bottom: 24px;
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: var(--card-box-shadow);
 }
-.hot-summary-item { text-align: center; }
-.hot-summary-num {
-  font-size: 1.8em;
-  font-weight: 700;
-  color: var(--text-highlight-color);
-  line-height: 1.2;
+.hot-search {
+  position: relative;
+  width: min(460px, 100%);
 }
-.hot-summary-label {
-  font-size: .85em;
+.hot-search i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--card-meta);
-  margin-top: 4px;
+  font-size: .9em;
 }
-.hot-summary-divider {
-  width: 1px;
-  height: 40px;
-  background: var(--light-grey);
-  flex-shrink: 0;
+.hot-search input {
+  width: 100%;
+  padding: 11px 18px 11px 40px;
+  border-radius: 999px;
+  border: 1.5px solid var(--light-grey);
+  background: var(--card-bg);
+  color: var(--font-color);
+  font-size: .92em;
+  outline: none;
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.hot-search input:focus {
+  border-color: var(--text-highlight-color);
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.12);
+}
+.hot-cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.hot-chip {
+  padding: 6px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: .88em;
+  font-family: inherit;
+  background: rgba(128, 128, 128, .14);
+  color: var(--font-color);
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.hot-chip:hover:not(.is-active) {
+  background: rgba(128, 128, 128, .26);
+  transform: translateY(-1px);
+}
+.hot-chip.is-active {
+  background: var(--text-highlight-color);
+  color: #fff;
+}
+[data-theme="dark"] .hot-chip {
+  background: rgba(255, 255, 255, .1);
+}
+[data-theme="dark"] .hot-chip.is-active {
+  background: #6cb6ff;
+  color: #10161f;
 }
 
+/* ---------- 卡片网格 ---------- */
+.hot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
 .hot-card {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  margin-bottom: 10px;
+  flex-direction: column;
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: 18px;
+  overflow: hidden;
   box-shadow: var(--card-box-shadow);
   text-decoration: none;
   color: var(--font-color);
@@ -54,107 +96,144 @@ description: 按浏览量排序的文章列表
 }
 .hot-card:hover {
   box-shadow: var(--card-hover-box-shadow);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
-
-.hot-rank {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1em;
-  font-weight: 700;
-  background: var(--text-highlight-color);
-  color: #fff;
-}
-
-.hot-cover {
-  flex-shrink: 0;
-  width: 72px;
-  height: 54px;
-  border-radius: 8px;
+.hot-card-cover {
+  position: relative;
+  height: 150px;
   overflow: hidden;
+  background: rgba(128, 128, 128, .12);
 }
-.hot-cover img {
+.hot-card-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .5s ease;
 }
-
-.hot-info { flex: 1; min-width: 0; }
-.hot-title {
-  font-size: 1.05em;
-  font-weight: 600;
-  white-space: nowrap;
+.hot-card:hover .hot-card-cover img {
+  transform: scale(1.06);
+}
+.hot-rank-chip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: .72em;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff7242, #ff4d6a);
+  box-shadow: 0 4px 10px -2px rgba(255, 77, 106, .5);
+}
+.hot-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 13px;
+  min-width: 0;
+}
+.hot-card-title {
+  font-size: 1.02em;
+  font-weight: 700;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color .3s;
+  transition: color .3s ease;
 }
-.hot-card:hover .hot-title { color: var(--btn-bg); }
-.hot-meta {
+.hot-card:hover .hot-card-title {
+  color: var(--text-highlight-color);
+}
+.hot-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.hot-card-date {
+  font-size: .78em;
+  color: var(--card-meta);
+  font-variant-numeric: tabular-nums;
+}
+.hot-cat {
+  padding: 1px 9px;
+  border-radius: 4px;
+  font-size: .76em;
+  background: rgba(128, 128, 128, .18);
+  color: var(--text-highlight-color);
+}
+.hot-card-desc {
+  margin: 0;
+  font-size: .86em;
+  line-height: 1.7;
+  color: var(--card-meta);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hot-card-foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--light-grey);
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 4px;
-  font-size: .8em;
+  justify-content: space-between;
+  font-size: .84em;
   color: var(--card-meta);
 }
-.hot-meta i { margin-right: 4px; }
-.hot-cat {
-  padding: 1px 8px;
-  border-radius: 4px;
-  background: rgba(128, 128, 128, .2);
+.hot-pv {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hot-pv i {
   color: var(--text-highlight-color);
 }
 
-.hot-pv {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: .9em;
-  color: var(--card-meta);
-  white-space: nowrap;
-}
-.hot-pv i { color: var(--text-highlight-color); }
-
 .hot-loading, .hot-error, .hot-empty {
+  grid-column: 1 / -1;
   text-align: center;
-  padding: 40px;
+  padding: 46px;
   color: var(--card-meta);
 }
 .hot-loading i, .hot-error i { margin-right: 8px; }
 
-@media (max-width: 768px) {
-  .hot-cover { display: none; }
-  #hot-summary { gap: 20px; padding: 16px; }
-  .hot-summary-num { font-size: 1.4em; }
-  .hot-card { padding: 12px 14px; gap: 10px; }
-  .hot-rank { width: 28px; height: 28px; font-size: .9em; }
-}
-
-[data-theme="dark"] .hot-summary-num,
-[data-theme="dark"] .hot-card:hover .hot-title,
+[data-theme="dark"] .hot-card:hover .hot-card-title,
 [data-theme="dark"] .hot-cat,
 [data-theme="dark"] .hot-pv i {
   color: #6cb6ff;
 }
-[data-theme="dark"] .hot-rank {
-  background: #6cb6ff;
-}
 [data-theme="dark"] .hot-cat {
   background: rgba(108, 182, 255, .15);
+}
+[data-theme="dark"] .hot-search input:focus {
+  box-shadow: 0 0 0 3px rgba(108, 182, 255, 0.16);
+}
+
+@media (max-width: 640px) {
+  .hot-grid {
+    grid-template-columns: 1fr;
+  }
+  .hot-card-cover {
+    height: 140px;
+  }
 }
 </style>
 
 <div id="hot-posts-page">
-  <div id="hot-summary"></div>
-  <div id="hot-posts-list">
+  <div class="hot-toolbar">
+    <div class="hot-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="hot-search-input" type="text" placeholder="搜索文章..." autocomplete="off" />
+    </div>
+    <div class="hot-cats" id="hot-cats"></div>
+  </div>
+  <div id="hot-posts-list" class="hot-grid">
     <div class="hot-loading"><i class="fa-solid fa-spinner fa-spin"></i> 加载中...</div>
   </div>
 </div>
 
-<script src="/js/hot.js" defer></script>
+<script src="/js/hot.js?v=20261031a" defer></script>

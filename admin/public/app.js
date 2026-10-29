@@ -81,6 +81,7 @@ const ROUTES = [
   [/^#\/media$/, () => vMedia()],
   [/^#\/comments$/, () => vComments()],
   [/^#\/stats$/, () => vStats()],
+  [/^#\/bangumi$/, () => vBangumi()],
   [/^#\/build$/, () => vBuild()],
   [/^#\/settings$/, () => vSettings()],
 ];
@@ -495,11 +496,10 @@ async function vData(tab) {
   main().innerHTML = `
     <div class="page-head"><h2>数据文件</h2>
       <a href="#/data/research" class="${tab === 'research' ? '' : 'muted'}">科研 research.yml</a>
-      <a href="#/data/bangumi" class="${tab === 'bangumi' ? '' : 'muted'}">追番 bangumi.yml</a>
       <a href="#/data/widget" class="${tab === 'widget' ? '' : 'muted'}">侧栏 widget.yml</a></div>
     <div id="data-body"></div>`;
   if (tab === 'research') await vDataResearch();
-  else if (tab === 'bangumi') await vDataBangumi();
+  else if (tab === 'bangumi') await vBangumiMigrated();
   else await vDataWidget();
 }
 
@@ -612,56 +612,13 @@ async function saveResearch() {
   toast('research.yml 已保存', 'ok');
 }
 
-// —— bangumi.yml ——
-async function vDataBangumi() {
-  const r = await api('/api/data/bangumi');
-  DF = { parsed: r.parsed };
-  const box = $('#data-body');
-  box.innerHTML = `
-    <datalist id="dl-titles"></datalist>
-    <div class="toolbar"><button onclick="addBangumi()">＋ 新增条目</button>
-      <button onclick="saveBangumi()">💾 保存 bangumi.yml</button>
-      <span class="muted">图片可填写 URL 或点「传」上传到 images/bangumi/</span></div>
-    <div id="bangumi-box"></div>`;
-  renderBangumi();
-}
-function renderBangumi() {
-  $('#bangumi-box').innerHTML = DF.parsed.items.map((it, i) => `
-    <div class="plan-card"><div class="row" style="align-items:flex-start">
-      <div style="width:70px;flex-shrink:0">
-        <img src="${esc(it.image || '')}" onerror="this.style.display='none'" style="width:68px;height:68px;object-fit:cover;border-radius:6px;background:var(--bg3)" id="bg-img-${i}">
-        <input type="file" id="bg-file-${i}" accept="image/*" style="display:none" onchange="uploadBangumiImg(${i},this.files[0])">
-        <button class="small ghost" style="margin-top:4px;width:100%" onclick="$('#bg-file-${i}').click()">传封面</button></div>
-      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <input value="${esc(it.title || '')}" placeholder="标题 *" oninput="DF.parsed.items[${i}].title=this.value">
-        <input value="${esc(it.author || '')}" placeholder="作者/制作组" oninput="DF.parsed.items[${i}].author=this.value">
-        <input value="${esc(it.image || '')}" placeholder="图片 URL 或 /images/bangumi/x.jpg" oninput="DF.parsed.items[${i}].image=this.value;$('#bg-img-${i}').style.display='';$('#bg-img-${i}').src=this.value">
-        <input value="${esc(it.link || '')}" placeholder="链接" oninput="DF.parsed.items[${i}].link=this.value">
-        <textarea placeholder="简介 intro" style="grid-column:span 2;min-height:40px" oninput="DF.parsed.items[${i}].intro=this.value">${esc(it.intro || '')}</textarea>
-        <input value="${esc(it.episode ?? '')}" placeholder="集数 / 看完" oninput="DF.parsed.items[${i}].episode=this.value">
-        <div class="flex"><button class="small ghost" onclick="moveItem(DF.parsed.items,${i},-1)">↑</button>
-          <button class="small ghost" onclick="moveItem(DF.parsed.items,${i},1)">↓</button>
-          <button class="small danger" onclick="delBangumi(${i})">删除</button></div></div></div></div>`).join('')
-    || '<div class="empty">暂无条目,点击上方「新增条目」</div>';
-}
-function addBangumi() { DF.parsed.items.push({ title: '', author: '', image: '', link: '', intro: '', episode: 1 }); renderBangumi(); }
-function delBangumi(i) { DF.parsed.items.splice(i, 1); renderBangumi(); }
-function moveItem(arr, i, d) {
-  const j = i + d;
-  if (j < 0 || j >= arr.length) return;
-  [arr[i], arr[j]] = [arr[j], arr[i]];
-  renderBangumi();
-}
-async function uploadBangumiImg(i, file) {
-  if (!file) return;
-  const fd = new FormData();
-  fd.append('target', 'bangumi');
-  fd.append('files', file);
-  const resp = await fetch('/api/media/upload', { method: 'POST', body: fd, headers: tokenHeaders() });
-  const d = await resp.json();
-  if (!resp.ok) { toast(d.error || '上传失败', 'err'); return; }
-  DF.parsed.items[i].image = '/images/bangumi/' + d.saved[0].name;
-  renderBangumi();
+// —— bangumi.yml(已迁移:追番内容由线上 D1 管理,此编辑器退役) ——
+function vBangumiMigrated() {
+  $('#data-body').innerHTML = `<div class="panel">
+    <h3>追番内容已迁移</h3>
+    <p class="muted mb8">追番的条目与分类现在由线上数据库(Cloudflare D1)管理,追番页直接读取线上数据,保存即生效——请使用左侧「📺 追番管理」编辑。</p>
+    <p class="muted" style="font-size:12px">本文件(source/_data/bangumi.yml)仅作为追番页在接口故障时的静态兜底数据,不再随编辑更新。</p>
+    <a href="#/bangumi"><button>→ 打开追番管理</button></a></div>`;
 }
 function tokenHeaders() {
   const h = {};
@@ -887,6 +844,10 @@ async function vSettings() {
         <label class="wide">ADMIN_TOKEN(即线上管理密码)<input type="password" id="s-cftoken" value="${esc(s.cfToken)}" placeholder="Cloudflare Pages 环境变量 ADMIN_TOKEN"></label>
       </div>
       <p class="muted" style="font-size:12px">Token 保存在本机 admin/data/settings.json(已 gitignore),仅本机服务使用。</p></div>
+    <div class="panel"><h3>数据备份(Cloudflare D1)</h3>
+      <div class="flex"><button onclick="backupDB()">⬇ 导出备份到本机</button>
+        <span class="muted" style="font-size:12px">备份浏览量/评论/追番数据,保存到 admin/data/backups/(已 gitignore,建议定期导出)</span></div>
+      <div id="backup-result" class="muted" style="font-size:12px;margin-top:6px"></div></div>
     <div class="panel"><h3>服务</h3><div class="fm-grid">
       <label>监听地址<select id="s-host"><option value="127.0.0.1" ${s.host === '127.0.0.1' ? 'selected' : ''}>127.0.0.1 仅本机(推荐)</option><option value="0.0.0.0" ${s.host === '0.0.0.0' ? 'selected' : ''}>0.0.0.0 局域网(需设密码)</option></select></label>
       <label>管理端端口<input type="number" id="s-port" value="${s.port}"></label>
@@ -898,6 +859,11 @@ async function vSettings() {
         <button onclick="savePassword()">保存密码</button>
         ${s.password ? '<button class="ghost" onclick="clearPassword()">清除密码</button>' : ''}</div></div>
     <div class="toolbar"><button onclick="saveSettings()">💾 保存设置</button></div>`;
+}
+async function backupDB() {
+  const r = await api('/api/cf/export');
+  $('#backup-result').textContent = '最近备份: ' + r.file + '(' + Object.entries(r.counts).map(([k, n]) => k + ' ' + n + ' 条').join(', ') + ')';
+  toast('备份完成: ' + r.file, 'ok');
 }
 async function saveSettings() {
   await api('/api/settings', { method: 'PUT', json: {
@@ -935,3 +901,117 @@ async function savePasswordWith(pw) {
   } catch { /* ignore */ }
   route();
 })();
+
+// ---------- 追番管理(线上 D1) ----------
+let bgData = { categories: [], items: [] };
+let bgFormId = null;
+
+async function vBangumi() {
+  main().innerHTML = `<div class="page-head"><h2>追番管理</h2><span class="muted">数据来自 Cloudflare D1(线上),保存后立即生效</span>
+    <div class="spacer"></div><button onclick="bgShowForm()">＋ 新增条目</button></div>
+    <div id="bg-body"><div class="empty">加载中…</div></div>`;
+  await bgReload();
+}
+
+async function bgReload() {
+  try {
+    bgData = await api('/api/cf/bangumi');
+    bgData.categories = bgData.categories || [];
+    bgData.items = bgData.items || [];
+    $('#bg-body').innerHTML = bgRender();
+  } catch (e) {
+    $('#bg-body').innerHTML = `<div class="errbox">加载失败:${esc(e.message)}<br><a href="#/settings">→ 去设置页配置 Cloudflare Token</a></div>`;
+  }
+}
+
+function bgRender() {
+  const { categories, items } = bgData;
+  const catName = id => (categories.find(c => c.id === id) || {}).name || '';
+  const countFor = id => items.filter(i => i.category_id === id).length;
+  return `<div class="panel"><h3>分类</h3>
+      <div class="toolbar">
+        ${categories.map(c => `<span class="chip">${esc(c.name)} <em class="muted">${countFor(c.id)}</em>
+          <button class="small" onclick="bgRenameCat(${c.id})">改名</button>
+          <button class="small danger" onclick="bgDelCat(${c.id})">删除</button></span>`).join('')}
+        <input type="text" id="bg-new-cat" placeholder="新分类名" style="width:130px">
+        <button class="small" onclick="bgAddCat()">添加分类</button></div></div>
+    <div class="panel" id="bg-form-panel" style="display:none"><h3 id="bg-form-title">新增条目</h3>
+      <div class="toolbar">
+        <input type="text" id="bg-f-title" placeholder="标题(必填)" style="width:220px">
+        <input type="text" id="bg-f-author" placeholder="作者" style="width:120px">
+        <select id="bg-f-cat"><option value="">未分类</option>${categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>
+        <select id="bg-f-status"><option>在看</option><option>想看</option><option>看完</option><option>弃</option></select>
+        <input type="text" id="bg-f-episode" placeholder="集数" style="width:80px">
+        <input type="number" id="bg-f-sort" placeholder="排序" style="width:70px" value="0"></div>
+      <div class="toolbar"><input type="text" id="bg-f-image" placeholder="封面图 URL" style="width:100%"></div>
+      <div class="toolbar"><input type="text" id="bg-f-link" placeholder="播放/详情页链接" style="width:100%"></div>
+      <textarea id="bg-f-intro" rows="3" placeholder="简介" style="width:100%"></textarea>
+      <div class="toolbar mt8"><button onclick="bgSaveItem()">保存</button>
+        <button class="ghost" onclick="$('#bg-form-panel').style.display='none'">取消</button></div></div>
+    <div class="panel" style="padding:0"><table><thead>
+      <tr><th style="width:56px">封面</th><th>标题</th><th style="width:110px">分类</th><th style="width:70px">状态</th><th style="width:80px">集数</th><th style="width:150px">操作</th></tr></thead><tbody>
+      ${items.length ? items.map(i => `<tr>
+        <td>${i.image ? `<img class="bg-thumb" src="${esc(i.image)}" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}</td>
+        <td>${esc(i.title)}</td><td>${esc(catName(i.category_id)) || '<span class="muted">未分类</span>'}</td>
+        <td>${esc(i.status || '')}</td><td class="muted">${esc(i.episode || '')}</td>
+        <td><button class="small" onclick="bgEditItem(${i.id})">编辑</button>
+            <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`).join('')
+      : '<tr><td colspan="6" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
+      </tbody></table></div>`;
+}
+
+function bgShowForm(id) {
+  bgFormId = id || null;
+  const it = bgFormId ? bgData.items.find(x => x.id === bgFormId) : null;
+  $('#bg-form-title').textContent = bgFormId ? '编辑条目 #' + bgFormId : '新增条目';
+  $('#bg-f-title').value = it ? it.title : '';
+  $('#bg-f-author').value = it ? (it.author || '') : '';
+  $('#bg-f-cat').value = it && it.category_id ? it.category_id : '';
+  $('#bg-f-status').value = it ? (it.status || '在看') : '在看';
+  $('#bg-f-episode').value = it ? (it.episode || '') : '';
+  $('#bg-f-sort').value = it ? (it.sort || 0) : 0;
+  $('#bg-f-image').value = it ? (it.image || '') : '';
+  $('#bg-f-link').value = it ? (it.link || '') : '';
+  $('#bg-f-intro').value = it ? (it.intro || '') : '';
+  const panel = $('#bg-form-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function bgEditItem(id) { bgShowForm(id); }
+
+async function bgSaveItem() {
+  const title = $('#bg-f-title').value.trim();
+  if (!title) return toast('标题不能为空', 'err');
+  await api('/api/cf/bangumi/action', { json: { action: 'item.save', id: bgFormId || undefined, title,
+    author: $('#bg-f-author').value.trim(), image: $('#bg-f-image').value.trim(), link: $('#bg-f-link').value.trim(),
+    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), status: $('#bg-f-status').value,
+    category_id: $('#bg-f-cat').value ? Number($('#bg-f-cat').value) : null, sort: Number($('#bg-f-sort').value) || 0 } });
+  toast('已保存,线上即时生效', 'ok');
+  await bgReload();
+  $('#bg-form-panel').style.display = 'none';
+}
+async function bgDelItem(id) {
+  if (!(await confirmBox('删除该条目?线上数据,不可恢复!'))) return;
+  await api('/api/cf/bangumi/action', { json: { action: 'item.delete', id } });
+  toast('已删除', 'ok'); await bgReload();
+}
+async function bgAddCat() {
+  const name = $('#bg-new-cat').value.trim();
+  if (!name) return toast('请输入分类名', 'err');
+  await api('/api/cf/bangumi/action', { json: { action: 'category.save', name } });
+  toast('已添加', 'ok'); await bgReload();
+}
+async function bgRenameCat(id) {
+  const c = bgData.categories.find(x => x.id === id);
+  const name = prompt('修改分类名:', c ? c.name : '');
+  if (name === null) return;
+  if (!name.trim() || (c && name.trim() === c.name)) return;
+  await api('/api/cf/bangumi/action', { json: { action: 'category.save', id, name: name.trim() } });
+  toast('已改名', 'ok'); await bgReload();
+}
+async function bgDelCat(id) {
+  const c = bgData.categories.find(x => x.id === id);
+  if (!(await confirmBox(`删除分类「${c ? c.name : id}」?其下条目会变成未分类`))) return;
+  await api('/api/cf/bangumi/action', { json: { action: 'category.delete', id } });
+  toast('已删除', 'ok'); await bgReload();
+}

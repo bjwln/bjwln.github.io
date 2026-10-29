@@ -1,5 +1,8 @@
-﻿(function () {
+(function () {
   'use strict';
+
+  var allPosts = [];
+  var state = { cat: '全部', q: '' };
 
   function formatNumber(n) {
     return (n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -12,6 +15,14 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  // 封面相对路径转绝对路径并编码空格
+  function coverSrc(cover) {
+    if (!cover) return '';
+    var v = String(cover);
+    if (v.indexOf('http') === 0 || v.charAt(0) === '/') return encodeURI(v);
+    return encodeURI('/' + v.replace(/^\.?\//, ''));
   }
 
   function init() {
@@ -35,71 +46,122 @@
         pvMap[decodedPath] = { pv: item.pv || 0, uv: item.uv || 0 };
       });
 
-      var totalViews = 0;
       posts.forEach(function (post) {
         var v = pvMap[post.path] || { pv: 0, uv: 0 };
         post.pv = v.pv;
         post.uv = v.uv;
-        totalViews += v.pv;
       });
 
       posts.sort(function (a, b) {
         if (b.pv !== a.pv) return b.pv - a.pv;
         return new Date(b.date) - new Date(a.date);
       });
+      // 全局排名（按浏览量），只有整体前 3 名显示角标
+      posts.forEach(function (post, i) { post.rank = i + 1; });
 
-      renderSummary(totalViews, posts.length);
-      renderList(list, posts);
+      allPosts = posts;
+      buildCats();
+      render();
+      bindToolbar();
     }).catch(function () {
       list.innerHTML = '<div class="hot-error"><i class="fa-solid fa-circle-exclamation"></i> 数据加载失败，请刷新重试</div>';
     });
   }
 
-  function renderSummary(totalViews, totalPosts) {
-    var el = document.getElementById('hot-summary');
-    if (!el) return;
-    el.innerHTML =
-      '<div class="hot-summary-item">' +
-        '<div class="hot-summary-num">' + totalPosts + '</div>' +
-        '<div class="hot-summary-label">篇文章</div>' +
-      '</div>' +
-      '<div class="hot-summary-divider"></div>' +
-      '<div class="hot-summary-item">' +
-        '<div class="hot-summary-num">' + formatNumber(totalViews) + '</div>' +
-        '<div class="hot-summary-label">总浏览量</div>' +
-      '</div>';
+  function buildCats() {
+    var box = document.getElementById('hot-cats');
+    if (!box) return;
+    var seen = {};
+    var cats = [];
+    allPosts.forEach(function (p) {
+      (p.categories || []).forEach(function (c) {
+        if (!seen[c]) {
+          seen[c] = true;
+          cats.push(c);
+        }
+      });
+    });
+    var html = '<button class="hot-chip is-active" data-cat="全部">全部</button>';
+    cats.forEach(function (c) {
+      html += '<button class="hot-chip" data-cat="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>';
+    });
+    box.innerHTML = html;
+    box.addEventListener('click', function (e) {
+      var chip = e.target.closest('.hot-chip');
+      if (!chip) return;
+      box.querySelectorAll('.hot-chip').forEach(function (el) {
+        el.classList.toggle('is-active', el === chip);
+      });
+      state.cat = chip.getAttribute('data-cat');
+      render();
+    });
   }
 
-  function renderList(list, posts) {
+  function bindToolbar() {
+    var input = document.getElementById('hot-search-input');
+    if (!input) return;
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        state.q = input.value.trim().toLowerCase();
+        render();
+      }, 180);
+    });
+  }
+
+  function filtered() {
+    return allPosts.filter(function (p) {
+      if (state.cat !== '全部' && (p.categories || []).indexOf(state.cat) === -1) return false;
+      if (state.q) {
+        var hay = (p.title + ' ' + (p.excerpt || '') + ' ' + (p.categories || []).join(' ')).toLowerCase();
+        if (hay.indexOf(state.q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function render() {
+    var list = document.getElementById('hot-posts-list');
+    if (!list) return;
+    var posts = filtered();
+
     if (!posts.length) {
-      list.innerHTML = '<div class="hot-empty">暂无文章</div>';
+      list.innerHTML = '<div class="hot-empty"><i class="fa-regular fa-face-smile"></i> 没有匹配的文章</div>';
       return;
     }
 
     var html = posts.map(function (post, index) {
-      var rank = index + 1;
-      var rankClass = 'hot-rank';
+      var rankChip = post.rank <= 3
+        ? '<span class="hot-rank-chip">热门 No.' + post.rank + '</span>'
+        : '';
       var coverHtml = post.cover
-        ? '<div class="hot-cover"><img src="' + escapeHtml(post.cover) + '" alt="" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></div>'
+        ? '<div class="hot-card-cover">' + rankChip +
+            '<img src="' + coverSrc(post.cover) + '" alt="" loading="lazy" ' +
+            'onerror="this.style.display=\'none\'"></div>'
         : '';
-      var catHtml = post.categories && post.categories.length
-        ? '<span class="hot-cat">' + escapeHtml(post.categories[0]) + '</span>'
+      var catHtml = (post.categories || []).map(function (c) {
+        return '<span class="hot-cat">' + escapeHtml(c) + '</span>';
+      }).join('');
+      var desc = post.excerpt
+        ? '<p class="hot-card-desc">' + escapeHtml(post.excerpt) + '</p>'
         : '';
+      var delay = Math.min(index * 90, 1100);
 
       return (
-        '<a class="hot-card" href="' + escapeHtml(post.path) + '/">' +
-          '<div class="' + rankClass + '">' + rank + '</div>' +
+        '<a class="hot-card" href="' + escapeHtml(post.path) + '/" style="animation-delay:' + delay + 'ms">' +
           coverHtml +
-          '<div class="hot-info">' +
-            '<div class="hot-title">' + escapeHtml(post.title) + '</div>' +
-            '<div class="hot-meta">' +
-              '<span><i class="far fa-calendar-alt"></i>' + post.date + '</span>' +
+          '<div class="hot-card-body">' +
+            '<div class="hot-card-title">' + escapeHtml(post.title) + '</div>' +
+            '<div class="hot-card-tags">' +
+              '<span class="hot-card-date"><i class="far fa-calendar-alt"></i> ' + post.date + '</span>' +
               catHtml +
             '</div>' +
-          '</div>' +
-          '<div class="hot-pv">' +
-            '<i class="far fa-eye"></i>' +
-            '<span>' + formatNumber(post.pv) + '</span>' +
+            desc +
+            '<div class="hot-card-foot">' +
+              '<span class="hot-pv"><i class="far fa-eye"></i>' + formatNumber(post.pv) + ' 次浏览</span>' +
+              '<span><i class="fas fa-arrow-right" style="transform:rotate(-45deg)"></i></span>' +
+            '</div>' +
           '</div>' +
         '</a>'
       );

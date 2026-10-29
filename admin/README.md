@@ -27,7 +27,7 @@ npm run admin
 | 💬 评论管理 | 代理线上 `functions/` 的 admin API,列表 + 删除(需在设置里填 ADMIN_TOKEN) |
 | 📈 流量统计 | 线上 PV/UV 排行、修正、删除 |
 | 🚀 构建发布 | hexo server 本地预览启停;本地构建验证(`hexo clean && generate`);一键发布 = git add + commit(可自定义信息)+ push,CI 自动部署两端;日志实时查看 |
-| ⚙️ 设置 | Cloudflare Token、监听地址、端口、访问密码、编辑器字号 |
+| ⚙️ 设置 | Cloudflare Token、监听地址、端口、访问密码、编辑器字号、D1 数据备份导出 |
 
 ## 使用提示
 
