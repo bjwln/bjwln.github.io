@@ -1,5 +1,6 @@
 ---
 title: PyTorch 进阶—人工神经网络
+description: "PyTorch 进阶笔记：神经网络的优缺点、激活函数为什么能注入非线性，以及搭建人工神经网络的关键概念。"
 date: 2026-07-06 22:32:38
 tags: [AI, PyTorch]
 categories: 大模型

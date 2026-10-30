@@ -1,11 +1,14 @@
 ---
 title: SixSixAgents
+description: "SixSixAgents 项目源码导读：core/clients/orchestrator/servers 的文件层级结构，以及 OMGs 提示词库与病例数据的组织方式。"
 date: 2026-09-20 18:09:17
 tags:
 research: project
 research_order: 0
 cover: image-20261001201657982.png
 cover_fit: contain
+categories:
+  - 大模型
 ---
 
 # 文件层级结构

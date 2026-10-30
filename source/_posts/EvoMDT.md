@@ -1,10 +1,14 @@
 ---
 title: "2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer"
+description: "解读 EvoMDT：为什么临床决策难，CDSS 与知识图谱的局限，以及一个能自我进化、按 MDT 流程给出结构化诊疗建议的多智能体系统。"
 date: 2026-10-12 22:42:35
 research: literature
 research_order: 7
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
+tags: [多智能体, 论文, MDT]
 ---
 
 [英文原文 PDF](/2026/10/12/EvoMDT/original.pdf)

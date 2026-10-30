@@ -1,10 +1,14 @@
 ---
 title: MTBBench数据集+Agent
+description: "解读 MTBBench：把静态单轮的医学基准升级为多轮、多模态、随时间推进的肿瘤多学科诊疗评估框架与 Agent 工作流。"
 date: 2026-10-18 21:54:36
 research: literature
 research_order: 8
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
+tags: [多智能体, 论文, MDT]
 ---
 
 [英文原文 PDF](/2026/10/18/MTBBench数据集-Agent/original.pdf)

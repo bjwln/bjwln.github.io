@@ -1,11 +1,14 @@
 ---
 title: MDAgents-Minimal
+description: "MDAgents-Minimal 源码导读：三个 py 文件的系统总览、命令行参数设计、ccswitch 配置读取与模型信息加载流程。"
 date: 2026-10-15 01:15:59
 tags:
 research: project
 research_order: 0
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
 ---
 
 # 系统总览

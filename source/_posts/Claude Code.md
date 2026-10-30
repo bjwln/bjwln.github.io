@@ -1,5 +1,6 @@
 ---
 title: Claude Code
+description: "Claude Code 从安装、环境变量配置到切换 API 中转模型的完整上手记录，附带 /resume、/compact 与 Zotero 文献查询等日常用法。"
 date: 2026-05-27 10:43:00
 tags: [AI, Claude Code]
 categories: 大模型

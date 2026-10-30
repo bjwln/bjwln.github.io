@@ -1,5 +1,6 @@
 ---
 title: PyTorch 入门—从张量到线性回归
+description: "PyTorch 入门笔记：框架与 Autograd 简介、张量与 NumPy 的互转，再到用张量完成线性回归的完整路径。"
 date: 2026-06-04 10:04:06
 categories: 大模型
 tags: [AI, PyTorch]

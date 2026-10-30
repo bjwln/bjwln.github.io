@@ -1,5 +1,6 @@
 ---
 title: Codeforces Round 1103 (Div. 3)
+description: "Codeforces 1103 Div.3 逐题题解：最矮塔补高、按 k 分链的翻转奇偶性、贪心与构造等思路及 C++ 实现。"
 date: 2026-06-20 11:25:17
 tags: [算法, Codeforces]
 categories: 算法题

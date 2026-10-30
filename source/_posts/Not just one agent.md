@@ -1,11 +1,14 @@
 ---
 title: "Not just one agent: LLM-based multi-agent systems for medicine from answer generation to accountable workflow orchestration"
+description: "解读医学多智能体综述：MAS 应作为临床协调基础设施而非 LLM 工作流来评估，从结果层、过程层到部署层的评估体系。"
 date: 2026-08-16 16:38:13
 tags: [多智能体, MDT]
 research: literature
 research_order: 3
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
 ---
 
 [英文原文 PDF](/2026/08/16/Not just one agent/original.pdf)

@@ -1,11 +1,14 @@
 ---
 title: "MedAgents: large language models as collaborators for zero-shot medical reasoning"
+description: "解读 MedAgents：全程无需人工的五阶段医学推理流程——组建专科专家小组、独立分析、汇总报告到投票得出答案。"
 date: 2026-08-16 16:38:13
 tags: [多智能体, MDT]
 research: literature
 research_order: 4
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
 ---
 
 [英文原文 PDF](/2026/08/16/MedAgents/original.pdf)

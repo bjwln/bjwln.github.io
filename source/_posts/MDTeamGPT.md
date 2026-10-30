@@ -1,10 +1,14 @@
 ---
 title: "MDTeamGPT: a self-evolving LLM-based multi-agent framework for multi-disciplinary team medical consultation"
+description: "解读 MDTeamGPT：多学科会诊的多轮讨论与共识投票流程，以及用知识库积累经验、让每次会诊越用越强的自进化设计。"
 date: 2026-08-16 16:38:13
 research: literature
 research_order: 6
 cover: cover.jpg
 cover_fit: contain
+categories:
+  - 大模型
+tags: [多智能体, 论文, MDT]
 ---
 
 [英文原文 PDF](/2026/08/16/MDTeamGPT/original.pdf)

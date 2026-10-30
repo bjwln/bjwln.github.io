@@ -1,5 +1,6 @@
 ---
 title: pizza
+description: "家庭版披萨做法：和面比例、发酵判断、饼胚成型到铺料烤制的完整步骤与注意事项。"
 date: 2026-07-15 21:44:58
 tags: [菜谱]
 categories: Cooking

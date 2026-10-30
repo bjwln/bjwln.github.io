@@ -1,5 +1,6 @@
 ---
 title: Python
+description: "Python 环境笔记:pip show、python -m 等常用命令，以及用 venv 为每个项目隔离依赖环境的完整步骤。"
 date: 2026-09-20 20:16:38
 tags:
 categories: 大模型

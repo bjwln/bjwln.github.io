@@ -1,5 +1,6 @@
 ---
 title: LeetCode刷题笔记
+description: "基础算法刷题笔记：XOR 三元组、位运算性质、动态规划等题目的思路推导与规律总结，附力扣题目链接。"
 date: 2026-06-24 18:38:58
 tags: [算法, LeetCode]
 categories: 算法题

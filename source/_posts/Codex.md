@@ -1,5 +1,6 @@
 ---
 title: Codex
+description: "OpenAI Codex 的发展脉络与用法笔记：从代码补全模型到云端软件工程代理，附 VPN 原理与接入配置等术语科普。"
 date: 2026-06-15 15:03:43
 tags: [AI, Codex]
 categories: 大模型

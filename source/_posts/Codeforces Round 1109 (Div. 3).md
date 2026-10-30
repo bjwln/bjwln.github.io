@@ -1,5 +1,6 @@
 ---
 title: Codeforces Round 1109 (Div. 3)
+description: "Codeforces 1109 Div.3 逐题笔记：最长连续子序列、库存贪心、步长并查集等题目的思路推导与代码实现。"
 date: 2026-07-22 18:43:22
 tags: [算法, Codeforces]
 categories: 算法题

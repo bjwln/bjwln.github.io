@@ -1,5 +1,6 @@
 ---
 title: Prompt Engineering
+description: "一份 220k stars 的 LLM 编码行为准则笔记：先思考再动手、显式说出假设与权衡，减少常见的 AI 编码错误。"
 date: 2026-08-13 18:52:27
 tags: [AI, Prompt]
 categories: 大模型

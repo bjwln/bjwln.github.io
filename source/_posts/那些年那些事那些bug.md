@@ -1,9 +1,12 @@
 ---
 title: 那些年那些事那些bug
+description: "朋友家网址被 DNS 解析到成人网站的排查记录：从 nslookup 定位可疑 IP 到确认 ISP/DHCP 劫持并修复的全过程。"
 date: 2026-08-13 16:44:25
 tags: [随笔]
 cover: cover.jpg
 sticky: 3
+categories:
+  - 踩坑记录
 ---
 
 # 朋友家网DNS给我网址解析到成人网站
