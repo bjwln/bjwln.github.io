@@ -120,6 +120,21 @@ function firstNum() {
   return null;
 }
 
+// 从一批标题里解析最大集数:强信号「第N集」,弱信号退化到首个数字(官方UP的
+// 分集标题通常带系列名,而搜索兜底里无系列名的标题不可靠,故本函数用于可信来源)
+function maxEpFromTitles(titles) {
+  let strongMax = null, weakMax = null;
+  for (const t of titles || []) {
+    const s = String(t || '');
+    const m = s.match(/第\s*(\d{1,4})\s*[集话]/);
+    const n = Number(m ? m[1] : firstNum(s));
+    if (!Number.isFinite(n) || n <= 0 || n >= 3000) continue;
+    if (m) { if (strongMax == null || n > strongMax) strongMax = n; }
+    else if (weakMax == null || n > weakMax) weakMax = n;
+  }
+  return String(strongMax != null ? strongMax : weakMax);
+}
+
 // B站番剧(ss/ep 链接) → pgc season API
 async function fromBangumiPage(link) {
   const m = link.match(/bangumi\/play\/(ss|ep)(\d+)/);
@@ -170,26 +185,39 @@ async function totalFromVideo(bvid, fallbackTitle) {
         if (Array.isArray(v.pages) && v.pages.length > 1) {
           return { total: String(v.pages.length), source: 'B站分P' };
         }
-        break; // view 成功但没有合集/分P → 走搜索兜底
+        // 单集连载:link 指向最新一集,标题里直接带「第N集」
+        const tm = videoTitle.match(/第\s*(\d{1,4})\s*[集话]/);
+        if (tm) {
+          const nt = Number(tm[1]);
+          if (Number.isFinite(nt) && nt > 0 && nt < 3000) {
+            return { total: String(nt), source: 'BV标题解析' };
+          }
+        }
+        break; // view 成功但没有合集/分P/分集标题 → 走搜索兜底
       }
     } catch { /* 换下一个 view 通道 */ }
   }
 
-  // 搜索兜底:按条目标题搜最新投稿,标题含该名称的结果里取最大集数
+  // 搜索兜底:按条目标题搜最新投稿取最大集数。
+  // 只认「标题含系列名 + 带第N集标记」的强信号,宁可漏更新也不写入错误集数
   const keyword = String(fallbackTitle || '').trim();
-  if (!keyword) throw new Error('view 接口被风控且没有标题可用');
-  const d = await fetchJson('https://api.bilibili.com/x/web-interface/search/type?search_type=video&order=pubdate&keyword=' + encodeURIComponent(keyword));
-  const result = (d && d.data && d.data.result) || [];
+  if (!keyword) return null;
+  let result = [];
+  try {
+    const d = await fetchJson('https://api.bilibili.com/x/web-interface/search/type?search_type=video&order=pubdate&keyword=' + encodeURIComponent(keyword));
+    result = (d && d.data && d.data.result) || [];
+  } catch { return null; }
   const kw = keyword.replace(/\s+/g, '');
   let max = null;
   for (const v of result) {
     const t = String(v.title || '').replace(/<[^>]+>/g, '').replace(/\s+/g, '');
-    if (!t.includes(kw)) continue;  // 只要标题确实包含系列名的
+    const hasKw = t.includes(kw);
+    if (!hasKw) continue;  // 标题必须包含系列名,防止噪声标题里的数字被误判
     const m = t.match(/第\s*(\d{1,4})\s*[集话]/);
-    if (m) {
-      const n = Number(m[1]);
-      if (Number.isFinite(n) && n > 0 && n < 3000 && (max == null || n > max)) max = n;
-    }
+    if (!m) continue;  // 只看带「第N集」标记的
+    const n = Number(m[1]);
+    if (!Number.isFinite(n) || n <= 0 || n >= 3000) continue;
+    if (max == null || n > max) max = n;
   }
   if (max != null) return { total: String(max), source: 'bilibili 搜索' };
   return null;
@@ -210,7 +238,31 @@ async function totalFromSpace(syncUrl) {
   const m = String(syncUrl || '').match(/space\.bilibili\.com\/(\d+)/);
   if (!m) return null;
   const mid = m[1];
-  // 两个通道:本机直连 → Cloudflare Worker 出口(空间接口按请求随机风控)
+  // 通道一:动态 feed。空间归档接口(recArchivesByKeywords / arc/search)风控极严,
+  // 登录 Cookie 也常返回 -400/-799;feed 接口带登录 Cookie 基本可用。
+  // 动态按发布时间倒序,视频动态的标题即最新分集;取前几页视频动态标题里的最大集数
+  try {
+    const allTitles = [];
+    let offset = null;
+    for (let page = 0; page < 3; page++) {
+      const url = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?host_mid=' + mid
+        + (offset ? '&offset_dynamic=' + encodeURIComponent(offset) : '');
+      const d = await fetchJson(url, 'https://space.bilibili.com/' + mid);
+      if (d.code !== 0 || !d.data) break;
+      for (const it of (d.data.items || [])) {
+        const ar = it.modules && it.modules.module_dynamic && it.modules.module_dynamic.major
+          && it.modules.module_dynamic.major.archive;
+        if (ar && ar.title) allTitles.push(ar.title);
+      }
+      const off = d.data.offset && d.data.offset.offset_dynamic;
+      if (!off) break;
+      offset = off;
+    }
+    const n = maxEpFromTitles(allTitles);
+    if (n != null) return { total: n, source: 'UP主动态最新投稿' };
+    if (allTitles.length) return null; // feed 正常但都是非视频动态
+  } catch { /* feed 被风控时继续尝试空间归档接口 */ }
+  // 通道二:空间归档接口(本机直连 → Cloudflare Worker 出口),保留作后备
   const sources = [
     async () => fetchJson('https://api.bilibili.com/x/series/recArchivesByKeywords?mid=' + mid + '&ps=30'),
     async () => {
@@ -239,10 +291,13 @@ async function totalFromSpace(syncUrl) {
 
 // 入口:返回 { total, source } 或 null(无法识别)
 async function fetchTotal(link, fallbackTitle, syncUrl) {
-  // 用户显式提供的同步源(UP主空间)优先级最高
+  // 用户显式提供的同步源(UP主空间)优先级最高;失败则降级到 link 解析链,
+  // 避免空间接口被风控时整条同步失败(空间接口风控最严,登录 Cookie 也常被拒)
   if (syncUrl && /space\.bilibili\.com/.test(syncUrl)) {
-    const r = await totalFromSpace(syncUrl);
-    if (r) return r;
+    try {
+      const r = await totalFromSpace(syncUrl);
+      if (r) return r;
+    } catch { /* 空间接口被风控/无数据时继续尝试 link */ }
   }
   if (!link) throw new Error('没有填写链接');
   let r = await fromBangumiPage(link);
@@ -251,7 +306,7 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
   if (bv) r = await totalFromVideo(bv[1], fallbackTitle);
   if (r) return r;
   // 空间链接存在但上面没解析出集数时,再试一次网页兜底(用空间地址本身)
-  if (syncUrl && /^https?:\/\//.test(syncUrl)) r = await fromHtml(syncUrl);
+  if (syncUrl && /^https?:\/\//.test(syncUrl)) { try { r = await fromHtml(syncUrl); } catch {} }
   if (r) return r;
   if (/^https?:\/\//.test(link)) r = await fromHtml(link);
   return r;
@@ -276,7 +331,10 @@ async function syncAll() {
         row.error = '无法从链接识别集数';
       }
     } catch (e) {
-      row.error = e.message;
+      const s = String((e && e.message) || e);
+      row.error = /banned|412/i.test(s)
+        ? '被B站风控拦截:可在「设置」填写B站Cookie后重试,或稍后再试'
+        : s;
     }
     results.push(row);
     await new Promise(r2 => setTimeout(r2, 400)); // 温和限速,避免触发B站风控
