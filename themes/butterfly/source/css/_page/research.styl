@@ -32,15 +32,10 @@
 
 .research-progress-header
   display: flex
-  align-items: baseline
+  align-items: center
   justify-content: space-between
-  gap: 16px
-
-  h3
-    margin: 0
-    color: var(--font-color)
-    font-size: 1.14em
-    line-height: 1.4
+  flex-wrap: wrap
+  gap: 6px 16px
 
   .research-progress-count
     flex: none
@@ -422,73 +417,64 @@
   .research-timeline-popover
     box-shadow: 0 12px 34px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08)
 
-// ==================== 任务切换 Tabs ====================
-.research-tabs
+// ==================== 任务标题切换(进度卡标题栏内) ====================
+.research-task-tabs
   display: flex
   flex-wrap: wrap
-  gap: 10px
-  margin-top: 22px
+  align-items: baseline
+  gap: 4px 20px
+  min-width: 0
 
-  +maxWidth600()
-    gap: 8px
-
-.research-tab
+.research-task-tab
   display: inline-flex
-  align-items: center
-  gap: 8px
-  padding: 8px 16px
-  border: 1px solid rgba(128, 128, 128, .25)
-  border-radius: 999px
-  background: var(--card-bg)
-  color: var(--font-color)
-  font-size: .88em
-  font-weight: 600
+  align-items: baseline
+  gap: 7px
+  padding: 2px 1px 8px
+  border: none
+  border-bottom: 2px solid transparent
+  background: none
+  color: var(--card-meta)
+  font-size: 1.08em
+  font-weight: 700
   line-height: 1.4
   cursor: pointer
-  transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease
+  transition: color .2s ease, border-color .2s ease
 
   +maxWidth600()
-    padding: 7px 12px
-    font-size: .8em
+    gap: 5px
+    font-size: .98em
 
   &:hover
-    transform: translateY(-1px)
-    border-color: var(--chart-accent)
     color: var(--chart-accent)
 
   &:focus-visible
     outline: 2px solid var(--chart-accent)
     outline-offset: 2px
+    border-radius: 4px
 
-  .research-tab-count
-    padding: 2px 8px
-    border-radius: 999px
-    background: var(--light-grey)
+  .research-task-tab-count
     color: var(--card-meta)
-    font-size: .82em
+    font-size: .68em
     font-weight: 500
     font-variant-numeric: tabular-nums
 
   &.is-active
-    border-color: transparent
-    background: var(--chart-accent)
-    color: #fff
-    box-shadow: 0 6px 16px rgba(0, 0, 0, .16)
+    border-bottom-color: var(--chart-accent)
+    color: var(--font-color)
 
-    .research-tab-count
-      background: rgba(255, 255, 255, .24)
-      color: #fff
+    .research-task-tab-count
+      color: var(--chart-accent)
 
-// 每个任务的主题色(前台折线图 / Tab / 徽标共用)
-.research-tab.plan-literature,
+// 每个任务的主题色(标题 Tab 下划线 / 徽标共用;折线图颜色由 JS 内联注入)
+.research-task-tab.plan-literature,
 .research-chart-section.plan-literature
   --chart-accent: #3573c9
 
-.research-tab.plan-project,
+.research-task-tab.plan-project,
 .research-chart-section.plan-project
   --chart-accent: #2f9e6f
 
-.research-tab.plan-mciaa,
+.research-task-tab.plan-mciaa,
 .research-chart-section.plan-mciaa
   --chart-accent: #8a5fd3
 
@@ -658,15 +644,15 @@
   text-align: center
 
 [data-theme='dark']
-  .research-tab.plan-literature,
+  .research-task-tab.plan-literature,
   .research-chart-section.plan-literature
     --chart-accent: #6cb6ff
 
-  .research-tab.plan-project,
+  .research-task-tab.plan-project,
   .research-chart-section.plan-project
     --chart-accent: #4cc38a
 
-  .research-tab.plan-mciaa,
+  .research-task-tab.plan-mciaa,
   .research-chart-section.plan-mciaa
     --chart-accent: #b79bff
 
