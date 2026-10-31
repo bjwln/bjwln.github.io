@@ -187,3 +187,15 @@
       .bangumi-episode.is-new
         box-shadow: 0 0 0 1.5px rgba(251, 191, 36, .9)
         font-weight: 600
+
+// 容器显隐(hidden 属性会被 display:grid 覆盖,需强制)
+.bangumi [hidden]
+  display: none !important
+
+.bangumi-loading
+  padding: 46px
+  color: var(--card-meta)
+  text-align: center
+
+  i
+    margin-right: 8px

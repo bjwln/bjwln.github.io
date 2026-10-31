@@ -5,8 +5,6 @@ date: 2026-08-13 16:44:25
 tags: [随笔]
 cover: cover.jpg
 sticky: 3
-categories:
-  - 踩坑记录
 ---
 
 # 朋友家网DNS给我网址解析到成人网站
