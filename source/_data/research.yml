@@ -3,7 +3,6 @@ focus: 医学多智能体 / MDT 决策支持
 description: 面向 MDT 场景的多智能体系统研究，覆盖文献综述、系统实现、评测方法与论文写作。
 current_stage: 文献框架梳理与 SixSixAgents 原型实现
 updated: 2026-10-11
-
 plans:
   - key: literature
     title: 文献阅读
@@ -70,45 +69,34 @@ plans:
         title: 2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer
         track: system
         summary: EvoMDT 提出了一种面向多癌种结构化临床决策的自进化多智能体系统（MAS），其创新不仅在于将多个医学 Agent 组织起来协同推理，更在于构建了一个融合医学知识检索、专业分工、安全约束、冲突协调与持续改进的完整决策框架：系统设计了 Diagnostic、Treatment、Safety、Monitoring 和 Coordinator 五个 Agent，分别负责诊断与分期、治疗方案制定、风险与禁忌证审查、纵向疗效监测以及跨 Agent 的意见协调；同时，通过整合临床指南、医学文献和临床病例，为决策提供知识依据，并利用加权共识机制形成结构化的 MDT 建议。在此基础上，EvoMDT 进一步引入反馈驱动的自进化机制，尝试根据专家反馈和任务表现调整提示词、共识权重及检索范围，并通过公开基准、真实患者病例和医生评价验证系统表现。因此，EvoMDT 对医学 MAS 的主要贡献，是将多智能体的专业化协作从单次的诊疗建议生成，拓展为强调临床证据 grounding、安全审查、意见协调、纵向监测与反馈优化的一体化决策框架；不过，这些设计上的创新并不意味着每个模块都采用了独立的传统算法实现，其实际效果仍应结合论文实验与具体代码实现来判断。
-        link: '2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer'
+        link: 2026 - EvoMDT a self-evolving multi-agent system for structured clinical decision-making in multi-cancer
         label: 2026-EvoMDT
         order: 7
       - date: 2026-10-18
         title: '2025.11 - MTBBench: A Multimodal Sequential Clinical Decision-Making Benchmark in Oncology'
         track: system
         summary: 这篇论文 MTBBench 的独特贡献在于构建了一个面向肿瘤学多学科会诊（MDT）的多模态、纵向临床决策评测基准：它不再只让模型根据单次、静态的病例文本给出诊断或治疗建议，而是将患者在不同时间点积累的临床病历、病理图像、免疫组化（IHC）图像及其他相关信息纳入连续决策过程，并通过可调用的专业工具增强模型的信息分析能力，同时模拟临床过程中逐步请求患者资料、整合新证据并更新决策的工作方式。，MTBBench 的核心创新并非单纯提出一种新的 LLM 或多智能体协作算法，而是将多模态证据、纵向患者病程、工具增强推理与连续临床决策评估整合到同一基准中，以更贴近真实肿瘤 MDT 的方式评估 AI 的临床决策能力。
-        link: 'MTBBench数据集+Agent'
+        link: MTBBench数据集+Agent
         label: MTBBench数据集+Agent
         order: 8
-  - key: project
-    title: SixSixAgents
+  - key: Small-pro
+    title: Multi-agent for MDT
     goal: 完成多专家调度、证据链路与基础评测
-    completed: 3
+    completed: 10
     total: 8
     unit: 项
     plan_link: SixSixAgents
     tracks:
-      - key: skill
-        axis_label: 技术
-      - key: system
-        axis_label: 系统
+      - key: research
+        axis_label: 文献支撑
+      - key: agent
+        axis_label: 智能体
     timeline:
       - date: 2026-10-15
         title: 一个最小的MDAgents系统
-        track: system
-        summary: 用一个简单的数据结构跑通的MDAgents
+        track: agent
+        summary: 实现的代码完全体MDAgent
         link: MDAgents-Minimal
         label: MDAgents-Minimal
         order: 0
-  - key: mciaa
-    title: MCIAA
-    goal: 任务量不限，持续记录已读文献
     unlimited: true
-    completed: 0
-    total: 0
-    unit: 篇
-    tracks:
-      - key: paper
-        axis_label: 文献
-    timeline: []
-
