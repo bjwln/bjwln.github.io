@@ -63,7 +63,7 @@
         top: 8px
         right: 8px
         padding: 3px 7px
-        background: rgba(0, 0, 0, .68)
+        background: rgba(0, 0, 0, .78)
         border-radius: 6px
         color: #fff
         font-size: .72em
@@ -174,17 +174,16 @@
         top: 36px
         right: 8px
         padding: 3px 7px
-        background: rgba(0, 0, 0, .68)
+        background: rgba(0, 0, 0, .78)
         border-radius: 6px
         color: rgba(255, 255, 255, .85)
         font-size: .72em
         line-height: 1.4
 
-        // 有新集时:深底 + 琥珀色字,保持醒目但清晰可读
+        // 有新集时:琥珀描边提示,文字保持白色保证可读性
         &.is-new
-          color: #fbbf24
-          font-weight: 600
+          box-shadow: 0 0 0 1.5px rgba(251, 191, 36, .9)
 
       .bangumi-episode.is-new
-        color: #fbbf24
+        box-shadow: 0 0 0 1.5px rgba(251, 191, 36, .9)
         font-weight: 600

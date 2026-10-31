@@ -75,7 +75,7 @@ hexo.extend.filter.register('before_generate', () => {
 
       result[key] = cdnSource[type]
       return result
-    }, cond === 'internal' ? { main_css: 'css/index.css?v=20261031' } : {})
+    }, cond === 'internal' ? { main_css: 'css/index.css?v=20261031b' } : {})
   }
 
   // delete null value
