@@ -422,8 +422,11 @@
   display: flex
   flex-wrap: wrap
   align-items: baseline
-  gap: 4px 20px
+  gap: 6px 40px
   min-width: 0
+
+  +maxWidth600()
+    gap: 4px 22px
 
 .research-task-tab
   display: inline-flex

@@ -5,8 +5,8 @@ current_stage: 文献框架梳理与 SixSixAgents 原型实现
 updated: 2026-10-11
 plans:
   - key: literature
-    title: 文献阅读
-    goal: 读完 10 篇核心文献
+    title: 起步
+    goal: 起步时期
     completed: 8
     total: 10
     unit: 篇
@@ -81,7 +81,7 @@ plans:
         order: 8
   - key: Small-pro
     title: Multi-agent for MDT
-    goal: 完成多专家调度、证据链路与基础评测
+    goal: ''
     completed: 10
     total: 8
     unit: 项
