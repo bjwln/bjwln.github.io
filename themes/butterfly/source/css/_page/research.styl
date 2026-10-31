@@ -15,10 +15,10 @@
   margin-bottom: 24px
 
 .research-chart-section
-  margin-top: 28px
+  margin-top: 18px
 
   &:first-of-type
-    margin-top: 20px
+    margin-top: 18px
 
 .research-progress-card
   margin-bottom: 14px
@@ -66,6 +66,10 @@
   .plan-project &
     span
       background: #2f9e6f
+
+  .plan-mciaa &
+    span
+      background: #8a5fd3
 
 .research-progress-footer
   display: flex
@@ -417,3 +421,260 @@
 
   .research-timeline-popover
     box-shadow: 0 12px 34px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08)
+
+// ==================== 任务切换 Tabs ====================
+.research-tabs
+  display: flex
+  flex-wrap: wrap
+  gap: 10px
+  margin-top: 22px
+
+  +maxWidth600()
+    gap: 8px
+
+.research-tab
+  display: inline-flex
+  align-items: center
+  gap: 8px
+  padding: 8px 16px
+  border: 1px solid rgba(128, 128, 128, .25)
+  border-radius: 999px
+  background: var(--card-bg)
+  color: var(--font-color)
+  font-size: .88em
+  font-weight: 600
+  line-height: 1.4
+  cursor: pointer
+  transition: color .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease
+
+  +maxWidth600()
+    padding: 7px 12px
+    font-size: .8em
+
+  &:hover
+    transform: translateY(-1px)
+    border-color: var(--chart-accent)
+    color: var(--chart-accent)
+
+  &:focus-visible
+    outline: 2px solid var(--chart-accent)
+    outline-offset: 2px
+
+  .research-tab-count
+    padding: 2px 8px
+    border-radius: 999px
+    background: var(--light-grey)
+    color: var(--card-meta)
+    font-size: .82em
+    font-weight: 500
+    font-variant-numeric: tabular-nums
+
+  &.is-active
+    border-color: transparent
+    background: var(--chart-accent)
+    color: #fff
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .16)
+
+    .research-tab-count
+      background: rgba(255, 255, 255, .24)
+      color: #fff
+
+// 每个任务的主题色(前台折线图 / Tab / 徽标共用)
+.research-tab.plan-literature,
+.research-chart-section.plan-literature
+  --chart-accent: #3573c9
+
+.research-tab.plan-project,
+.research-chart-section.plan-project
+  --chart-accent: #2f9e6f
+
+.research-tab.plan-mciaa,
+.research-chart-section.plan-mciaa
+  --chart-accent: #8a5fd3
+
+// 切换显隐:只有激活的任务大框可见
+.research-chart-section
+  display: none
+
+  &.is-active
+    display: block
+    animation: research-section-in .32s ease
+
+@keyframes research-section-in
+  from
+    opacity: 0
+    transform: translateY(10px)
+
+  to
+    opacity: 1
+    transform: none
+
+.research-unlimited-chip
+  display: inline-block
+  vertical-align: 3px
+  margin-left: 8px
+  padding: 2px 9px
+  border-radius: 999px
+  background: var(--chart-accent)
+  color: #fff
+  font-size: .62em
+  font-weight: 600
+  letter-spacing: .04em
+
+// ==================== 阅读曲线(折线图) ====================
+.research-linechart-card
+  margin-bottom: 14px
+  padding: 16px 20px 12px
+  background: var(--card-bg)
+  border-radius: 8px
+  box-shadow: var(--card-box-shadow)
+
+  +maxWidth600()
+    padding: 14px 14px 10px
+
+.research-linechart-header
+  display: flex
+  align-items: baseline
+  justify-content: space-between
+  gap: 12px
+
+.research-linechart-title
+  display: inline-flex
+  align-items: center
+  gap: 7px
+  color: var(--font-color)
+  font-size: .95em
+
+  i
+    color: var(--chart-accent)
+
+.research-linechart-subtitle
+  color: var(--card-meta)
+  font-size: .78em
+
+.research-linechart-body
+  position: relative
+  margin-top: 8px
+
+  svg
+    display: block
+    max-width: 100%
+
+.rlc-grid
+  stroke: rgba(128, 128, 128, .16)
+
+.rlc-grid-base
+  stroke: rgba(128, 128, 128, .34)
+
+.rlc-axis
+  fill: var(--card-meta)
+  font-size: 11px
+  font-variant-numeric: tabular-nums
+
+.rlc-area
+  fill: var(--chart-accent)
+  opacity: .12
+
+.rlc-line
+  fill: none
+  stroke: var(--chart-accent)
+  stroke-width: 2.5
+  stroke-linecap: round
+  stroke-linejoin: round
+
+.rlc-target
+  stroke: var(--chart-accent)
+  stroke-dasharray: 5 5
+  opacity: .55
+
+.rlc-target-label
+  fill: var(--card-meta)
+
+.rlc-dot
+  cursor: pointer
+
+  .rlc-dot-hit
+    fill: transparent
+
+  .rlc-dot-core
+    fill: var(--card-bg)
+    stroke: var(--chart-accent)
+    stroke-width: 2.5
+    transition: transform .18s ease
+    transform-box: fill-box
+    transform-origin: center
+
+  &:hover .rlc-dot-core,
+  &:focus .rlc-dot-core
+    transform: scale(1.45)
+
+  &:focus
+    outline: none
+
+    .rlc-dot-core
+      stroke-width: 3.5
+
+.rlc-tip
+  position: absolute
+  left: 0
+  top: 0
+  z-index: 6
+  max-width: 300px
+  padding: 10px 13px
+  border-radius: 8px
+  background: var(--card-bg)
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .2), 0 0 0 1px rgba(0, 0, 0, .05)
+  opacity: 0
+  visibility: hidden
+  transition: opacity .16s ease, visibility .16s
+  pointer-events: none
+
+  &.is-visible
+    opacity: 1
+    visibility: visible
+
+  .rlc-tip-meta
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: 8px
+    color: var(--card-meta)
+    font-size: .74em
+    font-variant-numeric: tabular-nums
+
+  .rlc-tip-title
+    display: block
+    margin-top: 6px
+    color: var(--font-color)
+    font-size: .84em
+    font-weight: 600
+    line-height: 1.5
+    word-break: break-word
+
+.research-linechart-placeholder
+  padding: 38px 10px
+  color: var(--card-meta)
+  font-size: .84em
+  text-align: center
+
+[data-theme='dark']
+  .research-tab.plan-literature,
+  .research-chart-section.plan-literature
+    --chart-accent: #6cb6ff
+
+  .research-tab.plan-project,
+  .research-chart-section.plan-project
+    --chart-accent: #4cc38a
+
+  .research-tab.plan-mciaa,
+  .research-chart-section.plan-mciaa
+    --chart-accent: #b79bff
+
+  .rlc-grid
+    stroke: rgba(170, 170, 170, .14)
+
+  .rlc-grid-base
+    stroke: rgba(170, 170, 170, .3)
+
+  .rlc-tip
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .07)

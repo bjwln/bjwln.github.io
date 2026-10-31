@@ -39,28 +39,50 @@
   -     const coverUrl = !cover || /^(https?:)?\/\//.test(cover) || cover[0] === '/' ? cover : '/' + cover
   -     return { item, href: linkedPost ? url_for(linkedPost.path) : url_for(item.link), title: item.label || (linkedPost ? linkedPost.title : item.title), cover: cover ? url_for(coverUrl) : '', coverIsImg: Boolean(cover && linkedPost.cover_type === 'img'), trackLabel: trackLabel(item.track), dateStr: date(item.date, 'YYYY-MM-DD'), planned: item.status === 'planned' }
   -   })
-  -   const completed = Number(plan.completed) || 0
-  -   const total = Number(plan.total) || 0
+  -   const unlimited = Boolean(plan.unlimited)
+  -   const completed = unlimited ? items.length : Number(plan.completed) || 0
+  -   const total = unlimited ? 0 : Number(plan.total) || 0
   -   const percent = total ? Math.round((completed / total) * 100) : 0
   -   const planPost = linkedPostFor(researchPosts, plan.plan_link)
   -   const planHref = String(plan.plan_link || '').startsWith('/') ? url_for(plan.plan_link) : (planPost ? url_for(planPost.path) : url_for(plan.plan_link))
-  -   return { plan, items, completed, total, percent, planPost, planHref }
+  -   const chartPoints = items.map(point => ({ date: point.dateStr, title: point.title, href: point.href, track: point.item.track || '', trackLabel: point.trackLabel }))
+  -   return { plan, items, unlimited, completed, total, percent, planPost, planHref, chartPoints }
   - })
 
-  each chart in chartData
-    section.research-chart-section(class=`plan-${chart.plan.key}` aria-label=`${chart.plan.title}科研时间线`)
+  if chartData.length
+    nav.research-tabs(role='tablist' aria-label='科研任务切换')
+      each chart, chartIndex in chartData
+        button.research-tab(class=`plan-${chart.plan.key}${chartIndex === 0 ? ' is-active' : ''}` type='button' role='tab' id=`research-tab-${chart.plan.key}` data-plan=chart.plan.key aria-controls=`plan-${chart.plan.key}` aria-selected=chartIndex === 0 ? 'true' : 'false')
+          span.research-tab-name= chart.plan.title
+          span.research-tab-count= chart.unlimited ? `已读 ${chart.completed}${chart.plan.unit ? ' ' + chart.plan.unit : ''}` : `${chart.completed}/${chart.total}${chart.plan.unit ? ' ' + chart.plan.unit : ''}`
+
+  each chart, chartIndex in chartData
+    section.research-chart-section(id=`plan-${chart.plan.key}` class=`plan-${chart.plan.key}${chartIndex === 0 ? ' is-active' : ''}` data-plan-section=chart.plan.key role='tabpanel' aria-labelledby=`research-tab-${chart.plan.key}` aria-label=`${chart.plan.title}科研时间线`)
       article.research-progress-card
         header.research-progress-header
-          h3= chart.plan.title
-          span.research-progress-count= `${chart.completed}/${chart.total} ${chart.plan.unit}`
-        .research-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow=chart.percent aria-label=`${chart.plan.title}进度`)
-          span(style=`width: ${chart.percent}%`)
+          h3
+            = chart.plan.title
+            if chart.unlimited
+              span.research-unlimited-chip 不限量
+          span.research-progress-count= chart.unlimited ? `已读 ${chart.completed}${chart.plan.unit ? ' ' + chart.plan.unit : ''}` : `${chart.completed}/${chart.total} ${chart.plan.unit || ''}`
+        if !chart.unlimited
+          .research-progress(role='progressbar' aria-valuemin='0' aria-valuemax='100' aria-valuenow=chart.percent aria-label=`${chart.plan.title}进度`)
+            span(style=`width: ${chart.percent}%`)
         .research-progress-footer
           span= chart.plan.goal
           if chart.planHref
             a.research-progress-link(href=chart.planHref title=chart.planPost ? chart.planPost.title : chart.plan.title)
               i.fas.fa-list-check
               span 查看规划
+
+      div.research-linechart-card(aria-label=`${chart.plan.title}阅读曲线`)
+        header.research-linechart-header
+          span.research-linechart-title
+            i.fas.fa-chart-line(aria-hidden='true')
+            strong 阅读曲线
+          span.research-linechart-subtitle= chart.unlimited ? '累计已读文献 · 持续记录' : '累计已读文献'
+        .research-linechart-body
+          script(type='application/json' class='research-linechart-data')!= JSON.stringify({ unlimited: chart.unlimited, total: chart.unlimited ? null : chart.total, points: chart.chartPoints }).replace(/</g, '\\u003c')
 
       if chart.items.length
         section.research-timeline-chart
@@ -84,6 +106,7 @@
                       span.research-timeline-connector(aria-hidden='true')
                       +researchCard(point)
       else
-        p.research-empty 暂无时间线数据
+        p.research-empty= chart.unlimited ? '还没有记录，读完第一篇后它会出现在这里' : '暂无时间线数据'
 
   script(src=(url_for('/js/research-timeline.js') + '?v=20261027d') defer)
+  script(src=(url_for('/js/research-tasks.js') + '?v=20261031b') defer)

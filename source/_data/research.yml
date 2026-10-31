@@ -100,4 +100,15 @@ plans:
         link: MDAgents-Minimal
         label: MDAgents-Minimal
         order: 0
+  - key: mciaa
+    title: MCIAA
+    goal: 任务量不限，持续记录已读文献
+    unlimited: true
+    completed: 0
+    total: 0
+    unit: 篇
+    tracks:
+      - key: paper
+        axis_label: 文献
+    timeline: []
 

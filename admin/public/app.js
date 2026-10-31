@@ -538,12 +538,15 @@ function renderPlans() {
         <input value="${esc(plan.key || '')}" placeholder="key" style="width:100px" oninput="DF.parsed.plans[${pi}].key=this.value">
         <input value="${esc(plan.title || '')}" placeholder="标题" style="width:120px" oninput="DF.parsed.plans[${pi}].title=this.value">
         <input value="${esc(plan.goal || '')}" placeholder="目标" style="width:200px" oninput="DF.parsed.plans[${pi}].goal=this.value">
-        <input type="number" value="${plan.completed ?? 0}" style="width:70px" title="已完成" oninput="DF.parsed.plans[${pi}].completed=Number(this.value)">
+        <input type="number" value="${plan.completed ?? 0}" style="width:70px" title="已完成" ${plan.unlimited ? 'disabled' : ''} oninput="DF.parsed.plans[${pi}].completed=Number(this.value)">
         <span class="muted">/</span>
-        <input type="number" value="${plan.total ?? 0}" style="width:70px" title="总量" oninput="DF.parsed.plans[${pi}].total=Number(this.value)">
+        <input type="number" value="${plan.total ?? 0}" style="width:70px" title="总量" ${plan.unlimited ? 'disabled' : ''} oninput="DF.parsed.plans[${pi}].total=Number(this.value)">
         <input value="${esc(plan.unit || '')}" placeholder="单位" style="width:60px" oninput="DF.parsed.plans[${pi}].unit=this.value">
+        <label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap" title="任务量不限:前台自动按时间线条目数统计「已完成」,隐藏进度条与目标线">
+          <input type="checkbox" ${plan.unlimited ? 'checked' : ''} onchange="DF.parsed.plans[${pi}].unlimited=this.checked;renderPlans()">不限量</label>
         <input value="${esc(plan.plan_link || '')}" placeholder="plan_link" style="width:150px" oninput="DF.parsed.plans[${pi}].plan_link=this.value">
         <button class="small danger" onclick="delPlan(${pi})">删除计划</button></div>
+      ${plan.unlimited ? '<div class="mini-label" style="margin-top:4px">♾ 不限量任务:前台「已完成」按下方时间线条目数自动统计,无需手填</div>' : ''}
       <span class="mini-label">进度轴 tracks:</span>
       <div class="tracks-row" id="tracks-${pi}">
         ${(plan.tracks || []).map((t, ti) => `<span class="chip">${esc(t.key)}:${esc(t.axis_label)}
