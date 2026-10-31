@@ -110,3 +110,130 @@ Agent.chat(...)：你自己包的一层，负责维护历史、发请求、取�
 
 # workflow
 
+## 判断复杂度的模块
+
+### Init
+
+在`_init_`中创建了`router`的agent实例对象
+
+```python
+self.router = Agent(
+            model=model,
+            system_prompt=(
+                "你负责判断医学问题的复杂度，即病例的诊疗过程需要什么。"
+                "只返回一个词：basic、intermediate 或 advanced。"
+            ),
+        )
+```
+
+调用`_init_`函数之后，在`utils.py`中会自动给本agent实例加上一个系统的标签，表达权威性
+
+```python
+# 第 84 行：Agent 创建时，messages 里就有一条 system
+self.messages = [{"role": "system", "content": system_prompt}]
+```
+
+
+
+### determine_difficulty
+
+这个函数为判断问题复杂度的函数
+
+```python
+    def determine_difficulty(self, question: str) -> str:
+        response = utils.Agent.chat(
+            self.router,
+            "请判断这个医学问题的复杂度。\n"
+            "basic = 单个临床医生即可回答。\n"
+            "intermediate = 需要多个专科医生比较意见。\n"
+            "advanced = 需要多个团队或多学科协作。\n\n"
+            f"问题：\n{question}\n\n"
+            "只返回一个词：basic、intermediate 或 advanced。"
+        )
+        match = re.search(r"\b(basic|intermediate|advanced)\b", response.lower())
+        return match.group(1)
+```
+
+调用` utils.Agent.chat`函数之后，在`utils.py`中会自动给本agent实例加上一个用户的标签，代表这是接下来的对话上下文
+
+```python
+self.messages.append({"role": "user", "content": message})
+```
+
+### LLM实际接收到的信息
+
+```python
+# 在workflow中，init创建的时候就烙印上了system的身份，然后再使用这个agent实例调用chat方法的时候都会重新创建并添加一个role为user的信息
+
+{
+  "model": "deepseek-v4.1-flash",
+  "messages": [
+    { "role": "system",
+      "content": "你负责判断医学问题的复杂度，即病例的诊疗过程需要什么。这个病例需要哪些检查？……只返回一个词……" },
+    { "role": "user",
+      "content": "请判断这个医学问题的复杂度。basic = 单个临床医生即可回答。……只返回一个词……\n问题：A 60-year-old man ..." }
+  ]
+}
+```
+
+
+
+# benchmark
+
+## Shot
+
+benchmark中加了几个shot测试，即把要问的问题前面拼接几个示例
+
+```python
+def format_few_shot_examples(
+        samples: list[dict],
+        rng: random.Random,
+        count: int,
+) -> str:
+    if count <= 0:
+        return ""
+
+    chosen = rng.sample(samples, min(count, len(samples)))
+    blocks = []
+
+    for index, sample in enumerate(chosen, 1):
+        question, options = format_medqa(sample, rng)
+
+        answer_idx = str(sample.get("answer_idx", "")).strip().upper()
+        answer_text = str(sample.get("answer") or options.get(answer_idx, "")).strip()
+
+        blocks.append(
+            f"示例 {index}：\n"
+            f"{question}\n"
+            f"答案：({answer_idx}) {answer_text}"
+        )
+
+    return "\n\n".join(blocks)
+```
+
+**实际拼出来的效果**
+
+```
+下面是几个医学选择题示例，请参考它们的答案格式：
+
+示例 1：
+A 55-year-old man ... (B) ...(C) ...
+答案：(A) Acute myocardial infarction
+
+示例 2：
+...
+（共 5 个）
+
+现在请回答这道新的医学选择题：
+A 60-year-old man has chest pain... (A) ... (B) ...
+```
+
+**作用为**
+
+1. 对齐输出格式——让模型学会“第一行给选项字母”的样式，你的 `parse_choice()` 才好提取答案；
+2. 提示答题规范——医学选择题的答题套路（直接给结论、不跑题）。
+3. 复现论文
+
+**实际意义**
+
+没有意义，few-shot 的经典价值是“教不会做题的模型学会格式和套路”。而复现所使用的deepseek-v4.1-flash这种现代强模型本来就会做 MedQA，示范它不需要。模型越强，few-shot 的增益越趋近于零——这是这两年反复被验证的现象。

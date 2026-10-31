@@ -532,6 +532,8 @@ JSON 文件/响应中的内容通常是 JSON 格式的文本（字符串），Py
 
 ### loads用法
 
+`loads` 处理字符串
+
 ```python
 import json
 
@@ -572,6 +574,8 @@ new_name = new_data[0].get('name')
 
 
 ### load用法
+
+`load` 处理文件对象。
 
 注意：load方法操作的是整个文件对象，这里是将整个文件对象里面的内容转化为json对象。（下图是文件操作对象）
 
