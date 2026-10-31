@@ -17,7 +17,7 @@ npm run admin
 | 模块 | 说明 |
 |---|---|
 | 📊 仪表盘 | 文章/草稿/字数/标签/分类统计,线上 PV/UV/评论数,最近文章与热门页面 |
-| 📝 文章 | 列表搜索筛选;frontmatter 表单化编辑 + Markdown 编辑器(分栏实时预览、工具栏、Ctrl+S);**粘贴/拖拽/上传图片**自动存入同名资源文件夹并插入引用;标题/日期修改会提示 permalink 变化(浏览量统计断档风险) |
+| 📝 文章 | 列表搜索筛选(可按文件夹过滤、一键移动文章到其他文件夹);frontmatter 表单化编辑 + Markdown 编辑器(分栏实时预览、工具栏、Ctrl+S);**粘贴/拖拽/上传图片**自动存入同名资源文件夹并插入引用;标题/日期修改会提示 permalink 变化(浏览量统计断档风险);支持子文件夹归类(如 `_posts/research/`),新建文章时可直接选择存放文件夹 |
 | 📥 草稿箱 | `source/_drafts/` 标准草稿流程,一键发布到 `_posts`(md + 资源文件夹一起移动) |
 | 📄 页面 | 扫描 `source/**/index.md` 自定义页面(科研/追番/热门/归档等),编辑 frontmatter 与正文;未知字段(如 `type`/`top_img: false`)原样保留 |
 | 🗑 回收站 | 删除的文章进 `admin/data/trash/`(md + 图片一起),可恢复或彻底删除 |
@@ -32,10 +32,11 @@ npm run admin
 ## 使用提示
 
 1. **Cloudflare Token**:即 Cloudflare Pages 项目环境变量 `ADMIN_TOKEN`(评论/统计接口的管理密码),在「设置」里填一次即可,保存在本机 `admin/data/settings.json`(已 gitignore)。
-2. **改标题/日期 = 改 URL**:permalink 是 `:year/:month/:day/:title/`,编辑器会弹出提醒;已积累的浏览量按旧路径统计,不会自动迁移。
+2. **改标题/日期 = 改 URL**:permalink 是 `:year/:month/:day/:name/`(`:name` 只取文件名,与所在子文件夹无关,文章归类不影响 URL),编辑器会弹出提醒;已积累的浏览量按旧路径统计,不会自动迁移。
 3. **frontmatter 格式归一化**:结构化保存用 js-yaml 序列化,内容完全等价,但引号风格、数组缩进可能与手写的略有差异(`tags: [a,b]` 会变成列表缩进格式),Hexo 渲染结果不受影响。
-4. **发布即 push**:发布按钮等价于 `publish-blog.bat`(git add → commit → push),push 后 GitHub Actions 自动构建部署到 GitHub Pages 和 Cloudflare Pages。
-5. **测试脚本**:`node admin/test/api-test.js` 可对全部接口做回归自测(自动创建并清理测试数据)。
+4. **按文件夹归类文章**:`source/_posts/` 下的子文件夹(如 `research/`)只用于整理文件,不影响 URL 与前台展示;资源文件夹始终与 md 同目录同名。直接把 md 文件放进对应子文件夹即可,Hexo 会自动收录;管理端新建文章时也可选择文件夹。
+5. **发布即 push**:发布按钮等价于 `publish-blog.bat`(git add → commit → push),push 后 GitHub Actions 自动构建部署到 GitHub Pages 和 Cloudflare Pages。
+6. **测试脚本**:`node admin/test/api-test.js` 可对全部接口做回归自测(自动创建并清理测试数据)。
 
 ## 目录结构
 

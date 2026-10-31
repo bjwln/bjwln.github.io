@@ -1,14 +1,14 @@
 ---
-title: "A survey on LLM-based multi-agent systems: workflow, infrastructure, and challenges"
-description: "把 LLM 智能体拆成画像、感知、行动、协作、进化五个部分，梳理多智能体系统的框架、MARL 算法支撑与关键挑战的论文笔记。"
+title: 'A survey on LLM-based multi-agent systems: workflow, infrastructure, and challenges'
+description: 把 LLM 智能体拆成画像、感知、行动、协作、进化五个部分，梳理多智能体系统的框架、MARL 算法支撑与关键挑战的论文笔记。
 date: 2026-08-16 16:38:13
-tags: [多智能体, MDT]
+tags:
+  - 多智能体
+  - MDT
 research: literature
 research_order: 1
 cover: cover.jpg
 cover_fit: contain
-categories:
-  - 大模型
 ---
 
 [英文原文 PDF](/2026/08/16/A survey on LLM-based multi-agent systems/original.pdf)

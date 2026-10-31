@@ -3,6 +3,7 @@
 
   var allPosts = [];
   var state = { cat: '全部', q: '' };
+  var mode = 'pv';
 
   function formatNumber(n) {
     return (n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -28,6 +29,8 @@
   function init() {
     var list = document.getElementById('hot-posts-list');
     if (!list) return;
+    var page = document.getElementById('hot-posts-page');
+    mode = page ? (page.getAttribute('data-sort') || 'pv') : 'pv';
 
     Promise.all([
       fetch('/hot-posts.json').then(function (r) { return r.json(); }),
@@ -52,12 +55,17 @@
         post.uv = v.uv;
       });
 
-      posts.sort(function (a, b) {
-        if (b.pv !== a.pv) return b.pv - a.pv;
-        return new Date(b.date) - new Date(a.date);
-      });
-      // 全局排名（按浏览量），只有整体前 3 名显示角标
-      posts.forEach(function (post, i) { post.rank = i + 1; });
+      if (mode === 'date') {
+        // 分类页:按发布时间倒序,便于定位最新笔记
+        posts.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+      } else {
+        posts.sort(function (a, b) {
+          if (b.pv !== a.pv) return b.pv - a.pv;
+          return new Date(b.date) - new Date(a.date);
+        });
+        // 全局排名（按浏览量），只有整体前 3 名显示角标
+        posts.forEach(function (post, i) { post.rank = i + 1; });
+      }
 
       allPosts = posts;
       buildCats();
@@ -132,7 +140,7 @@
     }
 
     var html = posts.map(function (post, index) {
-      var rankChip = post.rank <= 3
+      var rankChip = (mode !== 'date' && post.rank <= 3)
         ? '<span class="hot-rank-chip">热门 No.' + post.rank + '</span>'
         : '';
       var coverHtml = post.cover

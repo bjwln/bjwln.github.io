@@ -7,8 +7,6 @@ research: project
 research_order: 0
 cover: cover.jpg
 cover_fit: contain
-categories:
-  - 大模型
 ---
 
 # 系统总览

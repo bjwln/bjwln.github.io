@@ -54,8 +54,13 @@ app.get('/api/dashboard', U.wrap(async (req, res) => {
 
 // ---------- 文章 ----------
 app.get('/api/posts', U.wrap(async (req, res) => res.json(await posts.listPosts('post'))));
+app.get('/api/posts/folders', U.wrap(async (req, res) => res.json(await posts.listFolders(req.query.type === 'draft' ? 'draft' : 'post'))));
 app.get('/api/drafts', U.wrap(async (req, res) => res.json(await posts.listPosts('draft'))));
 app.post('/api/posts', U.wrap(async (req, res) => res.json(await posts.createPost(req.body || {}))));
+app.post('/api/posts/:slug/move', U.wrap(async (req, res) => {
+  const kind = req.query.type === 'draft' ? 'draft' : 'post';
+  res.json(await posts.movePost(kind, req.params.slug, req.body?.folder));
+}));
 app.get('/api/posts/:slug', U.wrap(async (req, res) => {
   res.json(await posts.getPost(req.query.type === 'draft' ? 'draft' : 'post', req.params.slug));
 }));

@@ -136,12 +136,15 @@ async function vDashboard() {
 }
 
 // ---------- 新建文章 ----------
-function newPostDialog() {
+async function newPostDialog() {
+  let folders = [];
+  try { folders = await api('/api/posts/folders'); } catch { /* 忽略 */ }
   const html = `<div class="panel" id="np-panel"><h3>新建文章</h3>
     <div class="toolbar">
-      <input type="text" id="np-title" placeholder="标题(必填)" style="width:300px">
-      <input type="text" id="np-tags" placeholder="标签,逗号分隔(可空)" style="width:200px">
-      <input type="text" id="np-cats" placeholder="分类(可空)" style="width:140px">
+      <input type="text" id="np-title" placeholder="标题(必填)" style="width:260px">
+      <select id="np-folder"><option value="">📁 根目录(_posts)</option>${folders.map(f => `<option value="${esc(f)}">📁 ${esc(f)}</option>`).join('')}</select>
+      <input type="text" id="np-tags" placeholder="标签,逗号分隔(可空)" style="width:180px">
+      <input type="text" id="np-cats" placeholder="分类(可空)" style="width:130px">
       <label class="flex checkline"><input type="checkbox" id="np-draft"> 保存为草稿</label>
       <button onclick="createPost()">创建</button>
       <button class="ghost" onclick="$('#np-panel').remove()">取消</button>
@@ -155,16 +158,21 @@ async function createPost() {
   if (!title) { toast('请填写标题', 'err'); return; }
   const tags = $('#np-tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
   const cats = $('#np-cats').value.trim();
-  const r = await api('/api/posts', { json: { title, tags, categories: cats || undefined, isDraft: $('#np-draft').checked } });
+  const folder = $('#np-folder') ? $('#np-folder').value : '';
+  const r = await api('/api/posts', { json: { title, tags, categories: cats || undefined, folder: folder || undefined, isDraft: $('#np-draft').checked } });
   toast('已创建:' + r.slug, 'ok');
   location.hash = (r.kind === 'draft' ? '#/draft/' : '#/post/') + enc(r.slug);
 }
 
 // ---------- 文章/草稿列表 ----------
 let postCache = [];
+let folderCache = [];
 async function vPosts(kind) {
   kind = kind || 'post';
-  postCache = await api(kind === 'draft' ? '/api/drafts' : '/api/posts');
+  [postCache, folderCache] = await Promise.all([
+    api(kind === 'draft' ? '/api/drafts' : '/api/posts'),
+    api('/api/posts/folders' + (kind === 'draft' ? '?type=draft' : '')).catch(() => []),
+  ]);
   const tags = [...new Set(postCache.flatMap(p => p.tags))].sort();
   const cats = [...new Set(postCache.flatMap(p => p.categories))].sort();
   main().innerHTML = `
@@ -172,36 +180,49 @@ async function vPosts(kind) {
       <button onclick="newPostDialog()">＋ 新建</button></div>
     <div class="toolbar">
       <input type="search" placeholder="搜索标题…" oninput="filterPosts('${kind}')">
+      <select onchange="filterPosts('${kind}')"><option value="">全部文件夹</option>${folderCache.map(f => `<option>${esc(f)}</option>`).join('')}</select>
       <select onchange="filterPosts('${kind}')"><option value="">全部标签</option>${tags.map(t => `<option>${esc(t)}</option>`).join('')}</select>
       <select onchange="filterPosts('${kind}')"><option value="">全部分类</option>${cats.map(c => `<option>${esc(c)}</option>`).join('')}</select>
       <span class="muted" id="post-count"></span></div>
     <div class="panel" style="padding:0"><table><thead>
-      <tr><th>标题</th><th>日期</th><th>标签</th><th>分类</th><th>字数</th><th>标记</th><th style="width:170px">操作</th></tr>
+      <tr><th>标题</th><th>日期</th><th>标签</th><th>分类</th><th>字数</th><th>标记</th><th style="width:220px">操作</th></tr>
     </thead><tbody id="post-rows"></tbody></table></div>`;
   renderPostRows(kind, postCache);
 }
 function renderPostRows(kind, list) {
-  $('#post-rows').innerHTML = list.length ? list.map(p => `<tr>
-    <td><a href="#/${kind === 'draft' ? 'draft' : 'post'}/${enc(p.slug)}">${esc(p.title)}</a>${p.parseError ? ' <span class="muted">⚠️</span>' : ''}</td>
+  $('#post-rows').innerHTML = list.length ? list.map(p => {
+    const fk = kind === 'draft' ? 'draft' : 'post';
+    return `<tr>
+    <td><a href="#/${fk}/${enc(p.slug)}">${esc(p.title)}</a>${p.parseError ? ' <span class="muted">⚠️</span>' : ''}${p.folder ? ` <span class="chip" title="所在文件夹">📁 ${esc(p.folder)}</span>` : ''}</td>
     <td class="muted">${esc(p.date)}</td>
     <td>${p.tags.map(t => `<span class="chip">${esc(t)}</span>`).join(' ')}</td>
     <td class="muted">${esc(p.categories.join(', '))}</td>
     <td class="muted">${p.words}</td>
     <td>${p.research ? `<span class="chip">research:${esc(p.research)}</span>` : ''}${p.sticky ? `<span class="chip">置顶${p.sticky}</span>` : ''}${p.mathjax ? '<span class="chip">公式</span>' : ''}</td>
     <td>${kind === 'draft' ? `<button class="small" onclick="publishDraft('${esc(p.slug)}')">发布</button>` : ''}
-        <button class="small ghost" onclick="location.hash='#/${kind === 'draft' ? 'draft' : 'post'}/${enc(p.slug)}'">编辑</button>
+        <button class="small ghost" onclick="location.hash='#/${fk}/${enc(p.slug)}'">编辑</button>
+        <button class="small ghost" onclick="movePostPrompt('${fk}','${esc(p.slug)}','${esc(p.folder || '')}')">移动</button>
         <button class="small danger" onclick="deletePost('${kind}','${esc(p.slug)}')">删除</button></td>
-  </tr>`).join('') : '<tr><td colspan="7" class="empty">空空如也</td></tr>';
+  </tr>`;
+  }).join('') : '<tr><td colspan="7" class="empty">空空如也</td></tr>';
   const el = $('#post-count'); if (el) el.textContent = `共 ${list.length} 篇`;
 }
 function filterPosts(kind) {
   const q = $('input[type="search"]').value.trim().toLowerCase();
-  const [tagSel, catSel] = document.querySelectorAll('.toolbar select');
+  const [folderSel, tagSel, catSel] = document.querySelectorAll('.toolbar select');
   const list = postCache.filter(p =>
     (!q || p.title.toLowerCase().includes(q)) &&
+    (!folderSel.value || (p.folder || '') === folderSel.value) &&
     (!tagSel.value || p.tags.includes(tagSel.value)) &&
     (!catSel.value || p.categories.includes(catSel.value)));
   renderPostRows(kind, list);
+}
+async function movePostPrompt(kind, slug, folder) {
+  const to = window.prompt(`移动「${slug}」到文件夹(留空 = 根目录 _posts,可用 / 多级,如 research):`, folder || '');
+  if (to === null) return;
+  const r = await api(`/api/posts/${enc(slug)}/move?type=${kind}`, { method: 'POST', json: { folder: to.trim() } });
+  toast('已移动到 ' + (r.slug || slug), 'ok');
+  route();
 }
 async function publishDraft(slug) {
   if (!(await confirmBox(`发布草稿「${slug}」到 _posts?`))) return;
@@ -227,7 +248,7 @@ async function vPostEdit(kind, slug) {
   main().innerHTML = `
     <div class="page-head">
       <a href="${isPost ? '#/posts' : '#/drafts'}">← 返回</a>
-      <span class="muted" style="font-size:12px">${esc(p.dir)}/${esc(slug)}.md</span>
+      <span class="muted" style="font-size:12px">${esc(p.dir)}/${esc(p.file || slug + '.md')}</span>
       <div class="spacer"></div>
       <span class="muted" id="ed-words"></span>
       <button class="ghost" onclick="togglePreview()" id="btn-preview">👁 预览中</button>

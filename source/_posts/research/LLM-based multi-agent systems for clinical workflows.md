@@ -1,14 +1,14 @@
 ---
-title: "LLM-based multi-agent systems for clinical workflows: a survey of AI hospitals"
-description: "解读 AI hospital 综述：工作流级多智能体临床系统需要什么——分诊、会诊、出院的状态流转、证据链接与可审计的问责体系。"
+title: 'LLM-based multi-agent systems for clinical workflows: a survey of AI hospitals'
+description: 解读 AI hospital 综述：工作流级多智能体临床系统需要什么——分诊、会诊、出院的状态流转、证据链接与可审计的问责体系。
 date: 2026-08-16 16:38:13
-tags: [多智能体, MDT]
+tags:
+  - 多智能体
+  - MDT
 research: literature
 research_order: 2
 cover: cover.jpg
 cover_fit: contain
-categories:
-  - 大模型
 ---
 
 [英文原文 PDF](/2026/08/16/LLM-based multi-agent systems for clinical workflows/original.pdf)

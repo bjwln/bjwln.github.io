@@ -1,8 +1,10 @@
 ---
 title: OMGs论文解读
-description: "解读 OMGs：面向卵巢肿瘤 MDT 的多智能体系统，如何协调多学科证据、应对晚期诊断与肿瘤异质性的高风险决策。"
+description: 解读 OMGs：面向卵巢肿瘤 MDT 的多智能体系统，如何协调多学科证据、应对晚期诊断与肿瘤异质性的高风险决策。
 date: 2026-08-02 14:58:59
-tags: [多智能体, 论文]
+tags:
+  - 多智能体
+  - 论文
 research: literature
 research_order: 0
 mathjax: true

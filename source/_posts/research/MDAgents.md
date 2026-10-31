@@ -1,6 +1,6 @@
 ---
-title: "MDAgents: an adaptive collaboration of LLMs for medical decision-making"
-description: "解读 MDAgents：根据病例复杂度自适应组建 LLM 协作团队的方法，附 MedQA、DDXPlus 等评测数据集的全景梳理。"
+title: 'MDAgents: an adaptive collaboration of LLMs for medical decision-making'
+description: 解读 MDAgents：根据病例复杂度自适应组建 LLM 协作团队的方法，附 MedQA、DDXPlus 等评测数据集的全景梳理。
 date: 2026-08-16 16:38:13
 research: literature
 research_order: 5
@@ -8,7 +8,10 @@ cover: cover.jpg
 cover_fit: contain
 categories:
   - 大模型
-tags: [多智能体, 论文, MDT]
+tags:
+  - 多智能体
+  - 论文
+  - MDT
 ---
 
 [英文原文 PDF](/2026/08/16/MDAgents/original.pdf)

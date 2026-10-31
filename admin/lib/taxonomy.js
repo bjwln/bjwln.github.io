@@ -22,16 +22,16 @@ async function summary() {
   return { tags: fmt(tags), categories: fmt(cats) };
 }
 
-// kind: 'tags' | 'categories';重命名所有文章(含草稿)中的对应字段
+// kind: 'tags' | 'categories';重命名所有文章(含草稿,含子文件夹)中的对应字段
 async function rename(kind, from, to) {
   if (!from || !to) { const e = new Error('from/to 不能为空'); e.status = 400; throw e; }
   if (from === to) return { changed: 0 };
   const changedFiles = [];
   for (const base of [U.POSTS, U.DRAFTS]) {
     let files = [];
-    try { files = (await fsp.readdir(base)).filter(f => f.toLowerCase().endsWith('.md')); } catch { continue; }
-    for (const f of files) {
-      const abs = path.join(base, f);
+    try { files = (await U.walk(base, base)).filter(f => f.toLowerCase().endsWith('.md')); } catch { continue; }
+    for (const rel of files) {
+      const abs = path.join(base, rel);
       const raw = await fsp.readFile(abs, 'utf8');
       const { data, body } = fm.trySplit(raw);
       if (data.__parseError || !data[kind]) continue;
@@ -47,7 +47,7 @@ async function rename(kind, from, to) {
       }
       if (changed) {
         await U.atomicWrite(abs, fm.join(data, body));
-        changedFiles.push(f);
+        changedFiles.push(rel);
       }
     }
   }

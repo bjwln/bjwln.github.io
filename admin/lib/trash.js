@@ -13,7 +13,7 @@ async function trashDir(id) {
 }
 
 async function moveToTrash(kind, slug) {
-  const { baseDir, mdPath } = require('./posts');
+  const { baseDir, mdPath, assetDirOf } = require('./posts');
   const srcMd = mdPath(kind, slug);
   if (!(await U.pathExists(srcMd))) { const e = new Error('文章不存在'); e.status = 404; throw e; }
   await U.ensureDir(U.TRASH);
@@ -24,7 +24,7 @@ async function moveToTrash(kind, slug) {
 
   const raw = await fsp.readFile(srcMd, 'utf8');
   const { data } = fm.trySplit(raw);
-  const srcAsset = path.join(baseDir(kind), slug);
+  const srcAsset = assetDirOf(kind, slug);
   const hasAsset = await U.pathExists(srcAsset);
   if (hasAsset) await fsp.rename(srcAsset, path.join(dst, 'asset'));
   await fsp.rename(srcMd, path.join(dst, 'post.md'));
@@ -51,12 +51,15 @@ async function listTrash() {
 async function restore(id) {
   const dir = await trashDir(id);
   const mf = JSON.parse(await fsp.readFile(path.join(dir, 'manifest.json'), 'utf8'));
-  const { baseDir } = require('./posts');
-  const dstMd = path.join(baseDir(mf.kind), mf.slug + '.md');
+  const { baseDir, assetDirOf } = require('./posts');
+  // slug 可能含子文件夹(research/xxx),恢复时重建目录
+  const segs = String(mf.slug || '').split('/');
+  const dstMd = path.join(baseDir(mf.kind), ...segs.slice(0, -1), segs[segs.length - 1] + '.md');
   if (await U.pathExists(dstMd)) { const e = new Error('原位置已存在同名文件,无法恢复'); e.status = 409; throw e; }
+  await U.ensureDir(path.dirname(dstMd));
   await fsp.rename(path.join(dir, 'post.md'), dstMd);
   if (mf.hasAsset) {
-    await fsp.rename(path.join(dir, 'asset'), path.join(baseDir(mf.kind), mf.slug)).catch(() => {});
+    await fsp.rename(path.join(dir, 'asset'), assetDirOf(mf.kind, mf.slug)).catch(() => {});
   }
   await fsp.rm(dir, { recursive: true, force: true });
   return { ok: true };
