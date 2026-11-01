@@ -24,3 +24,12 @@ Wang Z., et al. Think, Then Verify: A Hypothesis–Verification Multi-Agent Fram
 
 compare.py 自动完成这个过程，打开两个结果文件，按题号配对，把“变好”和“变坏”的题各自列出来，最后算一个**运气概率**——如果纯粹靠运气也能出现这么偏的结果，这个概率是多大。运气概率很小（比如 3%），我们才敢说“改动真的起了作用”；运气概率很大（比如 50%），结论只能是“看不出变化”。
 
+## mcnemar_exact_p(b: int, c: int) -> float
+
+本函数为统计函数，跑完 A/B 两次实验后，手里面有这些数据
+
+​              	  B 对    		 B 错
+
+​    A 对    	   265      		2   ← 退化题（A对B错）
+
+​    A 错     	   10     		 23  ← 提升题（B对A错）

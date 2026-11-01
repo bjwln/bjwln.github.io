@@ -1,6 +1,6 @@
 'use strict';
 // 管理端 API 自测脚本(node admin/test/api-test.js),测试完自动清理
-const BASE = 'http://127.0.0.1:4001';
+const BASE = 'http://127.0.0.1:14001';
 let failed = 0;
 async function api(path, opts = {}) {
   const init = { method: opts.method || 'GET', headers: { ...(opts.headers || {}) } };

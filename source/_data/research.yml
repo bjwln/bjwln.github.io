@@ -89,12 +89,14 @@ plans:
     tracks:
       - key: research
         axis_label: 文献支撑
-      - key: agent
-        axis_label: 智能体
+      - key: methods
+        axis_label: 方法
+      - key: system
+        axis_label: 系统
     timeline:
       - date: 2026-10-15
         title: 一个最小的MDAgents系统
-        track: agent
+        track: system
         summary: 实现的代码完全体MDAgent
         link: MDAgents-Minimal
         label: MDAgents-Minimal

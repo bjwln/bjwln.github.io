@@ -12,7 +12,7 @@ const DEFAULTS = {
   previewPort: 4000,                      // hexo server 预览端口
   password: '',                           // 管理端访问密码;为空则不启用(仅监听本机)
   host: '127.0.0.1',                      // 改为 0.0.0.0 可局域网访问(建议同时设密码)
-  port: 4001,                             // 管理端端口
+  port: 14001,                            // 管理端端口(4001 会被 QQ 等软件占用,勿改回)
   editorFontSize: 14,
   biliCookie: '',                        // B站登录 Cookie(同步动态漫集数用,可选)
 };

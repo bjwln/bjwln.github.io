@@ -897,7 +897,7 @@ async function saveSettings() {
     cfBaseUrl: $('#s-cfurl').value.trim(),
     cfToken: $('#s-cftoken').value.trim(),
     host: $('#s-host').value,
-    port: Number($('#s-port').value) || 4001,
+    port: Number($('#s-port').value) || 14001,
     previewPort: Number($('#s-pvport').value) || 4000,
     editorFontSize: Number($('#s-font').value) || 14,
     biliCookie: $('#s-bilicookie').value.trim(),

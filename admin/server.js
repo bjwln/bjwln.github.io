@@ -184,8 +184,16 @@ setInterval(autoBangumiSync, 6 * 60 * 60 * 1000);
 
 (async () => {
   const s = await settings.load();
-  app.listen(s.port, s.host, () => {
+  const server = app.listen(s.port, s.host, () => {
     console.log('博客管理端已启动: http://' + (s.host === '0.0.0.0' ? 'localhost' : s.host) + ':' + s.port);
     console.log('博客根目录: ' + U.ROOT);
+  });
+  server.on('error', err => {
+    if (err.code === 'EADDRINUSE') {
+      console.error('启动失败:端口 ' + s.port + ' 已被其他程序占用(可用 netstat -ano | findstr :14001 查看占用进程)');
+    } else {
+      console.error('启动失败: ' + err.message);
+    }
+    process.exit(1);
   });
 })();
