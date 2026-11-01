@@ -213,3 +213,28 @@
     height: 140px;
   }
 }
+
+// 分类归档页(卡片网格,与热门/追番共用 hot-wall 样式)
+.category-wall-wrap
+  max-width: 1100px
+  margin: 0 auto
+  padding: 0 16px 24px
+
+.wall-head
+  display: flex
+  align-items: baseline
+  gap: 12px
+  margin-bottom: 18px
+  color: var(--font-color)
+
+  i
+    color: var(--text-highlight-color)
+
+  h1
+    margin: 0
+    font-size: 1.4em
+
+  .wall-count
+    color: var(--card-meta)
+    font-size: .84em
+
