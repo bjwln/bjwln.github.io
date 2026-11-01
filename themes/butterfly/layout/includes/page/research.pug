@@ -75,8 +75,10 @@
           span.research-linechart-title
             i.fas.fa-chart-line(aria-hidden='true')
             strong 阅读曲线
+          if !chart.unlimited
+            span.research-linechart-subtitle 累计已读文献
         .research-linechart-body
-          script(type='application/json' class='research-linechart-data')!= JSON.stringify({ unlimited: chart.unlimited, tracks: chart.plan.tracks || [], points: chart.chartPoints }).replace(/</g, '\\u003c')
+          script(type='application/json' class='research-linechart-data')!= JSON.stringify({ unlimited: chart.unlimited, total: chart.unlimited ? null : chart.total, tracks: chart.plan.tracks || [], points: chart.chartPoints }).replace(/</g, '\\u003c')
 
       if chart.items.length
         section.research-timeline-chart

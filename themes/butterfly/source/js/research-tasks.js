@@ -183,7 +183,140 @@
       }
   }
 
+  // 取 1/2/5/10×10^n 的"整"刻度
+  const niceStep = raw => {
+    if (raw <= 1) return 1
+    const pow = Math.pow(10, Math.floor(Math.log10(raw)))
+    for (const m of [1, 2, 5, 10]) {
+      if (raw <= m * pow) return m * pow
+    }
+    return 10 * pow
+  }
+
+  // 限量计划:累计已读篇数曲线(纵轴为篇数)
+  function buildCumulativeSvg(state, points, W) {
+    const data = state.data
+    const accent = accentFor(state)
+    const H = W < 520 ? 190 : 240
+    const M = { t: 22, r: 20, b: 30, l: 40 }
+    const dates = points.map(point => parseDate(point.date).getTime())
+    const first = dates[0]
+    const last = dates[dates.length - 1]
+    const span = last - first
+    const pad = span > 0 ? Math.max(span * 0.05, DAY * 3) : DAY * 12
+    const xMin = first - pad
+    const xMax = last + pad
+
+    const total = Number(data.total) > 0 ? Number(data.total) : null
+    const cum = points.map((_, i) => i + 1)
+    const yTop = Math.max(total || 0, cum.length)
+    const step = niceStep(yTop / 6 || 1)
+    const yMax = Math.max(step, Math.ceil(yTop / step) * step)
+
+    const iw = W - M.l - M.r
+    const ih = H - M.t - M.b
+    const X = t => M.l + ((t - xMin) / (xMax - xMin)) * iw
+    const Y = v => M.t + (1 - v / yMax) * ih
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', style: 'display:block;max-width:100%' })
+
+    // 横向网格 + 纵轴刻度
+    for (let v = 0; v <= yMax; v += step) {
+      const y = Y(v)
+      svg.appendChild(svgEl('line', {
+        x1: M.l, x2: W - M.r, y1: y.toFixed(1), y2: y.toFixed(1),
+        stroke: '#808080', 'stroke-opacity': v === 0 ? '.34' : '.16', 'stroke-width': '1'
+      }))
+      const label = svgEl('text', {
+        x: M.l - 8, y: (y + 4).toFixed(1), 'text-anchor': 'end',
+        style: 'fill:var(--card-meta,#888);font-size:11px;font-variant-numeric:tabular-nums'
+      })
+      label.textContent = v
+      svg.appendChild(label)
+    }
+
+    // 横轴刻度:优先按月份,跨度不足一个月时按位置取 3 个日期
+    const crossYear = xMax - xMin > 360 * DAY
+    let ticks = []
+    const cursor = new Date(xMin)
+    cursor.setDate(1)
+    if (cursor.getTime() < xMin) cursor.setMonth(cursor.getMonth() + 1)
+    for (let t = cursor.getTime(); t <= xMax; t = cursor.getTime()) {
+      const d = new Date(t)
+      const label = (crossYear || d.getMonth() === 0) ? `${d.getFullYear()}年${d.getMonth() + 1}月` : `${d.getMonth() + 1}月`
+      ticks.push({ t, label })
+      cursor.setMonth(cursor.getMonth() + 1)
+    }
+    if (!ticks.length) {
+      ticks = [0.25, 0.5, 0.75].map(f => {
+        const d = new Date(xMin + (xMax - xMin) * f)
+        return { t: d.getTime(), label: `${d.getMonth() + 1}月${d.getDate()}日` }
+      })
+    }
+    const tickEvery = Math.ceil(ticks.length / 6)
+    ticks.forEach((tick, index) => {
+      if (index % tickEvery) return
+      const x = X(tick.t)
+      svg.appendChild(svgEl('line', { x1: x.toFixed(1), x2: x.toFixed(1), y1: H - M.b, y2: H - M.b + 4, stroke: '#808080', 'stroke-opacity': '.16', 'stroke-width': '1' }))
+      const label = svgEl('text', {
+        x: x.toFixed(1), y: H - M.b + 17, 'text-anchor': 'middle',
+        style: 'fill:var(--card-meta,#888);font-size:11px;font-variant-numeric:tabular-nums'
+      })
+      label.textContent = tick.label
+      svg.appendChild(label)
+    })
+
+    // 目标线(限量任务才显示)
+    if (total && total <= yMax) {
+      const y = Y(total)
+      svg.appendChild(svgEl('line', { x1: M.l, x2: W - M.r, y1: y.toFixed(1), y2: y.toFixed(1), stroke: accent, 'stroke-opacity': '.55', 'stroke-width': '1.5', 'stroke-dasharray': '5 5' }))
+      const label = svgEl('text', {
+        x: W - M.r, y: (y - 6).toFixed(1), 'text-anchor': 'end',
+        style: `fill:${accent};fill-opacity:.75;font-size:11px;font-variant-numeric:tabular-nums`
+      })
+      label.textContent = `目标 ${total}`
+      svg.appendChild(label)
+    }
+
+    // 折线 + 面积
+    if (points.length > 1) {
+      const coords = dates.map((t, i) => `${X(t).toFixed(1)},${Y(cum[i]).toFixed(1)}`)
+      svg.appendChild(svgEl('path', { d: `M ${coords[0]} L ${coords.slice(1).join(' L ')} L ${X(last).toFixed(1)} ${Y(0).toFixed(1)} L ${X(first).toFixed(1)} ${Y(0).toFixed(1)} Z`, fill: accent, 'fill-opacity': '.12' }))
+      svg.appendChild(svgEl('path', { d: `M ${coords.join(' L ')}`, fill: 'none', stroke: accent, 'stroke-width': '2.5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }))
+    }
+
+    // 数据点(有链接的文章包一层 <a>)
+    points.forEach((point, i) => {
+      const cx = X(dates[i])
+      const cy = Y(cum[i])
+      const holder = svgEl(point.href ? 'a' : 'g', { class: 'rlc-dot', tabindex: '0', style: 'cursor:pointer' })
+      if (point.href) holder.setAttribute('href', point.href)
+
+      const hit = svgEl('circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 14, fill: 'transparent' })
+      const core = svgEl('circle', {
+        cx: cx.toFixed(1), cy: cy.toFixed(1), r: 4.5,
+        style: `fill:var(--card-bg,#fff);stroke:${accent};stroke-width:2.5;transition:transform .18s ease;transform-box:fill-box;transform-origin:center`
+      })
+      holder.appendChild(hit)
+      holder.appendChild(core)
+      holder.addEventListener('mouseenter', () => { core.style.transform = 'scale(1.45)'; showTip(state, point, cx, cy, W) })
+      holder.addEventListener('mouseleave', () => { core.style.transform = ''; hideTip(state) })
+      holder.addEventListener('focus', () => showTip(state, point, cx, cy, W))
+      holder.addEventListener('blur', () => hideTip(state))
+      svg.appendChild(holder)
+    })
+
+    return svg
+  }
+
+  // 分发:不限量计划 → 进度轴轨道视图;限量计划 → 累计篇数曲线
   function buildSvg(state, points, W) {
+    return state.data.unlimited
+      ? buildTrackSvg(state, points, W)
+      : buildCumulativeSvg(state, points, W)
+  }
+
+  function buildTrackSvg(state, points, W) {
     const data = state.data
     const accent = accentFor(state)
     const H = W < 520 ? 190 : 240
