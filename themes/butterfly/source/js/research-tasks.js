@@ -71,16 +71,6 @@
     return isNaN(parsed) ? null : parsed
   }
 
-  // 取 1/2/5/10×10^n 的"整"刻度
-  const niceStep = raw => {
-    if (raw <= 1) return 1
-    const pow = Math.pow(10, Math.floor(Math.log10(raw)))
-    for (const m of [1, 2, 5, 10]) {
-      if (raw <= m * pow) return m * pow
-    }
-    return 10 * pow
-  }
-
   const buildLineChart = section => {
     const body = section.querySelector('.research-linechart-body')
     if (!body) return null
@@ -197,42 +187,56 @@
     const data = state.data
     const accent = accentFor(state)
     const H = W < 520 ? 190 : 240
-    const M = { t: 22, r: 20, b: 30, l: 40 }
-    const dates = points.map(point => parseDate(point.date).getTime())
-    const first = dates[0]
-    const last = dates[dates.length - 1]
+
+    // 纵轴 = 进度轴(轨道):每个轨道一条泳道,文章按所属轨道落点,按时间连线成阅读轨迹
+    const tracks = (data.tracks || []).filter(t => t && t.key)
+    const laneLabels = tracks.map(t => t.axis_label || t.key || '')
+    const laneCount = Math.max(tracks.length, 1)
+
+    const dated = points
+      .map(point => ({ point, t: parseDate(point.date) }))
+      .filter(p => p.t)
+      .sort((a, b) => a.t - b.t)
+    if (!dated.length) return null
+
+    const laneIndexFor = point => tracks.findIndex(t => t.key === point.track)
+    const plotted = dated.filter(p => laneIndexFor(p.point) >= 0)
+    if (!plotted.length) return null
+
+    const first = plotted[0].t.getTime()
+    const last = plotted[plotted.length - 1].t.getTime()
     const span = last - first
     const pad = span > 0 ? Math.max(span * 0.05, DAY * 3) : DAY * 12
     const xMin = first - pad
     const xMax = last + pad
 
-    const total = Number(data.total) > 0 ? Number(data.total) : null
-    const cum = points.map((_, i) => i + 1)
-    const yTop = Math.max(total || 0, cum.length)
-    const step = niceStep(yTop / 6 || 1)
-    const yMax = Math.max(step, Math.ceil(yTop / step) * step)
+    const M = { t: 22, r: 20, b: 30, l: 40 }
+    // 左侧留白按最长的轨道名扩展
+    const maxLabelLen = laneLabels.reduce((n, l) => Math.max(n, String(l).length), 0)
+    M.l = Math.max(M.l, maxLabelLen * 12 + 20)
 
     const iw = W - M.l - M.r
     const ih = H - M.t - M.b
     const X = t => M.l + ((t - xMin) / (xMax - xMin)) * iw
-    const Y = v => M.t + (1 - v / yMax) * ih
+    const laneY = i => M.t + (ih * (i + 0.5)) / laneCount
+    const laneYFor = point => laneY(laneIndexFor(point))
 
     const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', style: 'display:block;max-width:100%' })
 
-    // 横向网格 + 纵轴刻度
-    for (let v = 0; v <= yMax; v += step) {
-      const y = Y(v)
+    // 轨道泳道线 + 轨道名(纵轴标签)
+    laneLabels.forEach((label, i) => {
+      const y = laneY(i)
       svg.appendChild(svgEl('line', {
         x1: M.l, x2: W - M.r, y1: y.toFixed(1), y2: y.toFixed(1),
-        stroke: '#808080', 'stroke-opacity': v === 0 ? '.34' : '.16', 'stroke-width': '1'
+        stroke: '#808080', 'stroke-opacity': '.18', 'stroke-width': '1'
       }))
-      const label = svgEl('text', {
+      const text = svgEl('text', {
         x: M.l - 8, y: (y + 4).toFixed(1), 'text-anchor': 'end',
-        style: 'fill:var(--card-meta,#888);font-size:11px;font-variant-numeric:tabular-nums'
+        style: 'fill:var(--card-meta,#888);font-size:11px'
       })
-      label.textContent = v
-      svg.appendChild(label)
-    }
+      text.textContent = label
+      svg.appendChild(text)
+    })
 
     // 横轴刻度:优先按月份,跨度不足一个月时按位置取 3 个日期
     const crossYear = xMax - xMin > 360 * DAY
@@ -265,29 +269,17 @@
       svg.appendChild(label)
     })
 
-    // 目标线(限量任务才显示)
-    if (total && total <= yMax) {
-      const y = Y(total)
-      svg.appendChild(svgEl('line', { x1: M.l, x2: W - M.r, y1: y.toFixed(1), y2: y.toFixed(1), stroke: accent, 'stroke-opacity': '.55', 'stroke-width': '1.5', 'stroke-dasharray': '5 5' }))
-      const label = svgEl('text', {
-        x: W - M.r, y: (y - 6).toFixed(1), 'text-anchor': 'end',
-        style: `fill:${accent};fill-opacity:.75;font-size:11px;font-variant-numeric:tabular-nums`
-      })
-      label.textContent = `目标 ${total}`
-      svg.appendChild(label)
-    }
-
-    // 折线 + 面积
-    if (points.length > 1) {
-      const coords = dates.map((t, i) => `${X(t).toFixed(1)},${Y(cum[i]).toFixed(1)}`)
-      svg.appendChild(svgEl('path', { d: `M ${coords[0]} L ${coords.slice(1).join(' L ')} L ${X(last).toFixed(1)} ${Y(0).toFixed(1)} L ${X(first).toFixed(1)} ${Y(0).toFixed(1)} Z`, fill: accent, 'fill-opacity': '.12' }))
+    // 阅读轨迹:按时间顺序连接各篇(展示在轨道间的切换过程)
+    if (plotted.length > 1) {
+      const coords = plotted.map(p => `${X(p.t.getTime()).toFixed(1)},${laneYFor(p.point).toFixed(1)}`)
       svg.appendChild(svgEl('path', { d: `M ${coords.join(' L ')}`, fill: 'none', stroke: accent, 'stroke-width': '2.5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }))
     }
 
     // 数据点(有链接的文章包一层 <a>)
-    points.forEach((point, i) => {
-      const cx = X(dates[i])
-      const cy = Y(cum[i])
+    plotted.forEach((p, i) => {
+      const point = p.point
+      const cx = X(p.t.getTime())
+      const cy = laneYFor(point)
       const holder = svgEl(point.href ? 'a' : 'g', { class: 'rlc-dot', tabindex: '0', style: 'cursor:pointer' })
       if (point.href) holder.setAttribute('href', point.href)
 
