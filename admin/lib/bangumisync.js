@@ -312,27 +312,117 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
   return r;
 }
 
+  // ---------- UP主追踪(动态漫/沙雕动画等) ----------
+  // B站:空间链接 → recArchivesByKeywords 按标题取最新投稿(标题/封面/链接/时间)
+  // 未看数 = 比对用户填的「已看视频链接」在投稿列表中的位置(按时间)
+  // 抖音:风控较强,自动抓取大概率失败 → 降级为手动填写
+
+  const douyinVideoId = url => {
+    const s = String(url || '')
+    let m = s.match(/video\/(\d{15,})/)
+    if (m) return m[1]
+    m = s.match(/modal_id=(\d{15,})/)
+    if (m) return m[1]
+    return null
+  }
+
+  async function fetchUpInfo(item) {
+    const syncUrl = String(item.sync_url || '')
+    const title = String(item.title || '').trim()
+
+    // ---- 抖音:尽力抓一次创作者页,失败则明确降级 ----
+    if (/douyin\.com/.test(syncUrl)) {
+      let got = null
+      try {
+        const html = await fetchText(syncUrl, 'https://www.douyin.com/')
+        const ids = [...html.matchAll(/"aweme_id":"(\d{15,})"/g)].map(x => x[1])
+        const covers = [...html.matchAll(/"cover":\{[^}]*?"url_list":\["([^"]+)"/g)].map(x => x[1].replace(/\u002F/g, '/'))
+        if (ids.length) {
+          const desc = (html.match(/"desc":"([^"]{5,80})"/) || [])[1] || ''
+          got = {
+            total: null,
+            source: '抖音创作者页',
+            latest_title: desc ? desc.replace(/\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCodePoint(parseInt(h, 16))) : '最新视频',
+            latest_cover: covers[0] || '',
+            latest_url: ids[0] ? 'https://www.douyin.com/video/' + ids[0] : '',
+            latest_pubdate: null,
+          }
+        }
+      } catch { /* 降级 */ }
+      if (!got) throw new Error('抖音风控较强,无法自动同步:请在条目里手动填写「更新至」与最新视频信息')
+      return got
+    }
+
+    // ---- B站空间:按标题关键词取该UP的最新投稿 ----
+    const m = syncUrl.match(/space\.bilibili\.com\/(\d+)/)
+    if (!m) return null
+    const mid = m[1]
+    // B站风控按请求随机拦截:偶发返回空列表/风控页,重试最多 3 次
+    let archives = []
+    let lastMsg = 'UP主空间数据为空'
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const d = await fetchJson('https://api.bilibili.com/x/series/recArchivesByKeywords?mid=' + mid +
+        '&keywords=' + encodeURIComponent(title) + '&ps=30')
+      if (d.code !== 0 || !d.data) { lastMsg = (d && d.message) || 'UP主空间数据为空'; await new Promise(r2 => setTimeout(r2, 2000)); continue }
+      archives = (d.data.archives || []).slice().sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
+      if (archives.length) break
+      lastMsg = '未找到该UP主的相关投稿'
+      await new Promise(r2 => setTimeout(r2, 2000))
+    }
+    if (!archives.length) throw new Error(lastMsg + '(可能被B站风控,稍后自动重试)')
+
+    const newest = archives[0]
+    const nums = archives.map(a => firstNum(a.title)).filter(Boolean).map(Number).filter(n => n > 0 && n < 3000)
+    const result = {
+      total: nums.length ? String(Math.max(...nums)) : String(archives.length),
+      source: 'UP主空间最新投稿',
+      latest_title: String(newest.title || ''),
+      latest_cover: String(newest.pic || ''),
+      latest_url: newest.bvid ? 'https://www.bilibili.com/video/' + newest.bvid : '',
+      latest_pubdate: newest.pubdate || null,
+    }
+
+    // 未看对比:用户填的已看视频链接(BV)在投稿列表中的位置之后还有几支
+    const wv = String(item.watched_url || '').match(/video\/(BV[0-9A-Za-z]+)/)
+    if (wv) {
+      const wi = archives.findIndex(a => a.bvid === wv[1])
+      if (wi >= 0) result.unwatched = wi
+    }
+    return result
+  }
+
 // 全量同步:遍历所有条目抓取「更新至」,有变化就写回线上(路由与定时器共用)
 async function syncAll() {
   const list = await cf.listBangumi();
   const results = [];
   for (const item of (list.items || [])) {
-    const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '' };
+    const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '', unwatched: null };
     try {
-      const r = await fetchTotal(item.link || '', item.title || '', item.sync_url || '');
+      const isUp = /space\.bilibili\.com|douyin\.com/.test(item.sync_url || '')
+      const r = isUp
+        ? await fetchUpInfo(item)
+        : await fetchTotal(item.link || '', item.title || '', item.sync_url || '');
       if (r && r.total != null) {
         row.total = String(r.total);
         row.source = r.source;
-        row.changed = String(r.total) !== String(item.total || '');
+        row.unwatched = r.unwatched != null ? r.unwatched : null;
+        row.changed = String(r.total) !== String(item.total || '') || String(r.latest_url || '') !== String(item.latest_url || '');
         if (row.changed) {
-          await cf.bangumiAction({ action: 'item.setTotal', id: item.id, total: row.total });
+          const payload = { action: 'item.setTotal', id: item.id, total: row.total };
+          if (r.latest_title !== undefined) {
+            payload.latest_title = r.latest_title || ''
+            payload.latest_cover = r.latest_cover || ''
+            payload.latest_url = r.latest_url || ''
+            payload.latest_pubdate = r.latest_pubdate || null
+          }
+          await cf.bangumiAction(payload);
         }
       } else {
         row.error = '无法从链接识别集数';
       }
     } catch (e) {
       const s = String((e && e.message) || e);
-      row.error = /banned|412/i.test(s)
+      row.error = /banned|412|风控/i.test(s)
         ? '被B站风控拦截:可在「设置」填写B站Cookie后重试,或稍后再试'
         : s;
     }

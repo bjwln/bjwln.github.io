@@ -1000,6 +1000,7 @@ function bgRender() {
         <input type="text" id="bg-f-episode" placeholder="看到第几集" style="width:90px">
         <input type="text" id="bg-f-total" placeholder="更新至(自动同步)" style="width:110px">
         <input type="text" id="bg-f-syncurl" placeholder="同步源:UP主空间链接(可选)" style="width:200px">
+        <input type="text" id="bg-f-watched" placeholder="我看到的最新视频链接(可选)" style="width:200px">
         <input type="number" id="bg-f-sort" placeholder="排序" style="width:70px" value="0"></div>
       <div class="toolbar"><input type="text" id="bg-f-image" placeholder="封面图 URL" style="width:100%"></div>
       <div class="toolbar"><input type="text" id="bg-f-link" placeholder="播放/详情页链接" style="width:100%"></div>
@@ -1018,8 +1019,9 @@ function bgRender() {
         <td>${esc(i.status || '')}</td>
         <td>${esc(i.episode || '')}</td>
         <td>${esc(i.total || '')}${i.sync_url ? ' <span title="已设置同步源" style="color:var(--ok,#22c55e)">🌐</span>' : ''}</td>
+        <td>${bgUnwatched(i)}</td>
         <td><button class="small" onclick="bgEditItem(${i.id})">编辑</button>
-            ${hasNew ? `<button class="small" onclick="bgCatchup(${i.id})">追平</button>` : ''}
+            ${bgHasNew(i) ? '<button class="small" onclick="bgCatchup(' + i.id + ')">追平</button>' : ''}
             <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`;
       }).join('')
       : '<tr><td colspan="7" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
@@ -1035,6 +1037,16 @@ async function bgCatchup(id) {
   await bgReload();
 }
 
+function bgUnwatched(i) {
+  const t = parseFloat(i.total), e = parseFloat(i.episode)
+  if (isNaN(t) || isNaN(e) || t <= e) return '<span class="muted">-</span>'
+  return `<span style="color:#f59e0b;font-weight:600">未看 ${t - e} 集</span>`
+}
+function bgHasNew(i) {
+  const t = parseFloat(i.total), e = parseFloat(i.episode)
+  return !isNaN(t) && !isNaN(e) && t > e
+}
+
 function bgShowForm(id) {
   bgFormId = id || null;
   const it = bgFormId ? bgData.items.find(x => x.id === bgFormId) : null;
@@ -1046,6 +1058,7 @@ function bgShowForm(id) {
   $('#bg-f-episode').value = it ? (it.episode || '') : '';
   $('#bg-f-total').value = it ? (it.total || '') : '';
   $('#bg-f-syncurl').value = it ? (it.sync_url || '') : '';
+  $('#bg-f-watched').value = it ? (it.watched_url || '') : '';
   $('#bg-f-sort').value = it ? (it.sort || 0) : 0;
   $('#bg-f-image').value = it ? (it.image || '') : '';
   $('#bg-f-link').value = it ? (it.link || '') : '';
@@ -1061,7 +1074,7 @@ async function bgSaveItem() {
   if (!title) return toast('标题不能为空', 'err');
   await api('/api/cf/bangumi/action', { json: { action: 'item.save', id: bgFormId || undefined, title,
     author: $('#bg-f-author').value.trim(), image: $('#bg-f-image').value.trim(), link: $('#bg-f-link').value.trim(),
-    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), total: $('#bg-f-total').value.trim(), sync_url: $('#bg-f-syncurl').value.trim(), status: $('#bg-f-status').value,
+    intro: $('#bg-f-intro').value.trim(), episode: $('#bg-f-episode').value.trim(), total: $('#bg-f-total').value.trim(), sync_url: $('#bg-f-syncurl').value.trim(), watched_url: $('#bg-f-watched').value.trim(), status: $('#bg-f-status').value,
     category_id: $('#bg-f-cat').value ? Number($('#bg-f-cat').value) : null, sort: Number($('#bg-f-sort').value) || 0 } });
   toast('已保存,线上即时生效', 'ok');
   await bgReload();

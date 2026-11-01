@@ -6,8 +6,6 @@ research: literature
 research_order: 8
 cover: cover.jpg
 cover_fit: contain
-categories:
-  - 大模型
 tags:
   - 多智能体
   - 论文

@@ -22,25 +22,36 @@
     const epNum = parseFloat(item.episode)
     const totalNum = parseFloat(item.total)
     const hasNew = item.total && !isNaN(totalNum) && (isNaN(epNum) || totalNum > epNum)
+    const unwatched = hasNew ? Math.round(totalNum - epNum) : null
+    const isUp = Boolean(item.latest_url)
+    const coverSrc = item.latest_cover || item.image
     const epBadge = item.episode
       ? `<span class="bangumi-episode${hasNew ? ' is-new' : ''}">${esc(episodeText(item.episode))}</span>`
       : ''
     const totalBadge = item.total
       ? `<span class="bangumi-total${hasNew ? ' is-new' : ''}">更新至 ${esc(item.total)} 集</span>`
       : ''
+    const unwatchBadge = isUp && unwatched != null && unwatched > 0
+      ? `<span class="bangumi-unwatch">未看 ${unwatched} 集</span>`
+      : ''
     const inner = `<div class="bangumi-cover">
-        <img src="${esc(item.image)}" alt="${esc(item.title)}封面" loading="lazy" decoding="async">
+        <img src="${esc(coverSrc)}" alt="${esc(item.title)}最新视频封面" loading="lazy" decoding="async">
         ${item.category_name ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
         ${epBadge}${totalBadge}
+        ${unwatchBadge}
+        ${isUp ? '<span class="bangumi-play"><i class="fas fa-play" aria-hidden="true"></i></span>' : ''}
       </div>
       <div class="bangumi-info">
         <div class="bangumi-title">${esc(item.title)}</div>
         ${(item.author || item.status) ? `<div class="bangumi-meta-row">${item.author ? `<span class="bangumi-author">${esc(item.author)}</span>` : ''}${item.status ? `<span class="bangumi-status" style="--st:${statusColor}">${esc(item.status)}</span>` : ''}</div>` : ''}
+        ${item.latest_title ? `<div class="bangumi-latest"><i class="fas fa-play" aria-hidden="true"></i>最新：${esc(item.latest_title)}</div>` : ''}
         ${item.intro ? `<div class="bangumi-intro">${esc(item.intro)}</div>` : ''}
       </div>`
-    return item.link
-      ? `<a class="bangumi-card" href="${esc(item.link)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${inner}</a>`
-      : `<div class="bangumi-card">${inner}</div>`
+    const href = isUp ? item.latest_url : item.link
+    const cls = `bangumi-card${isUp ? ' is-up' : ''}`
+    return href
+      ? `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}最新视频">${inner}</a>`
+      : `<div class="${cls}">${inner}</div>`
   }
 
   const render = data => {
@@ -73,6 +84,8 @@
       renderGrid()
     })
 
+    const oldTabs = grid.parentNode.querySelector('.bangumi-tabs')
+    if (oldTabs) oldTabs.remove()
     grid.parentNode.insertBefore(tabs, grid)
     renderTabs()
     renderGrid()

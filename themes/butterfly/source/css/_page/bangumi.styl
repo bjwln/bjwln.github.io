@@ -199,3 +199,68 @@
 
   i
     margin-right: 8px
+
+// UP主追踪大卡片(有最新视频信息的条目)
+.bangumi-card.is-up
+  grid-column: span 2
+
+  +maxWidth600()
+    grid-column: span 1
+
+  .bangumi-cover
+    aspect-ratio: 16 / 9
+
+  .bangumi-play
+    position: absolute
+    top: 50%
+    left: 50%
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 44px
+    height: 44px
+    border-radius: 50%
+    background: rgba(0, 0, 0, .55)
+    color: #fff
+    font-size: .9em
+    transform: translate(-50%, -50%)
+    backdrop-filter: blur(4px)
+    transition: transform .25s ease, background .25s ease
+
+  &:hover .bangumi-play
+    background: rgba(0, 0, 0, .75)
+    transform: translate(-50%, -50%) scale(1.12)
+
+  .bangumi-unwatch
+    position: absolute
+    top: 8px
+    left: 8px
+    padding: 3px 9px
+    border-radius: 6px
+    background: rgba(245, 158, 11, .92)
+    color: #111
+    font-size: .72em
+    font-weight: 700
+    line-height: 1.4
+
+.bangumi-latest
+  display: flex
+  align-items: center
+  gap: 7px
+  margin-top: 8px
+  padding: 7px 10px
+  border-radius: 6px
+  background: rgba(128, 128, 128, .14)
+  color: var(--card-meta)
+  font-size: .78em
+  line-height: 1.5
+  overflow: hidden
+
+  i
+    flex: none
+    color: var(--text-highlight-color)
+
+  span
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap

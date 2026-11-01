@@ -119,6 +119,15 @@ export async function initBangumiTables(env) {
   try {
     await env.DB.prepare(`ALTER TABLE bangumi_items ADD COLUMN sync_url TEXT DEFAULT ''`).run();
   } catch (e) { /* 列已存在 */ }
+  // UP主追踪:最新视频信息 + 用户已看到的视频链接
+  for (const col of ['latest_title', 'latest_cover', 'latest_url', 'watched_url']) {
+    try {
+      await env.DB.prepare(`ALTER TABLE bangumi_items ADD COLUMN ${col} TEXT DEFAULT ''`).run();
+    } catch (e) { /* 列已存在 */ }
+  }
+  try {
+    await env.DB.prepare('ALTER TABLE bangumi_items ADD COLUMN latest_pubdate INTEGER').run();
+  } catch (e) { /* 列已存在 */ }
 }
 
 const BANGUMI_SEED_CATEGORIES = ['动态漫', '动画', '电视剧', '短剧'];

@@ -9,8 +9,6 @@ research: literature
 research_order: 4
 cover: cover.jpg
 cover_fit: contain
-categories:
-  - 大模型
 ---
 
 [英文原文 PDF](/2026/08/16/MedAgents/original.pdf)

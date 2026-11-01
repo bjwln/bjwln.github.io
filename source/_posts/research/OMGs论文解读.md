@@ -9,8 +9,6 @@ research: literature
 research_order: 0
 mathjax: true
 cover: cover.jpg
-categories:
-  - 大模型
 ---
 
 [Download PDF](/2026/08/02/OMGs论文解读/妇科多智能体.pdf)

@@ -18,7 +18,7 @@ export async function onRequestGet(context) {
   }
   const cats = await env.DB.prepare('SELECT id, name, sort FROM bangumi_categories ORDER BY sort, id').all();
   const items = await env.DB.prepare(
-    `SELECT id, title, author, image, link, intro, episode, total, sync_url, status, category_id, sort
+    `SELECT id, title, author, image, link, intro, episode, total, sync_url, latest_title, latest_cover, latest_url, latest_pubdate, watched_url, status, category_id, sort
      FROM bangumi_items ORDER BY sort, id`
   ).all();
   return json({ categories: cats.results || [], items: items.results || [] });
@@ -54,6 +54,7 @@ export async function onRequestPost(context) {
       episode: str(body.episode, 50),
       total: str(body.total, 50),
       sync_url: str(body.sync_url, 500),
+      watched_url: str(body.watched_url, 500),
       status: str(body.status, 20) || '在看',
       category_id: body.category_id ? Number(body.category_id) : null,
       sort: Number(body.sort) || 0,
@@ -62,15 +63,15 @@ export async function onRequestPost(context) {
     if (body.id) {
       await db.prepare(
         `UPDATE bangumi_items SET title=?2, author=?3, image=?4, link=?5, intro=?6, episode=?7,
-         total=?8, sync_url=?9, status=?10, category_id=?11, sort=?12, updated_at=?13 WHERE id=?1`
+         total=?8, sync_url=?9, watched_url=?10, status=?11, category_id=?12, sort=?13, updated_at=?14 WHERE id=?1`
       ).bind(Number(body.id), values.title, values.author, values.image, values.link, values.intro,
-        values.episode, values.total, values.sync_url, values.status, values.category_id, values.sort, values.updated_at).run();
+        values.episode, values.total, values.sync_url, values.watched_url, values.status, values.category_id, values.sort, values.updated_at).run();
     } else {
       await db.prepare(
-        `INSERT INTO bangumi_items (title, author, image, link, intro, episode, total, sync_url, status, category_id, sort, updated_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
+        `INSERT INTO bangumi_items (title, author, image, link, intro, episode, total, sync_url, watched_url, status, category_id, sort, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)`
       ).bind(values.title, values.author, values.image, values.link, values.intro, values.episode,
-        values.total, values.sync_url, values.status, values.category_id, values.sort, values.updated_at).run();
+        values.total, values.sync_url, values.watched_url, values.status, values.category_id, values.sort, values.updated_at).run();
     }
     return json({ ok: true });
   }
@@ -86,12 +87,14 @@ export async function onRequestPost(context) {
     return json({ ok: true, episode: row.total });
   }
 
-  // 自动同步:只更新最新集数,不动其他字段
+  // 自动同步:更新最新集数与最新视频信息,不动其他字段
   if (action === 'item.setTotal') {
     const id = Number(body.id);
     if (!id) return json({ error: 'missing id' }, 400);
-    await db.prepare(`UPDATE bangumi_items SET total = ?2, updated_at = ?3 WHERE id = ?1`)
-      .bind(id, str(body.total, 50), Date.now()).run();
+    await db.prepare(`UPDATE bangumi_items SET total = ?2, latest_title = ?3, latest_cover = ?4,
+      latest_url = ?5, latest_pubdate = ?6, updated_at = ?7 WHERE id = ?1`)
+      .bind(id, str(body.total, 50), str(body.latest_title, 300), str(body.latest_cover, 1000),
+        str(body.latest_url, 1000), body.latest_pubdate ? Number(body.latest_pubdate) : null, Date.now()).run();
     return json({ ok: true });
   }
 
