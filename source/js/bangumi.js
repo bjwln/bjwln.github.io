@@ -35,7 +35,7 @@
       ? `<span class="bangumi-unwatch">未看 ${unwatched} 集</span>`
       : ''
     const inner = `<div class="bangumi-cover">
-        <img src="${esc(coverSrc)}" alt="${esc(item.title)}最新视频封面" loading="lazy" decoding="async">
+        <img src="${esc(coverSrc)}" alt="${esc(item.title)}最新视频封面" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display='none'">
         ${item.category_name ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
         ${epBadge}${totalBadge}
         ${unwatchBadge}
