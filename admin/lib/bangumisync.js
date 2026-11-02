@@ -313,8 +313,11 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
 }
 
   // ---------- UP主追踪(动态漫/沙雕动画等) ----------
-  // B站:空间链接 → recArchivesByKeywords 按标题取最新投稿(标题/封面/链接/时间)
-  // 未看数 = 比对用户填的「已看视频链接」在投稿列表中的位置(按时间)
+  // B站:空间链接(或搜索链接) → 多通道取该 UP 的投稿列表:
+  //   通道一 recArchivesByKeywords(带系列名关键词) → 通道二 同接口不带关键词(全部投稿)
+  //   → 通道三 搜索接口(风控最松,按发布时间,再按 UP 过滤)
+  // 未看数 = 用户填的「已看视频链接」在投稿列表(按时间倒序)中的位置
+  // 「看到」可在条目未填时由已看视频自动推出(第N集标记,或投稿序号)
   // 抖音:风控较强,自动抓取大概率失败 → 降级为手动填写
 
   const douyinVideoId = url => {
@@ -353,40 +356,111 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
       return got
     }
 
-    // ---- B站空间:按标题关键词取该UP的最新投稿 ----
-    const m = syncUrl.match(/space\.bilibili\.com\/(\d+)/)
-    if (!m) return null
-    const mid = m[1]
-    // B站风控按请求随机拦截:偶发返回空列表/风控页,重试最多 3 次
-    let archives = []
-    let lastMsg = 'UP主空间数据为空'
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const d = await fetchJson('https://api.bilibili.com/x/series/recArchivesByKeywords?mid=' + mid +
-        '&keywords=' + encodeURIComponent(title) + '&ps=30')
-      if (d.code !== 0 || !d.data) { lastMsg = (d && d.message) || 'UP主空间数据为空'; await new Promise(r2 => setTimeout(r2, 2000)); continue }
-      archives = (d.data.archives || []).slice().sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
-      if (archives.length) break
-      lastMsg = '未找到该UP主的相关投稿'
-      await new Promise(r2 => setTimeout(r2, 2000))
-    }
-    if (!archives.length) throw new Error(lastMsg + '(可能被B站风控,稍后自动重试)')
+    // ---- B站:空间链接(space.bilibili.com/<mid>)或搜索链接(?keyword=xxx) ----
+    const midM = syncUrl.match(/space\.bilibili\.com\/(\d+)/)
+    const mid = midM ? midM[1] : ''
+    const kwM = syncUrl.match(/[?&]keyword=([^&]+)/)
+    let searchKeyword = ''
+    if (kwM) { try { searchKeyword = decodeURIComponent(kwM[1].replace(/\+/g, ' ')).trim() } catch {} }
+    if (!mid && !searchKeyword) return null // 不认识的链接,交给通用解析链
 
+    const watchedBvid = (String(item.watched_url || '').match(/video\/(BV[0-9A-Za-z]+)/) || [])[1] || ''
+
+    // 空间投稿接口拉取(带重试,可翻页):返回 { archives, complete }
+    let lastMsg = ''
+    const fetchArchives = async (m, keywords) => {
+      const all = []
+      const PS = 50
+      for (let pn = 1; pn <= 10; pn++) {
+        let rows = null
+        for (let attempt = 0; attempt < 2 && rows == null; attempt++) {
+          try {
+            const d = await fetchJson('https://api.bilibili.com/x/series/recArchivesByKeywords?mid=' + m +
+              '&keywords=' + encodeURIComponent(keywords || '') + '&ps=' + PS + '&pn=' + pn, 'https://space.bilibili.com/' + m)
+            if (d.code === 0 && d.data) rows = d.data.archives || []
+            else lastMsg = (d && d.message) || 'UP主空间数据为空'
+          } catch (e) { lastMsg = e.message }
+          if (rows == null) await new Promise(r2 => setTimeout(r2, 1500))
+        }
+        if (rows == null) break // 重试仍失败 → 用已抓到的部分
+        all.push(...rows)
+        if (rows.length < PS) return { archives: all, complete: true }
+      }
+      return { archives: all, complete: false }
+    }
+
+    // 通道一:带系列名关键词(连载UP的合集精准匹配) → 通道二:不带关键词(全部投稿,翻页统计总数)
+    let archives = []
+    let complete = false
+    if (mid) {
+      for (const kw of [title, '']) {
+        const got = await fetchArchives(mid, kw)
+        if (!got.archives.length) continue
+        const hasEp = got.archives.some(a => /第\s*\d{1,4}\s*[集话]/.test(String(a.title || '')))
+        if (hasEp || got.complete || kw === '') {
+          archives = got.archives
+          complete = got.complete
+          break
+        }
+        // 带关键词抓到但不完整又没分集编号 → 换全量通道
+      }
+    }
+    // 通道三:搜索接口(按发布时间,抓两页;按 UP 过滤,防止关键词噪声混入)
+    if (!archives.length) {
+      const keyword = searchKeyword || title
+      if (keyword) {
+        for (let page = 1; page <= 2 && !archives.length; page++) {
+          try {
+            const d = await fetchJson('https://api.bilibili.com/x/web-interface/search/type?search_type=video&order=pubdate&keyword=' + encodeURIComponent(keyword) + '&page=' + page)
+            let rows = ((d.data || {}).result || [])
+              .filter(v => v.bvid)
+              .map(v => ({ bvid: v.bvid, title: String(v.title || '').replace(/<[^>]+>/g, ''), pic: v.pic || '', pubdate: v.pubdate || 0, mid: String(v.mid || '') }))
+            if (!mid && watchedBvid) {
+              const mine = rows.find(v => v.bvid === watchedBvid)
+              if (mine) rows = rows.filter(v => v.mid === mine.mid) // 用已看视频定位 UP,滤掉同关键词的其他UP
+            }
+            archives = rows.filter(v => !mid || v.mid === mid)
+          } catch (e) { lastMsg = e.message }
+          if (!archives.length) await new Promise(r2 => setTimeout(r2, 800))
+        }
+      }
+    }
+    if (!archives.length) throw new Error((lastMsg || '未找到该UP主的投稿') + '(可能被B站风控,稍后自动重试)')
+
+    archives = archives.slice().sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
     const newest = archives[0]
-    const nums = archives.map(a => firstNum(a.title)).filter(Boolean).map(Number).filter(n => n > 0 && n < 3000)
+
+    // 总数:优先认「第N集/话」强标记(连载UP);没有编号的杂谈型UP用投稿总数
+    let maxEp = null
+    for (const a of archives) {
+      const m2 = String(a.title || '').match(/第\s*(\d{1,4})\s*[集话]/)
+      if (!m2) continue
+      const n = Number(m2[1])
+      if (Number.isFinite(n) && n > 0 && n < 3000 && (maxEp == null || n > maxEp)) maxEp = n
+    }
+    const count = archives.length
     const result = {
-      total: nums.length ? String(Math.max(...nums)) : String(archives.length),
-      source: 'UP主空间最新投稿',
+      total: maxEp != null ? String(maxEp) : (complete ? String(count) : null),
+      source: 'UP主最新投稿',
       latest_title: String(newest.title || ''),
-      latest_cover: String(newest.pic || ''),
+      latest_cover: String(newest.pic || '').replace(/^http:\/\//, 'https://'),
       latest_url: newest.bvid ? 'https://www.bilibili.com/video/' + newest.bvid : '',
       latest_pubdate: newest.pubdate || null,
     }
+    if (result.total == null) throw new Error('该UP投稿超过500条且标题无「第N集」编号,无法统计总数')
 
-    // 未看对比:用户填的已看视频链接(BV)在投稿列表中的位置之后还有几支
-    const wv = String(item.watched_url || '').match(/video\/(BV[0-9A-Za-z]+)/)
-    if (wv) {
-      const wi = archives.findIndex(a => a.bvid === wv[1])
-      if (wi >= 0) result.unwatched = wi
+    // 未看对比:已看视频在投稿列表(新→旧)中的位置 = 之后还有几支没看;
+    // 「看到」自动填写:已看视频标题带第N集直接用;否则用投稿序号(第 count-wi 支)
+    const wi = watchedBvid ? archives.findIndex(a => a.bvid === watchedBvid) : -1
+    if (wi >= 0) {
+      result.unwatched = wi
+      const wm = String(archives[wi].title || '').match(/第\s*(\d{1,4})\s*[集话]/)
+      if (wm) {
+        const we = Number(wm[1])
+        if (Number.isFinite(we) && we > 0 && we < 3000) result.episode = String(we)
+      } else if (complete) {
+        result.episode = String(count - wi)
+      }
     }
     return result
   }
@@ -398,7 +472,7 @@ async function syncAll() {
   for (const item of (list.items || [])) {
     const row = { id: item.id, title: item.title, old: item.total || '', total: item.total || '', changed: false, source: '', error: '', unwatched: null };
     try {
-      const isUp = /space\.bilibili\.com|douyin\.com/.test(item.sync_url || '')
+      const isUp = /space\.bilibili\.com|search\.bilibili\.com|douyin\.com/.test(item.sync_url || '')
       const r = isUp
         ? await fetchUpInfo(item)
         : await fetchTotal(item.link || '', item.title || '', item.sync_url || '');
@@ -406,8 +480,14 @@ async function syncAll() {
         row.total = String(r.total);
         row.source = r.source;
         row.unwatched = r.unwatched != null ? r.unwatched : null;
-        row.changed = String(r.total) !== String(item.total || '') || String(r.latest_url || '') !== String(item.latest_url || '');
+        // 「看到」自动填写:仅当条目还没填且同步结果能推出时
+        const epAuto = r.episode != null && !String(item.episode || '').trim();
+        row.changed = String(r.total) !== String(item.total || '') || String(r.latest_url || '') !== String(item.latest_url || '') || epAuto;
         if (row.changed) {
+          if (isUp) {
+            // UP条目:整体保存(含自动推出的「看到」),再写最新视频信息
+            await cf.bangumiAction({ action: 'item.save', id: item.id, title: item.title, author: item.author || '', image: item.image || '', link: item.link || '', intro: item.intro || '', episode: epAuto ? r.episode : (item.episode || ''), total: row.total, sync_url: item.sync_url || '', watched_url: item.watched_url || '', status: item.status || '在看', category_id: item.category_id, sort: item.sort || 0 });
+          }
           const payload = { action: 'item.setTotal', id: item.id, total: row.total };
           if (r.latest_title !== undefined) {
             payload.latest_title = r.latest_title || ''
