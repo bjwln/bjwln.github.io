@@ -8,6 +8,7 @@ const posts = require('./lib/posts');
 const trash = require('./lib/trash');
 const pages = require('./lib/pages');
 const datafiles = require('./lib/datafiles');
+const research = require('./lib/research');
 const taxonomy = require('./lib/taxonomy');
 const media = require('./lib/media');
 const build = require('./lib/build');
@@ -99,6 +100,10 @@ app.get('/api/data/bangumi', U.wrap(async (req, res) => res.json(await datafiles
 app.put('/api/data/bangumi', U.wrap(async (req, res) => res.json(await datafiles.putBangumi(req.body?.parsed))));
 app.get('/api/data/widget', U.wrap(async (req, res) => res.json(await datafiles.getWidget())));
 app.put('/api/data/widget', U.wrap(async (req, res) => res.json(await datafiles.putWidget(req.body?.raw))));
+
+// ---------- 科研文章(按计划增删改查) ----------
+// 查询复用 GET /api/data/research + GET /api/posts;删除 = DELETE /api/posts/:slug(进回收站) + PUT /api/data/research(移除条目)
+app.post('/api/research/articles', U.wrap(async (req, res) => res.json(await research.createArticle(req.body || {}))));
 
 // ---------- 标签/分类 ----------
 app.get('/api/taxonomy', U.wrap(async (req, res) => res.json(await taxonomy.summary())));

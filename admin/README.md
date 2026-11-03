@@ -21,7 +21,7 @@ npm run admin
 | 📥 草稿箱 | `source/_drafts/` 标准草稿流程,一键发布到 `_posts`(md + 资源文件夹一起移动) |
 | 📄 页面 | 扫描 `source/**/index.md` 自定义页面(科研/追番/热门/归档等),编辑 frontmatter 与正文;未知字段(如 `type`/`top_img: false`)原样保留 |
 | 🗑 回收站 | 删除的文章进 `admin/data/trash/`(md + 图片一起),可恢复或彻底删除 |
-| 🗂 数据文件 | `research.yml` 结构化编辑(项目信息/计划/进度轴/时间线,**link 断链校验** + 文章标题下拉补全);`bangumi.yml` 条目编辑(封面直传 `images/bangumi/`);`widget.yml` 源码编辑(写入前 YAML 校验) |
+| 🔬 科研文章 | 内容分组下。**文章管理**:按计划(科研页 plans)分标签增删改查文章——一键在 `source/_posts/research/` 生成 md + 同名图片资源文件夹(frontmatter 自动带 `research: <计划key>`/`research_order`/`description`/`tags`),同步写入 `research.yml` 对应计划的时间线(`link`=标题,重复标题直接拒绝),创建后直接进入编辑器写正文贴图;时间线条目行内改元信息,断链条目可就地补建,删除 = 条目移除 + 文章本体进回收站。**research.yml 原始编辑**:项目信息/计划/进度轴/时间线结构化编辑,**link 断链校验** + 文章标题下拉补全;**widget.yml** 源码编辑(写入前 YAML 校验) |
 | 🏷 标签分类 | 汇总计数;跨文章(含草稿)批量重命名 |
 | 🖼 媒体库 | 浏览 `images/` 与全部文章资源文件夹,上传/删除/复制引用路径 |
 | 💬 评论管理 | 代理线上 `functions/` 的 admin API,列表 + 删除(需在设置里填 ADMIN_TOKEN) |
@@ -50,6 +50,7 @@ admin/
     trash.js         # 回收站(移动而非删除)
     pages.js         # 自定义页面扫描与编辑
     datafiles.js     # research/bangumi/widget.yml 结构化读写 + 校验
+    research.js      # 科研文章:按计划创建(md+资源文件夹+timeline 条目写入)
     taxonomy.js      # 标签/分类聚合与批量重命名
     media.js         # 媒体库 + /asset 静态图片服务
     build.js         # hexo server/generate/git 发布进程管理与日志

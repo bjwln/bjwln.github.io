@@ -101,4 +101,11 @@ plans:
         link: MDAgents-Minimal
         label: MDAgents-Minimal
         order: 0
+      - date: 2026-11-03
+        title: Prompt优化
+        track: methods
+        summary: 使用统计学方法新加对比函数，并尝试进行提示词的优化来优化生成时间和生成所使用的token
+        link: Prompt优化
+        label: Prompt优化
+        order: 1
     unlimited: true

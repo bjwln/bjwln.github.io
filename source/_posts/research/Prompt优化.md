@@ -1,13 +1,12 @@
 ---
-title: Prompt
-date: 2026-10-31 18:13:50
-research: research
+title: Prompt优化
+date: 2026-11-03 00:00:00
+research: Small-pro
 research_order: 1
-cover: cover.jpg
-cover_fit: contain
+description: 使用统计学方法新加对比函数，并尝试进行提示词的优化来优化生成时间和生成所使用的token
 ---
 
- [论文原文.pdf](Prompt\CVPR26_VideoHV_hypothesis_verification.pdf) 
+ [原文.pdf](Prompt优化\CVPR26_VideoHV_hypothesis_verification.pdf) 
 
 Wang Z., et al. Think, Then Verify: A Hypothesis–Verification Multi-Agent Framework for Long Video Understanding. *CVPR 2026.*2026 年 6 月 7 日，CVPR 2026 正式接收
 

@@ -108,6 +108,49 @@ async function main() {
   r = await api('/api/data/widget', { method: 'PUT', json: { raw: 'a: [unclosed' } });
   check('非法 YAML 被拒绝', r.status === 422, r.status);
 
+  console.log('== 科研文章 ==');
+  // 清理可能存在的脏数据(文章与回收站)
+  await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp') + '?type=post', { method: 'DELETE' });
+  const trR = await api('/api/trash');
+  for (const t of trR.data.filter(t => String(t.slug).includes('__test科研'))) await api('/api/trash/' + t.id, { method: 'DELETE' });
+
+  r = await api('/api/data/research');
+  const rParsed0 = r.data.parsed;
+  const planKey = rParsed0.plans[0].key;
+  const tlLen0 = (rParsed0.plans[0].timeline || []).length;
+
+  r = await api('/api/research/articles', { json: { planKey, title: '科研测试Xtmp', date: '2026-01-02', summary: '测试摘要', label: '测', tags: ['测试'] } });
+  check('按计划创建科研文章(md+资源文件夹+timeline)', r.status === 200 && r.data.slug === 'research/科研测试Xtmp', r.data);
+  check('timeline 条目 link=标题', r.data.entry && r.data.entry.link === '科研测试Xtmp' && typeof r.data.entry.order === 'number', r.data.entry);
+
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'));
+  check('md 已生成且 frontmatter 正确', r.status === 200 && r.data.data.title === '科研测试Xtmp' && r.data.data.research === planKey && typeof r.data.data.research_order === 'number', r.data.data);
+  check('同名资源文件夹已创建', r.status === 200 && Array.isArray(r.data.assets));
+
+  r = await api('/api/research/articles', { json: { planKey, title: '科研测试Xtmp' } });
+  check('重复标题被拒绝(科研页按标题匹配会混淆)', r.status === 409, r.status);
+  r = await api('/api/research/articles', { json: { planKey: '不存在的计划xyz', title: '科研测试Ytmp' } });
+  check('未知计划被拒绝', r.status === 404, r.status);
+
+  r = await api('/api/data/research');
+  check('timeline 已自动追加', (r.data.parsed.plans[0].timeline || []).length === tlLen0 + 1);
+
+  // 就地替换断链条目
+  r = await api('/api/research/articles', { json: { planKey, title: '科研测试Ztmp', replaceTimelineIndex: 0 } });
+  check('就地替换 timeline 条目', r.status === 200 && r.data.entry.order === (rParsed0.plans[0].timeline[0]?.order ?? 0), r.data);
+  r = await api('/api/data/research');
+  check('替换未增加条目数', (r.data.parsed.plans[0].timeline || []).length === tlLen0 + 1 && r.data.parsed.plans[0].timeline[0].link === '科研测试Ztmp');
+
+  // 清理:文章进回收站→彻底删除,恢复 timeline 原状
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'), { method: 'DELETE' });
+  if (r.data.id) await api('/api/trash/' + r.data.id, { method: 'DELETE' });
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Ztmp'), { method: 'DELETE' });
+  if (r.data.id) await api('/api/trash/' + r.data.id, { method: 'DELETE' });
+  r = await api('/api/data/research', { method: 'PUT', json: { parsed: rParsed0 } });
+  check('清理后 research.yml 复原', r.status === 200, r.data);
+  r = await api('/api/data/research');
+  check('timeline 复原', (r.data.parsed.plans[0].timeline || []).length === tlLen0);
+
   console.log('== 标签/分类 ==');
   r = await api('/api/taxonomy');
   check('聚合标签分类', r.status === 200 && r.data.tags.length > 0);
@@ -146,7 +189,7 @@ async function main() {
   check('保存设置', r.status === 200 && r.data.editorFontSize === 15);
   await api('/api/settings', { method: 'PUT', json: { editorFontSize: 14 } });
   r = await api('/api/cf/comments');
-  check('未配置 token 时友好报错', r.status === 400 && /Token/.test(r.data.error), r.data);
+  check('评论接口(Token 未配置时友好报错;已配置时返回列表)', (r.status === 400 && /Token/.test(r.data.error)) || (r.status === 200 && Array.isArray(r.data)), r.data);
 
   console.log('== 前端 ==');
   const idx = await fetch(BASE + '/');

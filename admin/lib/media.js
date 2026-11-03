@@ -81,7 +81,9 @@ async function tree() {
     const mds = (await U.walk(base, base)).filter(f => f.toLowerCase().endsWith('.md'));
     for (const rel of mds) {
       const slug = rel.slice(0, -3);
-      const assetDir = P.assetDirOf(kind, slug);
+      let assetDir;
+      try { assetDir = P.assetDirOf(kind, slug); }
+      catch { continue; } // 非法文件名(Hexo 本身会忽略 _/. 开头的文件),跳过,不阻断整个媒体树
       const label = kind === 'draft' ? '草稿:' : '';
       groups.push(await listDir(label + slug, kind, slug, assetDir));
     }

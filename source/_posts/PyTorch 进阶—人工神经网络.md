@@ -5,7 +5,6 @@ date: 2026-07-06 22:32:38
 tags: [AI, PyTorch]
 categories: 大模型
 cover: cover.jpg
-sticky: 2
 ---
 
 # 神经网络初识

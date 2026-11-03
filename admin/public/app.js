@@ -76,7 +76,10 @@ const ROUTES = [
   [/^#\/trash$/, () => vTrash()],
   [/^#\/pages$/, () => vPages()],
   [/^#\/page\/(.+)$/, m => vPageEdit(decodeURIComponent(m[1]))],
-  [/^#\/data(?:\/(\w+))?$/, m => vData(m[1] || 'research')],
+  [/^#\/research$/, () => vResearch('articles')],
+  [/^#\/research\/(\w+)$/, m => vResearch(m[1])],
+  [/^#\/data\/widget$/, () => vResearch('widget')], // 旧入口别名
+  [/^#\/data(?:\/(\w+))?$/, () => vResearch('yml')], // 旧入口别名
   [/^#\/taxonomy$/, () => vTaxonomy()],
   [/^#\/media$/, () => vMedia()],
   [/^#\/comments$/, () => vComments()],
@@ -511,20 +514,187 @@ async function savePage() {
   toast('页面已保存', 'ok');
 }
 
-// ---------- 数据文件 ----------
-let DF = null; // 数据编辑状态
-async function vData(tab) {
+// ---------- 科研文章 ----------
+let DF = null; // research.yml 编辑状态(原始编辑 / 文章管理共用)
+let RA = null; // 文章管理视图状态 { curPi, posts }
+
+async function vResearch(tab = 'articles') {
   main().innerHTML = `
-    <div class="page-head"><h2>数据文件</h2>
-      <a href="#/data/research" class="${tab === 'research' ? '' : 'muted'}">科研 research.yml</a>
-      <a href="#/data/widget" class="${tab === 'widget' ? '' : 'muted'}">侧栏 widget.yml</a></div>
+    <div class="page-head"><h2>科研文章</h2>
+      <a href="#/research" class="${tab === 'articles' ? '' : 'muted'}">文章管理</a>
+      <a href="#/research/yml" class="${tab === 'yml' ? '' : 'muted'}">research.yml 原始编辑</a>
+      <a href="#/research/widget" class="${tab === 'widget' ? '' : 'muted'}">侧栏 widget.yml</a></div>
     <div id="data-body"></div>`;
-  if (tab === 'research') await vDataResearch();
+  if (tab === 'yml') await vDataResearch();
+  else if (tab === 'widget') await vDataWidget();
   else if (tab === 'bangumi') await vBangumiMigrated();
-  else await vDataWidget();
+  else await vResearchArticles();
 }
 
-// —— research.yml ——
+// —— 文章管理:按计划(科研页 plans)增删改查 ——
+async function vResearchArticles() {
+  const [r, posts] = await Promise.all([api('/api/data/research'), api('/api/posts')]);
+  DF = { parsed: r.parsed, titles: r.titles };
+  RA = { curPi: Math.min(RA?.curPi || 0, Math.max((r.parsed.plans || []).length - 1, 0)), posts };
+  $('#data-body').innerHTML = `
+    ${r.warnings.length ? `<div class="warnbox">⚠️ 检测到 ${r.warnings.length} 条断链(link 与任何文章标题都不匹配,点条目上的「＋ 建文章」可就地补建):<br>${r.warnings.map(esc).join('<br>')}</div>` : ''}
+    <div class="plan-tabs" id="ra-plan-tabs"></div>
+    <div id="ra-plan-box"></div>
+    <datalist id="dl-titles">${DF.titles.map(t => `<option value="${esc(t)}">`).join('')}</datalist>`;
+  renderPlanTabs();
+  renderPlanBox();
+}
+function renderPlanTabs() {
+  $('#ra-plan-tabs').innerHTML = DF.parsed.plans.map((p, i) =>
+    `<span class="chip plan-tab ${i === RA.curPi ? 'active' : ''}" onclick="switchPlan(${i})">${esc(p.title || p.key || '计划' + (i + 1))} · ${p.unlimited ? '♾' + ((p.timeline || []).length) : `${p.completed ?? 0}/${p.total ?? 0}`}</span>`
+  ).join('') + `<a class="chip plan-tab" href="#/research/yml" title="编辑计划字段/进度轴/项目信息">⚙ 计划设置</a>`;
+}
+function switchPlan(i) {
+  RA.curPi = i;
+  renderPlanTabs();
+  renderPlanBox();
+}
+function renderPlanBox() {
+  const plan = DF.parsed.plans[RA.curPi];
+  const box = $('#ra-plan-box');
+  if (!plan) { box.innerHTML = '<div class="panel"><div class="empty">暂无计划,请到「research.yml 原始编辑」新增</div></div>'; return; }
+  const tl = plan.timeline || [];
+  const linked = tl.filter(t => t.link && RA.posts.some(p => p.title === t.link)).length;
+  box.innerHTML = `
+    <div class="panel">
+      <div class="ra-head">
+        <strong>${esc(plan.title || plan.key || '计划')}</strong>
+        <span class="muted">${plan.unlimited ? `♾ 不限量 · 时间线 ${tl.length} 条` : `进度 ${plan.completed ?? 0}/${plan.total ?? 0} ${esc(plan.unit || '')} · 时间线 ${tl.length} 条`}</span>
+        ${plan.goal ? `<span class="muted">目标:${esc(plan.goal)}</span>` : ''}
+        ${plan.plan_link ? `<span class="muted">plan_link:${esc(plan.plan_link)}</span>` : ''}
+        <span class="spacer"></span>
+        <span class="muted">${linked}/${tl.length} 已关联文章</span>
+        <button onclick="newResearchDialog()">＋ 新建文章</button>
+        <a href="#/research/yml"><button class="ghost">计划与进度轴设置</button></a>
+      </div>
+      ${tl.length ? `
+      <div class="ra-thead">
+        <span>📅 日期</span>
+        <span>link = 文章标题(科研页按它精确匹配跳转,卡片显示 label 或文章标题)</span>
+        <span>进度轴 track</span>
+        <span>摘要 summary(科研页时间线展示)</span>
+        <span>label(卡片短标) ｜ 排序 order</span>
+        <span>关联状态与操作</span>
+      </div>` + tl.map((t, ti) => renderRaRow(plan, RA.curPi, ti)).join('') : '<div class="muted" style="font-size:13px;padding:8px 0">暂无时间线条目,点「＋ 新建文章」记录第一篇论文</div>'}
+      <div class="toolbar mt8">
+        <button onclick="saveResearch()">💾 保存修改</button>
+        <button class="ghost" onclick="addTimeline(RA.curPi);renderPlanBox()">＋ 仅加空白条目</button>
+        <span class="muted" id="ra-save-hint"></span>
+        <span class="muted">行内改元信息后需点「保存修改」;新建/删除会立即生效并自动保存</span>
+      </div>
+    </div>`;
+}
+function renderRaRow(plan, pi, ti) {
+  const t = plan.timeline[ti] || {};
+  const post = t.link ? RA.posts.find(p => p.title === t.link) : null;
+  const status = post
+    ? `<span class="chip chip-ok" title="已匹配文章 ${esc(post.slug)}">✓ 已关联</span>`
+    : t.link ? '<span class="chip chip-warn" title="link 与任何文章标题都不匹配">⚠ 断链</span>'
+      : '<span class="chip">○ 未关联</span>';
+  const act = post
+    ? `<button class="small" onclick="location.hash='#/post/${enc(post.slug)}'">📝 编辑文章</button>`
+    : `<button class="small" onclick="newResearchDialog(${pi},${ti})" title="创建文章并就地替换这条条目(link=标题)">＋ 建文章</button>`;
+  return `<div class="ra-row">
+    <div><input type="date" value="${esc(t.date || '')}" title="日期" onchange="raSet(${pi},${ti},'date',this.value)"></div>
+    <div><input list="dl-titles" value="${esc(t.link || '')}" placeholder="link = 文章标题(精确匹配)" oninput="raSet(${pi},${ti},'link',this.value)"></div>
+    <select title="进度轴" onchange="raSet(${pi},${ti},'track',this.value)">${raTrackOptions(plan, t.track)}</select>
+    <textarea placeholder="摘要 summary(科研页时间线展示)" oninput="raSet(${pi},${ti},'summary',this.value)">${esc(t.summary || '')}</textarea>
+    <div><input value="${esc(t.label || '')}" placeholder="label(卡片短标)" oninput="raSet(${pi},${ti},'label',this.value)">
+      <input type="number" value="${t.order ?? ti}" title="排序 order" style="margin-top:4px" oninput="raSet(${pi},${ti},'order',Number(this.value))"></div>
+    <div class="ra-acts">${status}${act}
+      <button class="small danger" onclick="delResearchArticle(${pi},${ti})" title="移除条目;若已关联文章,文章本体(md+图片)进回收站">🗑</button></div>
+  </div>`;
+}
+function raTrackOptions(plan, cur) {
+  return '<option value="">轴?</option>' + (plan.tracks || []).map(tr =>
+    `<option value="${esc(tr.key)}" ${cur === tr.key ? 'selected' : ''}>${esc(tr.axis_label || tr.key)}</option>`).join('');
+}
+// 行内编辑时间线元信息(仅改内存,点「保存修改」才写入)
+function raSet(pi, ti, key, val) {
+  const t = DF.parsed.plans[pi]?.timeline?.[ti];
+  if (!t) return;
+  t[key] = val;
+  const hint = $('#ra-save-hint');
+  if (hint) hint.textContent = '有未保存修改';
+}
+
+// 新建科研文章:md+资源文件夹在 _posts/research/ 生成,timeline 同步写入,然后直接进编辑器
+function newResearchDialog(pi, ti) {
+  if (!DF) return;
+  const plans = DF.parsed.plans;
+  if (pi == null) pi = RA?.curPi ?? 0;
+  const plan = plans[pi] || plans[0];
+  if (!plan) { toast('请先在「research.yml 原始编辑」里新增计划', 'err'); return; }
+  pi = plans.indexOf(plan);
+  const t = (ti != null && plan.timeline?.[ti]) ? plan.timeline[ti] : null;
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const html = `<div class="panel" id="ra-np"><h3>${t ? '补建文章(就地替换该条目)' : '新建科研文章'}</h3>
+    <div class="fm-grid">
+      <label>计划<select id="ra-np-plan" ${t ? 'disabled' : ''}>${plans.map((p, i) => `<option value="${i}" ${i === pi ? 'selected' : ''}>${esc(p.title || p.key || '计划' + (i + 1))}</option>`).join('')}</select></label>
+      <label>标题(必填)<input id="ra-np-title" value="${esc(t ? (t.link || t.title || '') : '')}" placeholder="论文/文章标题"></label>
+      <label>日期<input type="date" id="ra-np-date" value="${esc(t?.date || today)}"></label>
+      <label>进度轴 track<select id="ra-np-track">${raTrackOptions(plan, t?.track)}</select></label>
+      <label>label(时间线卡片短标)<input id="ra-np-label" value="${esc(t?.label || '')}"></label>
+      <label>标签(逗号分隔)<input id="ra-np-tags" placeholder="论文,多智能体"></label>
+      <label class="wide">时间线摘要 summary<textarea id="ra-np-summary">${esc(t?.summary || '')}</textarea></label>
+      <label class="wide">文章简介 description(留空则用摘要)<textarea id="ra-np-desc"></textarea></label>
+    </div>
+    <div class="toolbar">
+      <button onclick="createResearchArticle(${pi}${t ? ',' + ti : ''})">创建</button>
+      <button class="ghost" onclick="$('#ra-np').remove()">取消</button>
+      <span class="muted">创建 = 在 source/_posts/research/ 生成 md + 同名图片文件夹(frontmatter 自动带 research/research_order),并写入该计划 timeline(link=标题)</span>
+    </div></div>`;
+  main().querySelector('.page-head').insertAdjacentHTML('afterend', html);
+  if (!t) $('#ra-np-plan').addEventListener('change', e => {
+    const p = plans[Number(e.target.value)] || {};
+    $('#ra-np-track').innerHTML = raTrackOptions(p, null);
+  });
+  $('#ra-np-title').focus();
+}
+async function createResearchArticle(pi, ti) {
+  const plan = DF.parsed.plans[pi];
+  const title = $('#ra-np-title').value.trim();
+  if (!title) { toast('请填写标题', 'err'); return; }
+  const body = {
+    planKey: plan.key || plan.title,
+    title,
+    date: $('#ra-np-date').value,
+    track: $('#ra-np-track')?.value || '',
+    label: $('#ra-np-label').value.trim(),
+    tags: $('#ra-np-tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
+    summary: $('#ra-np-summary').value,
+    description: $('#ra-np-desc').value.trim(),
+  };
+  if (ti != null) body.replaceTimelineIndex = ti;
+  const r = await api('/api/research/articles', { json: body });
+  const np = $('#ra-np'); if (np) np.remove();
+  toast(`已创建:${r.slug},正在打开编辑器`, 'ok');
+  location.hash = '#/post/' + enc(r.slug);
+}
+// 删除 = 时间线条目移除 + 关联文章本体(md+图片)进回收站
+async function delResearchArticle(pi, ti) {
+  const plan = DF.parsed.plans[pi];
+  const t = plan?.timeline?.[ti];
+  if (!t) return;
+  const post = t.link ? RA.posts.find(p => p.title === t.link) : null;
+  const msg = post
+    ? `删除「${t.title || t.link}」?\n· research.yml 时间线条目将被移除\n· 文章「${post.title}」(md + 图片文件夹)移入回收站,可在回收站恢复`
+    : `删除时间线条目「${t.title || t.date || ti}」?(未关联文章,仅移除条目)`;
+  if (!(await confirmBox(msg))) return;
+  if (post) await api('/api/posts/' + enc(post.slug), { method: 'DELETE' });
+  plan.timeline.splice(ti, 1);
+  await api('/api/data/research', { method: 'PUT', json: { parsed: DF.parsed } });
+  toast(post ? '条目已移除,文章已进回收站' : '条目已移除', 'ok');
+  route();
+}
+
+// —— research.yml 原始编辑 ——
 async function vDataResearch() {
   const r = await api('/api/data/research');
   DF = { parsed: r.parsed, titles: r.titles };
@@ -552,6 +722,8 @@ function bindProjectFields() {
     .forEach(([id, key]) => $('#' + id).addEventListener('input', e => { DF.parsed[key] = e.target.value; }));
 }
 function renderPlans() {
+  const el = $('#plans-box');
+  if (!el) return; // 文章管理视图没有原始编辑容器(addTimeline 等共用函数会触发本次渲染)
   $('#plans-box').innerHTML = DF.parsed.plans.map((plan, pi) => `
     <div class="plan-card">
       <div class="row">
@@ -630,10 +802,13 @@ function moveTimeline(pi, ti, d) {
 }
 async function saveResearch() {
   const r = await api('/api/data/research', { method: 'PUT', json: { parsed: DF.parsed } });
-  $('#data-warn').innerHTML = r.warnings.length
+  const box = $('#data-warn');
+  if (box) box.innerHTML = r.warnings.length
     ? `<div class="warnbox">⚠️ 存在断链(链接与文章标题不匹配):<br>${r.warnings.map(esc).join('<br>')}</div>`
     : `<div class="okbox">已保存,断链校验通过</div>`;
-  toast('research.yml 已保存', 'ok');
+  const hint = $('#ra-save-hint');
+  if (hint) hint.textContent = '';
+  toast(r.warnings.length ? `已保存,但有 ${r.warnings.length} 条断链` : 'research.yml 已保存', 'ok');
 }
 
 // —— bangumi.yml(已迁移:追番内容由线上 D1 管理,此编辑器退役) ——
@@ -933,6 +1108,8 @@ async function savePasswordWith(pw) {
 // ---------- 追番管理(线上 D1) ----------
 let bgData = { categories: [], items: [] };
 let bgFormId = null;
+let bgFilterCat = '';
+let bgSearchQ = '';
 
 async function vBangumi() {
   main().innerHTML = `<div class="page-head"><h2>追番管理</h2><span class="muted">数据来自 Cloudflare D1(线上),保存后立即生效</span>
@@ -953,11 +1130,12 @@ async function bgSync() {
   try {
     const d = await api('/api/bangumi/sync', { json: {} });
     const rows = d.results.map(r => {
+      const uw = r.unwatched != null ? ` · <b style="color:${r.unwatched > 0 ? 'var(--warn,#f59e0b)' : 'var(--ok,#22c55e)'}">未看 ${r.unwatched}</b>` : '';
       const line = r.error
         ? `<span class="muted">${esc(r.title)} — ${esc(r.error)}</span>`
         : r.changed
-          ? `<strong>${esc(r.title)}</strong>:${esc(r.old || '无') || '无'} → <b style="color:var(--ok,#22c55e)">${esc(r.total)}</b> <span class="muted">(${esc(r.source)})</span>`
-          : `<span class="muted">${esc(r.title)} — 已是最新${r.total ? '(' + esc(r.total) + ')' : ''}</span>`;
+          ? `<strong>${esc(r.title)}</strong>:${esc(r.old || '无') || '无'} → <b style="color:var(--ok,#22c55e)">${esc(r.total)}</b>${uw} <span class="muted">(${esc(r.source)})</span>`
+          : `<span class="muted">${esc(r.title)} — 已是最新${r.total ? '(' + esc(r.total) + ')' : ''}${uw}</span>`;
       return `<div style="padding:3px 0;font-size:13px">${line}</div>`;
     }).join('');
     box.innerHTML = `<div class="panel"><h3>同步结果(${d.results.filter(r => r.changed).length} 条有更新 / 共 ${d.results.length} 条)</h3>${rows || '<div class="empty">没有条目</div>'}</div>`;
@@ -982,7 +1160,6 @@ async function bgReload() {
 
 function bgRender() {
   const { categories, items } = bgData;
-  const catName = id => (categories.find(c => c.id === id) || {}).name || '';
   const countFor = id => items.filter(i => i.category_id === id).length;
   return `<div class="panel"><h3>分类</h3>
       <div class="toolbar">
@@ -993,28 +1170,57 @@ function bgRender() {
         <button class="small" onclick="bgAddCat()">添加分类</button></div></div>
     <div class="panel" id="bg-form-panel" style="display:none"><h3 id="bg-form-title">新增条目</h3>
       <div class="toolbar">
-        <input type="text" id="bg-f-title" placeholder="标题(必填)" style="width:220px">
-        <input type="text" id="bg-f-author" placeholder="作者" style="width:120px">
-        <select id="bg-f-cat"><option value="">未分类</option>${categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select>
-        <select id="bg-f-status"><option>在看</option><option>想看</option><option>看完</option><option>弃</option></select>
-        <input type="text" id="bg-f-episode" placeholder="看到第几集" style="width:90px">
-        <input type="text" id="bg-f-total" placeholder="更新至(自动同步)" style="width:110px">
-        <input type="text" id="bg-f-syncurl" placeholder="同步源:UP主空间链接(可选)" style="width:200px">
-        <input type="text" id="bg-f-watched" placeholder="我看到的最新视频链接(可选)" style="width:200px">
-        <input type="number" id="bg-f-sort" placeholder="排序" style="width:70px" value="0"></div>
-      <div class="toolbar"><input type="text" id="bg-f-image" placeholder="封面图 URL" style="width:100%"></div>
-      <div class="toolbar"><input type="text" id="bg-f-link" placeholder="播放/详情页链接" style="width:100%"></div>
-      <textarea id="bg-f-intro" rows="3" placeholder="简介" style="width:100%"></textarea>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">标题 *</label><input type="text" id="bg-f-title" placeholder="如:我在大明那些年" style="width:200px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">作者 / UP主</label><input type="text" id="bg-f-author" placeholder="作者" style="width:120px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">分类</label><select id="bg-f-cat"><option value="">未分类</option>${categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">状态</label><select id="bg-f-status"><option>在看</option><option>想看</option><option>看完</option><option>弃</option></select></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">看到</label><input type="text" id="bg-f-episode" placeholder="第几集" style="width:80px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">更新至</label><input type="text" id="bg-f-total" placeholder="自动同步" style="width:90px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">同步源(自动同步用)</label><input type="text" id="bg-f-syncurl" placeholder="UP主空间/搜索页链接" style="width:200px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">已看链接(算未看数)</label><input type="text" id="bg-f-watched" placeholder="看到的最新一集的视频链接" style="width:220px"></span>
+        <span style="display:flex;flex-direction:column;gap:3px"><label style="font-size:11px;color:#9ca3af">排序</label><input type="number" id="bg-f-sort" placeholder="0" style="width:70px" value="0"></span></div>
+      <div class="toolbar" style="flex-direction:column;align-items:stretch;gap:3px"><label style="font-size:11px;color:#9ca3af">封面图 URL</label><input type="text" id="bg-f-image" placeholder="封面图片地址" style="width:100%"></div>
+      <div class="toolbar" style="flex-direction:column;align-items:stretch;gap:3px"><label style="font-size:11px;color:#9ca3af">链接(点卡片跳转)</label><input type="text" id="bg-f-link" placeholder="播放/详情页地址" style="width:100%"></div>
+      <div class="toolbar" style="flex-direction:column;align-items:stretch;gap:3px"><label style="font-size:11px;color:#9ca3af">简介</label><textarea id="bg-f-intro" rows="3" placeholder="一句话介绍" style="width:100%"></textarea></div>
       <div class="toolbar mt8"><button onclick="bgSaveItem()">保存</button>
         <button class="ghost" onclick="$('#bg-form-panel').style.display='none'">取消</button></div></div>
-    <div class="panel" style="padding:0"><table><thead>
-      <tr><th style="width:56px">封面</th><th>标题</th><th style="width:100px">分类</th><th style="width:64px">状态</th><th style="width:60px">看到</th><th style="width:64px">更新至</th><th style="width:150px">操作</th></tr></thead><tbody>
-      ${items.length ? items.map(i => {
+    <div class="panel"><div class="toolbar">
+        <input type="text" id="bg-q" placeholder="🔍 搜索标题 / 作者 / 简介" style="flex:1;min-width:160px" value="${esc(bgSearchQ)}" oninput="bgSetSearch(this.value)">
+        <select id="bg-cat-sel" onchange="bgSetCat(this.value)">
+          <option value="">全部分类(${items.length})</option>
+          ${categories.map(c => `<option value="${c.id}"${String(bgFilterCat) === String(c.id) ? ' selected' : ''}>${esc(c.name)}(${countFor(c.id)})</option>`).join('')}
+          <option value="none"${bgFilterCat === 'none' ? ' selected' : ''}>未分类(${items.filter(i => !i.category_id).length})</option>
+        </select></div></div>
+    <div id="bg-table-wrap">${bgRenderTable()}</div>`;
+}
+
+// 筛选:分类下拉 + 关键字(标题/作者/简介)
+function bgFilteredItems() {
+  const q = bgSearchQ.trim().toLowerCase();
+  return bgData.items.filter(i => {
+    if (bgFilterCat === 'none' && i.category_id) return false;
+    if (bgFilterCat && bgFilterCat !== 'none' && String(i.category_id || '') !== String(bgFilterCat)) return false;
+    if (!q) return true;
+    return [i.title, i.author, i.intro].map(x => String(x || '').toLowerCase()).join(' ').includes(q);
+  });
+}
+
+// 只重渲染表格(筛选时保持工具栏焦点)
+function bgRenderTable() {
+  const { categories, items } = bgData;
+  const catName = id => (categories.find(c => c.id === id) || {}).name || '';
+  const list = bgFilteredItems();
+  if (!items.length) {
+    return `<div class="panel" style="padding:0"><table><tbody><tr><td class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr></tbody></table></div>`;
+  }
+  return `<div class="panel" style="padding:0"><table><thead>
+      <tr><th style="width:56px">封面</th><th>标题</th><th style="width:100px">分类</th><th style="width:64px">状态</th><th style="width:60px">看到</th><th style="width:64px">更新至</th><th style="width:90px">未看</th><th style="width:150px">操作</th></tr></thead><tbody>
+      ${list.length ? list.map(i => {
         const epNum = parseFloat(i.episode), totalNum = parseFloat(i.total);
         const hasNew = i.total && !isNaN(totalNum) && (isNaN(epNum) || totalNum > epNum);
         return `<tr>
-        <td>${i.image ? `<img class="bg-thumb" src="${esc(i.image)}" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}</td>
-        <td>${esc(i.title)}${hasNew ? ' <span style="color:#f59e0b;font-weight:600;font-size:12px">有更新↑</span>' : ''}</td>
+        <td>${(i.latest_cover || i.image) ? `<img class="bg-thumb" src="${esc(i.latest_cover || i.image)}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.visibility='hidden'">` : ''}</td>
+        <td>${esc(i.title)}${hasNew ? ' <span style="color:#f59e0b;font-weight:600;font-size:12px">有更新↑</span>' : ''}${i.latest_title ? `<div style="font-size:12px;margin-top:2px" class="muted">▶ 最新:<a href="${esc(i.latest_url || '#')}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline dotted">${esc(i.latest_title)}</a></div>` : ''}</td>
         <td>${esc(catName(i.category_id)) || '<span class="muted">未分类</span>'}</td>
         <td>${esc(i.status || '')}</td>
         <td>${esc(i.episode || '')}</td>
@@ -1024,9 +1230,12 @@ function bgRender() {
             ${bgHasNew(i) ? '<button class="small" onclick="bgCatchup(' + i.id + ')">追平</button>' : ''}
             <button class="small danger" onclick="bgDelItem(${i.id})">删除</button></td></tr>`;
       }).join('')
-      : '<tr><td colspan="7" class="empty">还没有条目,点右上角「＋ 新增条目」</td></tr>'}
-      </tbody></table></div>`;
+      : '<tr><td colspan="8" class="empty">没有匹配的条目</td></tr>'}
+      </tbody></table><div style="padding:8px 12px;font-size:12px" class="muted">显示 ${list.length} / ${items.length} 条</div></div>`;
 }
+
+function bgSetSearch(v) { bgSearchQ = v; const el = $('#bg-table-wrap'); if (el) el.innerHTML = bgRenderTable(); }
+function bgSetCat(v) { bgFilterCat = v; const el = $('#bg-table-wrap'); if (el) el.innerHTML = bgRenderTable(); }
 
 async function bgCatchup(id) {
   const it = bgData.items.find(x => x.id === id);

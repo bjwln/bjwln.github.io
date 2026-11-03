@@ -2,7 +2,6 @@
 title: 那些年那些事那些bug
 date: 2026-08-13 16:44:25
 cover: cover.jpg
-sticky: 3
 ---
 
 # 朋友家网DNS给我网址解析到成人网站

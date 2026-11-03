@@ -6,7 +6,6 @@ tags: [算法, LeetCode]
 categories: 算法题
 cover: cover.jpg
 mathjax: true
-sticky: 1
 ---
 
 # 基础算法
