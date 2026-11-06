@@ -1,11 +1,23 @@
 /* ============================================================
  * 月下问运 · fortune.css
- * 深夜墨蓝 × 米金衬线风；全部样式限定在 #fortune-app 作用域
+ * 无框式呈现：不加外层底板，内容直接浮在博客星空背景上，
+ * 仅以区块卡片 (.f-card) 组织视觉层次
  * ============================================================ */
+/* 本页专用重置：去掉主题内容区的卡片底色/阴影/内边距(此 css 仅在算运页加载)。
+ * 注意博客 custom.css 对 div#page 配了卡片底色(夜间模式带 !important)，
+ * 这里用 #body-wrap.type-fortune 提高优先级压过它。 */
+.type-fortune div#page,
+[data-theme="dark"] .type-fortune div#page {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 16px !important;
+}
 #fortune-app {
   --fg-bg: #14141f;
   --fg-bg-2: #1a1a28;
-  --fg-card: #191926;
+  --fg-card: rgba(20, 20, 31, 0.72);
   --fg-line: rgba(232, 217, 160, 0.16);
   --fg-gold: #e8d9a0;
   --fg-gold-dim: #c9bd8e;
@@ -16,15 +28,9 @@
   --fg-radius: 14px;
   max-width: 1020px;
   margin: 0 auto;
-  padding: 10px 6px 30px;
+  padding: 4px 6px 30px;
   color: var(--fg-text);
   font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-  background:
-    radial-gradient(1200px 500px at 50% -100px, rgba(232, 217, 160, 0.05), transparent 60%),
-    radial-gradient(900px 700px at 110% 20%, rgba(111, 147, 184, 0.06), transparent 55%),
-    var(--fg-bg);
-  border-radius: 18px;
-  overflow: hidden;
   font-size: 15px;
   line-height: 1.7;
 }
@@ -54,7 +60,9 @@
 /* ---------- 卡片/区块 ---------- */
 .f-card {
   margin: 18px 18px 0; padding: 24px 26px; border: 1px solid var(--fg-line);
-  border-radius: var(--fg-radius); background: linear-gradient(180deg, rgba(232, 217, 160, 0.035), rgba(232, 217, 160, 0.012)) , var(--fg-card);
+  border-radius: var(--fg-radius);
+  background: linear-gradient(180deg, rgba(232, 217, 160, 0.035), rgba(232, 217, 160, 0.012)), var(--fg-card);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .f-h2 { margin: 0 0 6px; font-size: 21px; font-weight: 600; letter-spacing: 3px; color: var(--fg-gold); font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", "SimSun", serif; }
 .f-h2-en { font-size: 11px; letter-spacing: 3px; color: var(--fg-muted); font-weight: 400; margin-left: 8px; }
@@ -153,8 +161,9 @@
 .gz-main b { color: var(--fg-gold); font-size: 24px; }
 .today-headline { margin: 14px 0; font-size: 15px; }
 .today-dims { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
-.dim { border: 1px solid var(--fg-line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--fg-muted); }
-.star { font-style: normal; color: rgba(232, 217, 160, .18); font-size: 15px; letter-spacing: 2px; }
+.dim { border: 1px solid var(--fg-line); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--fg-muted); }
+.dim span { display: block; margin-bottom: 5px; }
+.star { font-style: normal; color: rgba(232, 217, 160, .18); font-size: 15px; letter-spacing: 2px; display: inline-block; }
 .star::before { content: '★'; }
 .star.on { color: var(--fg-gold); text-shadow: 0 0 6px rgba(232, 217, 160, .35); }
 .today-lists { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

@@ -62,20 +62,14 @@
     const tabs = document.createElement('div')
     tabs.className = 'bangumi-tabs'
 
-    // 「追更动态」(UP主大卡,16:9 最新视频)与「作品墙」(海报卡)分区块排列,
-    // 混在同一个网格会因封面比例不同把行列顶乱
-    const section = (title, icon, list, wide) => list.length ? `
-      <section class="bangumi-section">
-        <div class="bangumi-section-title"><i class="fas ${icon}" aria-hidden="true"></i>${title}<em>${list.length}</em></div>
-        <div class="bangumi-grid${wide ? ' is-wide' : ''}">${list.map(cardHTML).join('')}</div>
-      </section>` : ''
-
+    // 「追更动态」(UP主大卡,16:9 最新视频)与海报卡封面比例不同,
+    // 混在同一个网格会把行列顶乱:大的归大的、小的归小的,各自成组(不加标题)
     const renderGrid = () => {
       const shown = items.filter(i => active == null || i.category_id === active)
       const ups = shown.filter(i => i.latest_url)
       const rest = shown.filter(i => !i.latest_url)
-      grid.innerHTML = section('追更动态', 'fa-play-circle', ups, true)
-        + section('作品墙', 'fa-film', rest, false)
+      grid.innerHTML = (ups.length ? `<div class="bangumi-grid is-wide">${ups.map(cardHTML).join('')}</div>` : '')
+        + (rest.length ? `<div class="bangumi-grid">${rest.map(cardHTML).join('')}</div>` : '')
         || '<div class="bangumi-empty">这个分类下还没有条目</div>'
     }
 

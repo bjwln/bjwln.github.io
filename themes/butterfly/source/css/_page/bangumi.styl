@@ -276,31 +276,6 @@
     text-overflow: ellipsis
     white-space: nowrap
 
-// 分区块:「追更动态」(宽卡)与「作品墙」(海报)
-.bangumi .bangumi-section
-  margin-bottom: 26px
-
-  &:last-child
-    margin-bottom: 0
-
-.bangumi .bangumi-section-title
-  display: flex
-  align-items: center
-  gap: 8px
-  margin-bottom: 12px
-  color: var(--font-color)
-  font-size: 1.05em
-  font-weight: 600
-
-  i
-    color: var(--btn-bg)
-    font-size: .92em
-
-  em
-    font-style: normal
-    padding: 1px 8px
-    border-radius: 999px
-    background: var(--text-bg-hover)
-    color: var(--card-meta)
-    font-size: .72em
-    font-weight: 500
+// 两组卡片(宽卡在上/海报在下)之间的间距
+.bangumi .bangumi-grid.is-wide:not(:last-child)
+  margin-bottom: 22px
