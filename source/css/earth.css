@@ -1,0 +1,95 @@
+/* ---------- 3D 地球页(摸鱼·星航线) ---------- */
+/* 本样式表仅在 /earth/ 页引入:隐藏主题页头大标题,给地球腾出沉浸空间 */
+#page-header.not-top-img { display: none !important; }
+#page .page-title { display: none !important; }
+#article-container { padding-top: 8px !important; }
+
+.earth-wrap {
+  /* 全出血:突破文章容器留白 */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 0 0 26px;
+}
+
+.earth-head {
+  max-width: 1080px; margin: 0 auto; padding: 6px 20px 14px;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
+}
+.earth-title {
+  font-size: 22px; letter-spacing: 6px; font-weight: 600; color: #cfe6ff;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", serif;
+}
+.earth-sub { font-size: 11px; letter-spacing: 3px; color: #5f7fa6; }
+.earth-chips { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.earth-chip {
+  font-size: 11px; letter-spacing: 1.5px; color: #8fb6e0;
+  border: 1px solid rgba(110, 165, 235, .28); border-radius: 999px; padding: 3px 11px;
+  background: rgba(10, 24, 46, .5);
+}
+
+.earth-stage {
+  position: relative; max-width: 1180px; margin: 0 auto;
+  height: min(76vh, 720px); min-height: 440px;
+  border-radius: 18px; overflow: hidden;
+  border: 1px solid rgba(90, 150, 255, .16);
+  background:
+    radial-gradient(1100px 560px at 50% 62%, #0a1a33 0%, #051027 48%, #020713 78%, #01040c 100%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .5), inset 0 0 90px rgba(20, 60, 120, .14);
+}
+.earth-stage canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: none; cursor: grab; }
+.earth-stage.is-dragging canvas { cursor: grabbing; }
+
+/* 城市标签(HTML 层,随 3D 投影移动) */
+.earth-label {
+  position: absolute; left: 0; top: 0; z-index: 3;
+  font-size: 11px; line-height: 1; letter-spacing: 1px; white-space: nowrap;
+  color: #cfe6ff; background: rgba(6, 15, 32, .74);
+  border: 1px solid rgba(120, 180, 255, .34); border-radius: 4px;
+  padding: 3px 7px; pointer-events: none; user-select: none;
+  will-change: transform, opacity; transition: opacity .18s linear;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .8);
+}
+.earth-label.is-hub {
+  color: #ffe1a1; border-color: rgba(255, 205, 110, .55);
+  background: rgba(30, 20, 5, .78); font-weight: 600; font-size: 12px;
+  box-shadow: 0 0 12px rgba(255, 190, 80, .28);
+}
+
+/* 台词/HUD */
+.earth-back {
+  position: absolute; z-index: 5; left: 14px; top: 14px;
+  font-size: 12px; letter-spacing: 2px; color: #9fc2ea; text-decoration: none;
+  border: 1px solid rgba(120, 180, 255, .3); border-radius: 999px; padding: 5px 13px;
+  background: rgba(6, 15, 32, .66); backdrop-filter: blur(6px); transition: border-color .2s, color .2s;
+}
+.earth-back:hover { color: #fff; border-color: rgba(160, 205, 255, .6); }
+.earth-hint {
+  position: absolute; z-index: 5; right: 14px; top: 14px;
+  font-size: 11px; letter-spacing: 1.5px; color: #6d8fb8;
+  border-radius: 999px; padding: 5px 12px; background: rgba(6, 15, 32, .55);
+  pointer-events: none;
+}
+.earth-badge {
+  position: absolute; z-index: 5; left: 14px; bottom: 12px;
+  font-size: 10.5px; letter-spacing: 3px; color: #59779c; pointer-events: none;
+}
+.earth-fps { position: absolute; z-index: 5; right: 14px; bottom: 12px; font-size: 10px; color: #3c5474; pointer-events: none; font-variant-numeric: tabular-nums; }
+
+/* 加载/降级 */
+.earth-loading {
+  position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px; color: #7fa3cc; font-size: 13px; letter-spacing: 3px;
+}
+.earth-loading i { font-size: 22px; }
+.earth-error {
+  position: absolute; inset: 0; z-index: 4; display: none;
+  align-items: center; justify-content: center; text-align: center;
+  color: #7fa3cc; font-size: 13px; line-height: 2; padding: 30px;
+}
+
+@media (max-width: 640px) {
+  .earth-stage { height: 64vh; min-height: 400px; border-radius: 14px; }
+  .earth-label { font-size: 10px; padding: 2px 6px; }
+  .earth-chips { display: none; }
+  .earth-hint { display: none; }
+}

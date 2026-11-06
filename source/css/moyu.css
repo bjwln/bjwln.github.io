@@ -111,3 +111,33 @@
   .m-card-art { padding: 4px 0 0; justify-self: center; }
   .m-card-desc { margin-bottom: 14px; }
 }
+
+/* ---------- 蓝星航线入口卡(3D 地球) ---------- */
+.m-earth-card {
+  background:
+    radial-gradient(420px 180px at 88% 40%, rgba(110, 170, 255, 0.1), transparent 70%),
+    linear-gradient(180deg, rgba(110, 170, 255, 0.04), rgba(110, 170, 255, 0.015)),
+    var(--m-card);
+}
+.m-earth-card:hover { border-color: rgba(120, 175, 255, .4); }
+.m-earth-card .m-card-tag { color: #8fb6e0; border-color: rgba(120, 175, 255, .35); }
+.m-earth-card .m-card-title { color: #9ecbff; }
+.m-btn-blue { background: linear-gradient(180deg, #bcd9ff, #93bdf2) !important; color: #1d2c42 !important; box-shadow: 0 2px 14px rgba(120, 175, 255, .16) !important; }
+.m-earth-card:hover .m-card-btn { box-shadow: 0 6px 20px rgba(120, 175, 255, .3) !important; }
+.m-earth-card .m-card-art svg { overflow: visible; }
+.m-earth-card .m-card-art .ea-orbit { fill: none; stroke: rgba(140, 190, 255, .4); stroke-width: 1.2; stroke-dasharray: 3 5; }
+.m-earth-card .m-card-art .ea-orbit2 { stroke: rgba(140, 190, 255, .22); }
+.m-earth-card .m-card-art .ea-globe { fill: rgba(16, 42, 82, .55); stroke: #7fb2e8; stroke-width: 1.6; }
+.m-earth-card .m-card-art .ea-line { fill: none; stroke: rgba(127, 178, 232, .45); stroke-width: 1; }
+.m-earth-card .m-card-art .ea-land { fill: rgba(140, 200, 255, .5); stroke: none; }
+.m-earth-card .m-card-art .ea-hub { fill: #ffd166; stroke: rgba(255, 209, 102, .5); stroke-width: 6; stroke-opacity: .3; }
+.m-earth-card .m-card-art .ea-arc { fill: none; stroke: #9ecbff; stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 40 60; animation: ea-dash 2.6s linear infinite; }
+.m-earth-card .m-card-art .ea-sat { fill: #dceeff; }
+.m-earth-card .m-card-art .ea-spin { transform-origin: 105px 75px; animation: ea-spin 26s linear infinite; }
+.m-earth-card .m-card-art .ea-sat { transform-origin: 105px 75px; animation: ea-sat 9s linear infinite; transform-box: view-box; }
+@keyframes ea-spin { to { transform: rotate(360deg); } }
+@keyframes ea-sat { from { transform: rotate(0deg) translateX(98px) rotate(0deg); } to { transform: rotate(360deg) translateX(98px) rotate(-360deg); } }
+@keyframes ea-dash { to { stroke-dashoffset: -100; } }
+@media (prefers-reduced-motion: reduce) {
+  .m-earth-card .m-card-art .ea-spin, .m-earth-card .m-card-art .ea-sat, .m-earth-card .m-card-art .ea-arc { animation: none; }
+}

@@ -8,7 +8,7 @@ comment: false
 description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261107b">
+<link rel="stylesheet" href="/css/moyu.css?v=20261107c">
 
 <div id="moyu-app">
 
@@ -56,6 +56,34 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 <path d="M32 31 L35 38 L32 44 L35 50 L32 57 M32 38 L28 42 M32 48 L28 52"/>
 <path d="M19 68 L45 68"/>
 </g>
+</svg>
+</div>
+</a>
+
+<a class="m-card m-featured m-earth-card" href="/earth/">
+<div class="m-card-body">
+<span class="m-card-tag">三维 · Three.js</span>
+<h2 class="m-card-title">蓝星航线</h2>
+<span class="m-card-en">BLUE PLANET · 3D EARTH</span>
+<p class="m-card-desc">一颗发光的蓝色地球悬在星海里，飞线从浙江出发连向世界各大城市，外面还有一圈慢慢转的粒子光环。可以拖着转、滚轮缩放，发呆专用。</p>
+<span class="m-card-btn m-btn-blue">进入轨道 <i class="fas fa-arrow-right"></i></span>
+</div>
+<div class="m-card-art" aria-hidden="true">
+<svg class="earth-art" viewBox="0 0 210 150" width="210" height="150">
+<ellipse class="ea-orbit" cx="105" cy="75" rx="98" ry="30"/>
+<ellipse class="ea-orbit ea-orbit2" cx="105" cy="75" rx="86" ry="24"/>
+<g class="ea-spin">
+<circle cx="105" cy="75" r="40" class="ea-globe"/>
+<ellipse cx="105" cy="75" rx="40" ry="14" class="ea-line"/>
+<ellipse cx="105" cy="75" rx="14" ry="40" class="ea-line"/>
+<path class="ea-land" d="M88 55 C96 50 106 52 110 58 C114 64 108 68 100 67 C92 66 84 60 88 55 Z"/>
+<path class="ea-land" d="M112 82 C118 78 126 80 128 86 C130 92 122 96 116 93 C110 90 108 85 112 82 Z"/>
+<path class="ea-land" d="M92 88 C98 86 102 90 100 94 C98 98 90 96 92 88 Z"/>
+<circle cx="128" cy="62" r="2.6" class="ea-hub"/>
+<path class="ea-arc" d="M128 62 C140 40 158 34 176 40"/>
+<path class="ea-arc" d="M128 62 C120 96 138 108 158 106"/>
+</g>
+<circle class="ea-sat" cx="105" cy="45" r="3"/>
 </svg>
 </div>
 </a>
