@@ -17,41 +17,46 @@
 
   let lastJson = ''
 
+  // 未看集数:有 total 且 > 已看时为落后集数,否则 null(看完/还没更新的/没填集数)
+  const unwatchedOf = item => {
+    const ep = parseFloat(item.episode)
+    const total = parseFloat(item.total)
+    if (!item.total || isNaN(total) || isNaN(ep) || total <= ep) return null
+    return Math.round(total - ep)
+  }
+
   const cardHTML = item => {
     const statusColor = STATUS_COLOR[item.status] || '#71717a'
     const epNum = parseFloat(item.episode)
     const totalNum = parseFloat(item.total)
     const hasNew = item.total && !isNaN(totalNum) && (isNaN(epNum) || totalNum > epNum)
-    const unwatched = hasNew ? Math.round(totalNum - epNum) : null
-    const isUp = Boolean(item.latest_url)
-    const coverSrc = item.latest_cover || item.image
+    const unwatched = unwatchedOf(item)
     const epBadge = item.episode
       ? `<span class="bangumi-episode${hasNew ? ' is-new' : ''}">${esc(episodeText(item.episode))}</span>`
       : ''
     const totalBadge = item.total
       ? `<span class="bangumi-total${hasNew ? ' is-new' : ''}">更新至 ${esc(item.total)} 集</span>`
       : ''
-    const unwatchBadge = isUp && unwatched != null && unwatched > 0
+    // 有「未看 N 集」角标时占掉分类角标的位置(同位不重叠)
+    const unwatchBadge = unwatched != null && unwatched > 0
       ? `<span class="bangumi-unwatch">未看 ${unwatched} 集</span>`
       : ''
     const inner = `<div class="bangumi-cover">
-        <img src="${esc(coverSrc)}" alt="${esc(item.title)}最新视频封面" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display='none'">
-        ${item.category_name ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
-        ${epBadge}${totalBadge}
-        ${unwatchBadge}
-        ${isUp ? '<span class="bangumi-play"><i class="fas fa-play" aria-hidden="true"></i></span>' : ''}
+        <img src="${esc(item.image)}" alt="${esc(item.title)}封面" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display='none'">
+        ${item.category_name && !unwatchBadge ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
+        ${unwatchBadge}${epBadge}${totalBadge}
       </div>
       <div class="bangumi-info">
         <div class="bangumi-title">${esc(item.title)}</div>
         ${(item.author || item.status) ? `<div class="bangumi-meta-row">${item.author ? `<span class="bangumi-author">${esc(item.author)}</span>` : ''}${item.status ? `<span class="bangumi-status" style="--st:${statusColor}">${esc(item.status)}</span>` : ''}</div>` : ''}
-        ${item.latest_title ? `<div class="bangumi-latest"><i class="fas fa-play" aria-hidden="true"></i>最新：${esc(item.latest_title)}</div>` : ''}
+        ${item.latest_title ? `<div class="bangumi-latest"><i class="fas fa-play" aria-hidden="true"></i><span>最新：${esc(item.latest_title)}</span></div>` : ''}
         ${item.intro ? `<div class="bangumi-intro">${esc(item.intro)}</div>` : ''}
       </div>`
-    const href = isUp ? item.latest_url : item.link
-    const cls = `bangumi-card${isUp ? ' is-up' : ''}`
+    // UP主条目有最新视频地址时优先跳「接下来该看的」那支
+    const href = item.latest_url || item.link
     return href
-      ? `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}最新视频">${inner}</a>`
-      : `<div class="${cls}">${inner}</div>`
+      ? `<a class="bangumi-card" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="${esc(item.title)}">${inner}</a>`
+      : `<div class="bangumi-card">${inner}</div>`
   }
 
   const render = data => {
@@ -62,15 +67,21 @@
     const tabs = document.createElement('div')
     tabs.className = 'bangumi-tabs'
 
-    // 「追更动态」(UP主大卡,16:9 最新视频)与海报卡封面比例不同,
-    // 混在同一个网格会把行列顶乱:大的归大的、小的归小的,各自成组(不加标题)
+    // 排序:有集数没看的在前(按未看数从小到大),看完的/还没更新的/没填集数的垫底
+    // (Array.prototype.sort 稳定,未看数相同的条目保持原有顺序)
+    const sorted = items.slice().sort((a, b) => {
+      const ua = unwatchedOf(a), ub = unwatchedOf(b)
+      if (ua == null && ub == null) return 0
+      if (ua == null) return 1
+      if (ub == null) return -1
+      return ua - ub
+    })
+
     const renderGrid = () => {
-      const shown = items.filter(i => active == null || i.category_id === active)
-      const ups = shown.filter(i => i.latest_url)
-      const rest = shown.filter(i => !i.latest_url)
-      grid.innerHTML = (ups.length ? `<div class="bangumi-grid is-wide">${ups.map(cardHTML).join('')}</div>` : '')
-        + (rest.length ? `<div class="bangumi-grid">${rest.map(cardHTML).join('')}</div>` : '')
-        || '<div class="bangumi-empty">这个分类下还没有条目</div>'
+      const shown = sorted.filter(i => active == null || i.category_id === active)
+      grid.innerHTML = shown.length
+        ? shown.map(cardHTML).join('')
+        : '<div class="bangumi-empty">这个分类下还没有条目</div>'
     }
 
     const renderTabs = () => {
@@ -90,9 +101,6 @@
 
     const oldTabs = grid.parentNode.querySelector('.bangumi-tabs')
     if (oldTabs) oldTabs.remove()
-    // 外层容器在模板里带 bangumi-grid 类(网格布局),分区渲染时降级为普通容器,
-    // 网格交给内部的 .bangumi-grid / .is-wide
-    grid.classList.remove('bangumi-grid')
     grid.parentNode.insertBefore(tabs, grid)
     renderTabs()
     renderGrid()
