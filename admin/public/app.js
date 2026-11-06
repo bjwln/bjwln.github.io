@@ -1046,6 +1046,17 @@ async function vSettings() {
     <div class="panel"><h3>B站 Cookie(追番集数同步用,可选)</h3>
       <div class="flex"><textarea id="s-bilicookie" rows="2" class="w3" placeholder="浏览器登录B站后,F12 → 网络 → 任一请求 → 复制请求头里的 Cookie 值">${esc(s.biliCookie || '')}</textarea></div>
       <p class="muted" style="font-size:12px">动态漫条目的 view 接口常被 B 站风控(412),填入登录 Cookie 可大幅提高同步成功率。保存在本机,不会上传。</p></div>
+    <div class="panel"><h3>AI 深度解读(算运页,OpenAI 兼容协议)</h3>
+      <div class="fm-grid">
+        <label class="wide">Base URL<input id="s-aiurl" value="${esc(s.ai?.baseUrl || '')}" placeholder="如 https://api.openai.com/v1 或中转站地址"></label>
+        <label class="wide">API Key<input type="password" id="s-aikey" value="${esc(s.ai?.apiKey || '')}" placeholder="仅保存在本机 admin/data/settings.json,不会出现在博客页面"></label>
+        <label>模型名<input id="s-aimodel" value="${esc(s.ai?.model || '')}" placeholder="如 gpt-4o-mini / deepseek-chat / glm-4-flash"></label>
+        <label>温度(0-2)<input type="number" step="0.1" min="0" max="2" id="s-aitemp" value="${s.ai?.temperature ?? 0.8}"></label>
+        <label>每日上限(次)<input type="number" min="1" id="s-ailimit" value="${s.ai?.dailyLimit ?? 60}"></label>
+      </div>
+      <div class="flex" style="margin-top:8px"><button onclick="testAi()">🔌 测试连接</button>
+        <span id="ai-test-result" class="muted" style="font-size:12px"></span></div>
+      <p class="muted" style="font-size:12px">博客「算运」页通过本机服务代理调用(key 不进浏览器)；后台未运行或未配置时,页面自动回退为纯本地解读。</p></div>
     <div class="panel"><h3>数据备份(Cloudflare D1)</h3>
       <div class="flex"><button onclick="backupDB()">⬇ 导出备份到本机</button>
         <span class="muted" style="font-size:12px">备份浏览量/评论/追番数据,保存到 admin/data/backups/(已 gitignore,建议定期导出)</span></div>
@@ -1076,8 +1087,27 @@ async function saveSettings() {
     previewPort: Number($('#s-pvport').value) || 4000,
     editorFontSize: Number($('#s-font').value) || 14,
     biliCookie: $('#s-bilicookie').value.trim(),
+    ai: {
+      baseUrl: $('#s-aiurl').value.trim(),
+      apiKey: $('#s-aikey').value.trim(),
+      model: $('#s-aimodel').value.trim(),
+      temperature: Number($('#s-aitemp').value) || 0.8,
+      dailyLimit: Number($('#s-ailimit').value) || 60,
+    },
   } });
   toast('设置已保存', 'ok');
+}
+async function testAi() {
+  const el = $('#ai-test-result');
+  el.textContent = '测试中…';
+  // 先保存当前填写的 AI 配置再测试,避免"填完忘保存"
+  await saveSettings();
+  try {
+    const r = await api('/api/ai/test', { method: 'POST', json: {} });
+    el.textContent = '✅ 连通:' + (r.reply || '').slice(0, 30);
+  } catch (e) {
+    el.textContent = '❌ ' + e.message;
+  }
 }
 async function savePassword() {
   const pw = $('#s-pw').value;

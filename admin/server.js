@@ -15,10 +15,32 @@ const build = require('./lib/build');
 const cf = require('./lib/cf');
 const bangumisync = require('./lib/bangumisync');
 const settings = require('./lib/settings');
+const ai = require('./lib/ai');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024, files: 20 } });
 const app = express();
 app.use(express.json({ limit: '30mb' }));
+
+// ---------- AI 代理(算运页 LLM 解读用,免管理密码) ----------
+// 必须注册在下方 /api 鉴权中间件之前;key 只存本机 settings.json;CORS 允许博客页跨域调用本机
+app.use('/api/ai', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Private-Network', 'true'); // Chrome 私网预检(https 页面 → http://127.0.0.1)
+  res.setHeader('Vary', 'Origin');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  next();
+});
+app.get('/api/ai/status', U.wrap(async (req, res) => res.json(await ai.status())));
+app.post('/api/ai/chat', U.wrap(async (req, res) => {
+  const r = await ai.chat(req.body?.messages || [], { temperature: req.body?.temperature, maxTokens: req.body?.maxTokens });
+  res.json({ ok: true, content: r.content, usage: r.usage });
+}));
+app.post('/api/ai/test', U.wrap(async (req, res) => {
+  const r = await ai.test();
+  res.json({ ok: true, reply: r.reply });
+}));
 
 // ---------- 登录(设置了密码才启用) ----------
 app.post('/api/auth/login', U.wrap(async (req, res) => {

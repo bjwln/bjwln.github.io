@@ -15,6 +15,13 @@ const DEFAULTS = {
   port: 14001,                            // 管理端端口(4001 会被 QQ 等软件占用,勿改回)
   editorFontSize: 14,
   biliCookie: '',                        // B站登录 Cookie(同步动态漫集数用,可选)
+  ai: {                                  // 算运页 LLM 解读配置(OpenAI 兼容协议,key 仅存本机)
+    baseUrl: '',                         // 如 https://api.xxx.com/v1
+    apiKey: '',
+    model: '',
+    temperature: 0.8,
+    dailyLimit: 60,
+  },
 };
 
 let cache = null;

@@ -122,10 +122,12 @@ function firstNum() {
 
 // 从一批标题里解析最大集数:强信号「第N集」,弱信号退化到首个数字(官方UP的
 // 分集标题通常带系列名,而搜索兜底里无系列名的标题不可靠,故本函数用于可信来源)
+// 含「预告」的标题不算正片集数(如「第N集预告」视频)
 function maxEpFromTitles(titles) {
   let strongMax = null, weakMax = null;
   for (const t of titles || []) {
     const s = String(t || '');
+    if (/预告/.test(s)) continue;
     const m = s.match(/第\s*(\d{1,4})\s*[集话]/);
     const n = Number(m ? m[1] : firstNum(s));
     if (!Number.isFinite(n) || n <= 0 || n >= 3000) continue;
@@ -145,10 +147,15 @@ async function fromBangumiPage(link) {
   if (!r) throw new Error((d && d.message) || '番剧数据为空');
   // 取「分集编号最大值」与官方 new_ep.title 的较大者;
   // 注意 new_ep.desc 是排期文案(如「6月13日起 每周六11:00」),不能从中提取集数
-  const nums = (r.episodes || [])
+  // 「预告」分集不进统计:预告上线后仍留在分集列表里(badge=预告),凡人修仙传/牧神记
+  // 都因此被顶高过一集,必须先过滤;new_ep 万一指向预告时同样不认
+  const eps = r.episodes || [];
+  const isPreview = e => /预告/.test(String(e && e.badge || '') + String(e && e.title || '') + String(e && e.long_title || ''));
+  const previewIds = new Set(eps.filter(isPreview).map(e => e.id));
+  const nums = eps.filter(e => !isPreview(e))
     .map(e => firstNum(e.title, e.long_title))
     .filter(Boolean).map(Number).filter(n => n > 0 && n < 3000);
-  const official = Number(firstNum(r.new_ep && r.new_ep.title)) || 0;
+  const official = r.new_ep && !previewIds.has(r.new_ep.id) ? (Number(firstNum(r.new_ep.title)) || 0) : 0;
   const best = Math.max(official, nums.length ? Math.max(...nums) : 0);
   if (!best) return null;
   return { total: String(best), source: 'B站番剧' };
@@ -213,6 +220,7 @@ async function totalFromVideo(bvid, fallbackTitle) {
     const t = String(v.title || '').replace(/<[^>]+>/g, '').replace(/\s+/g, '');
     const hasKw = t.includes(kw);
     if (!hasKw) continue;  // 标题必须包含系列名,防止噪声标题里的数字被误判
+    if (/预告/.test(t)) continue;  // 「第N集预告」投稿不算正片集数
     const m = t.match(/第\s*(\d{1,4})\s*[集话]/);
     if (!m) continue;  // 只看带「第N集」标记的
     const n = Number(m[1]);

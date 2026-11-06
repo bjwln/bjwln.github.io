@@ -1,0 +1,99 @@
+//- 月下问运 · 塔罗 × 八字 运势页（type: fortune）
+//- 逻辑在 /js/fortune/*.js，样式在 /css/fortune.css；生辰仅存浏览器本地
+- var FV = '20261105c'
+link(rel='stylesheet', href=url_for('/css/fortune.css') + '?v=' + FV)
+
+#fortune-app
+  .f-header
+    .f-brand
+      .f-moon(aria-hidden='true') ☾
+      div
+        h1.f-title 月下问运
+        span.f-sub MOONLIT FORTUNE · 塔罗 × 八字
+    button#ai-pill.f-pill(type='button') <i class="dot"></i> 本地解读模式
+
+  section#f-step-birth.f-card
+    h2.f-h2 第一步 · 写下你的出生时刻
+    p.f-muted 每次进入页面都会重新排盘；你的生辰只保存在本浏览器，不会上传。
+    #birth-form
+
+  #f-main.hidden
+    section#f-chart.f-card
+      .f-chart-head
+        h2.f-h2 命盘
+        span#f-birth-summary.f-muted.small
+      #pillars.pillars
+      .f-chart-grid
+        .f-box
+          h3.f-h3 五行分布
+          #wuxing-bars.wx-bars
+        .f-box
+          h3.f-h3 日主与喜用
+          #strength-badge
+      #dayun-strip
+
+    section#f-today.f-card
+      h2.f-h2 今日 ·
+        span.f-h2-en TODAY
+      #today-card
+
+    section#f-tarot.f-card
+      h2.f-h2 塔罗 ·
+        span.f-h2-en TAROT
+      p.f-muted 洗牌前，把问题放在心里。牌义以 Waite《Pictorial Key to the Tarot》(1911) 为底本本地解读。
+      #tarot-controls
+      #tarot-stage.hidden
+      #tarot-reading
+
+    section#f-ai.f-card
+      h2.f-h2 AI 深度解读 ·
+        span.f-h2-en WITH LLM
+      p.f-muted 在本机管理后台配置模型后可用；未配置时上方的本地解读完整可用。
+      .f-actions
+        button#ai-btn.f-btn ✦ 请 AI 深度解读
+      #ai-output.f-ai-out
+
+    section#f-about.f-card.f-about
+      h2.f-h2 关于与来源
+      .f-about-grid
+        .f-box
+          h3.f-h3 历法与八字
+          ul
+            li
+              | 排盘基于开源库
+              a(href='https://github.com/6tail/lunar-javascript' target='_blank' rel='noopener')  lunar-javascript
+              | （MIT 协议），节气按寿星天文历天文算法计算，年柱以立春为界、月柱以十二节为界。
+            li
+              | 真太阳时 = 北京时间 + (当地经度−120°)×4 分钟 + 均时差（NOAA 简化式）。
+            li
+              | 大运起运与排布遵循阳男阴女顺排、阴男阳女逆排，起运岁数按距节气的天数折算（三天折一岁）。
+        .f-box
+          h3.f-h3 牌义与解读
+          ul
+            li
+              | 78 张牌释义底本：A. E. Waite《
+              a(href='https://sacred-texts.com/tarot/pkt/' target='_blank' rel='noopener') The Pictorial Key to the Tarot
+              | 》（1911，公有领域），融合 Rider-Waite 体系通行中文释义。
+            li
+              | 花色元素沿用金色黎明体系：权杖＝火、圣杯＝水、宝剑＝风、星币＝土；与五行的桥接取 风通金 之说，属现代适应做法。
+            li
+              | 十神与生克依据《渊海子平》《三命通会》通行定义；日主强弱与喜用神为本页实现的扶抑简化算法，非专业命理定论。
+        .f-box
+          h3.f-h3 免责声明
+          p 本页所有内容（含 AI 解读）仅为文化视角下的自我探索与娱乐参考，不构成任何医疗、投资、婚姻等专业建议，请勿以此替代自己的判断。命由己造，运由心转。
+
+  #ai-drawer.f-drawer
+    .f-drawer-inner
+      h3 AI 后台地址
+      p.f-muted.small apikey 保存在本机管理后台（admin/data/settings.json），页面接触不到。修改地址后自动重新探测。
+      input#ai-endpoint(type='text', placeholder='http://127.0.0.1:14001')
+      .f-actions
+        button#ai-endpoint-save.f-btn.small-btn 保存并探测
+        button#ai-close.f-btn.ghost.small-btn 关闭
+
+script(defer src=url_for('/js/fortune/lunar.min.js') + '?v=' + FV)
+script(defer src=url_for('/js/fortune/tarot-data.js') + '?v=' + FV)
+script(defer src=url_for('/js/fortune/fortune-data.js') + '?v=' + FV)
+script(defer src=url_for('/js/fortune/bazi.js') + '?v=' + FV)
+script(defer src=url_for('/js/fortune/llm.js') + '?v=' + FV)
+script(defer src=url_for('/js/fortune/app.js') + '?v=' + FV)

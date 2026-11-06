@@ -62,11 +62,21 @@
     const tabs = document.createElement('div')
     tabs.className = 'bangumi-tabs'
 
+    // 「追更动态」(UP主大卡,16:9 最新视频)与「作品墙」(海报卡)分区块排列,
+    // 混在同一个网格会因封面比例不同把行列顶乱
+    const section = (title, icon, list, wide) => list.length ? `
+      <section class="bangumi-section">
+        <div class="bangumi-section-title"><i class="fas ${icon}" aria-hidden="true"></i>${title}<em>${list.length}</em></div>
+        <div class="bangumi-grid${wide ? ' is-wide' : ''}">${list.map(cardHTML).join('')}</div>
+      </section>` : ''
+
     const renderGrid = () => {
       const shown = items.filter(i => active == null || i.category_id === active)
-      grid.innerHTML = shown.length
-        ? shown.map(cardHTML).join('')
-        : '<div class="bangumi-empty">这个分类下还没有条目</div>'
+      const ups = shown.filter(i => i.latest_url)
+      const rest = shown.filter(i => !i.latest_url)
+      grid.innerHTML = section('追更动态', 'fa-play-circle', ups, true)
+        + section('作品墙', 'fa-film', rest, false)
+        || '<div class="bangumi-empty">这个分类下还没有条目</div>'
     }
 
     const renderTabs = () => {
@@ -86,6 +96,9 @@
 
     const oldTabs = grid.parentNode.querySelector('.bangumi-tabs')
     if (oldTabs) oldTabs.remove()
+    // 外层容器在模板里带 bangumi-grid 类(网格布局),分区渲染时降级为普通容器,
+    // 网格交给内部的 .bangumi-grid / .is-wide
+    grid.classList.remove('bangumi-grid')
     grid.parentNode.insertBefore(tabs, grid)
     renderTabs()
     renderGrid()
