@@ -41,8 +41,10 @@
     const unwatchBadge = unwatched != null && unwatched > 0
       ? `<span class="bangumi-unwatch">未看 ${unwatched} 集</span>`
       : ''
+    // UP主条目用自动同步的最新视频封面(实时),其余用海报;都按 2:3 裁切,网格整齐
+    const coverSrc = item.latest_cover || item.image
     const inner = `<div class="bangumi-cover">
-        <img src="${esc(item.image)}" alt="${esc(item.title)}封面" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.style.display='none'">
+        <img src="${esc(coverSrc)}" alt="${esc(item.title)}封面" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${esc(item.image)}'">
         ${item.category_name && !unwatchBadge ? `<span class="bangumi-category">${esc(item.category_name)}</span>` : ''}
         ${unwatchBadge}${epBadge}${totalBadge}
       </div>
