@@ -6,7 +6,7 @@ comment: false
 description: 按浏览量排序的文章卡片墙
 ---
 
-<link rel="stylesheet" href="/css/hot-wall.css?v=20261031b">
+<link rel="stylesheet" href="/css/hot-wall.css?v=20261107a">
 
 <div id="hot-posts-page">
   <div class="hot-toolbar">

@@ -667,3 +667,88 @@
 
   .rlc-tip
     box-shadow: 0 10px 26px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .07)
+
+// ============================================================
+// ★ starlite 美化层（追加于文件尾部，规则在后优先）
+//   无框星空风 · 双模式。做法：
+//   1) 覆盖本页 --card-bg 变量 → 所有 var(--card-bg) 表面一次变半透明
+//   2) 大容器追加边框 + 磨砂（小卡片不加 blur，避免时间线几十张卡的性能开销）
+//   3) 去底板 + 衬线金字页标题
+//   轨道/进度条等功能性颜色一律不动
+// ============================================================
+
+// 卡面变量切换
+.type-research
+  --card-bg: rgba(255, 255, 255, .66)
+
+[data-theme="dark"] .type-research
+  --card-bg: rgba(20, 20, 31, .72)
+
+// 去底板
+.type-research div#page,
+[data-theme="dark"] .type-research div#page
+  background: transparent !important
+  border: none !important
+  box-shadow: none !important
+  border-radius: 0 !important
+  padding: 0 28px !important
+
+  +maxWidth600()
+    padding: 0 16px !important
+
+// 页标题
+.type-research .page-title
+  text-align: center
+  font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", "SimSun", serif
+  font-size: 1.55em
+  letter-spacing: 8px
+  text-indent: 8px
+  color: #8a6a26
+  margin-bottom: 20px
+
+[data-theme="dark"] .type-research .page-title
+  color: #e8d9a0
+
+// 主容器：细边框 + 磨砂
+.research-container
+  .research-progress-card,
+  .research-timeline-chart,
+  .research-timeline-popover,
+  .research-empty
+    border: 1px solid rgba(0, 0, 0, .07)
+    backdrop-filter: blur(8px)
+    -webkit-backdrop-filter: blur(8px)
+
+  .research-timeline-card
+    border: 1px solid rgba(0, 0, 0, .06)
+
+// 任务 tab 激活金色化
+.research-task-tab
+  &.is-active
+    border-bottom-color: #b99c4d
+
+    .research-task-tab-count
+      color: #8a6a26
+
+  &:hover
+    color: #8a6a26
+
+[data-theme="dark"] .research-container
+  .research-progress-card,
+  .research-timeline-chart,
+  .research-timeline-popover,
+  .research-empty
+    border-color: rgba(232, 217, 160, .14)
+
+  .research-timeline-card
+    border-color: rgba(232, 217, 160, .12)
+
+[data-theme="dark"] .research-task-tab
+  &.is-active
+    border-bottom-color: #e8d9a0
+
+    .research-task-tab-count
+      color: #e8d9a0
+
+  &:hover
+    color: #e8d9a0

@@ -1,6 +1,13 @@
 /* 追番/热门/分类 共用卡片墙样式(由 hot/index.md 抽出) */
 #hot-posts-page { max-width: 1100px; margin: 0 auto; }
 
+/* ============================================================
+ * ★ starlite 美化层（追加于文件尾部，规则在后优先）
+ *   无框星空风 · 双模式：命中所有含 #hot-posts-page 的页面
+ *   （热门 / 分类）。夜间=深色磨砂+金色，白天=白磨砂+深金。
+ *   只改视觉属性，不动任何 JS 依赖的类名。
+ * ============================================================ */
+
 /* ---------- 搜索 + 分类筛选 ---------- */
 .hot-toolbar {
   display: flex;
@@ -214,27 +221,83 @@
   }
 }
 
-// 分类归档页(卡片网格,与热门/追番共用 hot-wall 样式)
-.category-wall-wrap
-  max-width: 1100px
-  margin: 0 auto
-  padding: 0 16px 24px
 
-.wall-head
-  display: flex
-  align-items: baseline
-  gap: 12px
-  margin-bottom: 18px
-  color: var(--font-color)
 
-  i
-    color: var(--text-highlight-color)
+/* ---------- starlite: 去底板 ---------- */
+body:has(#hot-posts-page) div#page,
+[data-theme="dark"] body:has(#hot-posts-page) div#page {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 16px !important;
+}
 
-  h1
-    margin: 0
-    font-size: 1.4em
+/* ---------- starlite: 页标题 ---------- */
+body:has(#hot-posts-page) .page-title {
+  text-align: center;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", "SimSun", serif;
+  font-size: 1.55em;
+  letter-spacing: 8px;
+  text-indent: 8px;
+  color: #8a6a26;
+  margin-bottom: 20px;
+}
+[data-theme="dark"] body:has(#hot-posts-page) .page-title { color: #e8d9a0; }
 
-  .wall-count
-    color: var(--card-meta)
-    font-size: .84em
+/* ---------- starlite: 卡片磨砂化 ---------- */
+.hot-card {
+  background: rgba(255, 255, 255, .66);
+  border: 1px solid rgba(0, 0, 0, .07);
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+[data-theme="dark"] .hot-card {
+  background: rgba(20, 20, 31, .72);
+  border-color: rgba(232, 217, 160, .16);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .4);
+}
+.hot-card:hover { box-shadow: 0 14px 30px rgba(0, 0, 0, .14); }
+[data-theme="dark"] .hot-card:hover {
+  box-shadow: 0 14px 32px rgba(0, 0, 0, .5);
+  border-color: rgba(232, 217, 160, .32);
+}
 
+/* ---------- starlite: 搜索框磨砂 + 金色聚焦 ---------- */
+.hot-search input {
+  background: rgba(255, 255, 255, .7);
+  border-color: rgba(0, 0, 0, .08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.hot-search input:focus { border-color: #b99c4d; box-shadow: 0 0 0 3px rgba(178, 144, 62, .16); }
+[data-theme="dark"] .hot-search input {
+  background: rgba(20, 20, 31, .72);
+  border-color: rgba(232, 217, 160, .16);
+}
+[data-theme="dark"] .hot-search input:focus {
+  border-color: rgba(232, 217, 160, .45);
+  box-shadow: 0 0 0 3px rgba(232, 217, 160, .12);
+}
+
+/* ---------- starlite: 分类 chip 金色化 ---------- */
+.hot-chip { background: rgba(120, 94, 32, .08); }
+.hot-chip:hover:not(.is-active) { background: rgba(120, 94, 32, .16); }
+.hot-chip.is-active {
+  background: linear-gradient(180deg, #efe3b6, #e2d193);
+  color: #3a3527;
+  box-shadow: 0 2px 10px rgba(178, 144, 62, .25);
+}
+[data-theme="dark"] .hot-chip { background: rgba(232, 217, 160, .08); }
+[data-theme="dark"] .hot-chip:hover:not(.is-active) { background: rgba(232, 217, 160, .16); }
+[data-theme="dark"] .hot-chip.is-active { background: #e8d9a0; color: #2a2618; }
+
+/* ---------- starlite: 强调色 蓝→金（覆盖文件内原有蓝色规则） ---------- */
+.hot-card:hover .hot-card-title { color: #8a6a26; }
+.hot-cat { background: rgba(178, 144, 62, .14); color: #8a6a26; }
+.hot-pv i { color: #b08d3a; }
+[data-theme="dark"] .hot-card:hover .hot-card-title,
+[data-theme="dark"] .hot-pv i { color: #e8d9a0; }
+[data-theme="dark"] .hot-cat { color: #e8d9a0; background: rgba(232, 217, 160, .14); }

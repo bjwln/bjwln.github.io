@@ -235,3 +235,112 @@
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap
+
+// ============================================================
+// ★ starlite 美化层（追加于文件尾部，规则在后优先）
+//   无框星空风 · 双模式：只改视觉属性，不动 JS 类名契约
+// ============================================================
+
+// 去底板：压过 custom.css 的 div#page 卡片底色（白天/夜间两条都要）
+.type-bangumi div#page,
+[data-theme="dark"] .type-bangumi div#page
+  background: transparent !important
+  border: none !important
+  box-shadow: none !important
+  border-radius: 0 !important
+  padding: 0 28px !important
+
+  +maxWidth600()
+    padding: 0 16px !important
+
+// 页标题：衬线金字
+.type-bangumi .page-title
+  text-align: center
+  font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", "SimSun", serif
+  font-size: 1.55em
+  letter-spacing: 8px
+  text-indent: 8px
+  color: #8a6a26
+  margin-bottom: 20px
+
+[data-theme="dark"] .type-bangumi .page-title
+  color: #e8d9a0
+
+// 卡片磨砂化
+.container
+  .bangumi
+    .bangumi-card
+      background: rgba(255, 255, 255, .66)
+      border: 1px solid rgba(0, 0, 0, .07)
+      border-radius: 12px
+      box-shadow: 0 8px 22px rgba(0, 0, 0, .08)
+      backdrop-filter: blur(8px)
+      -webkit-backdrop-filter: blur(8px)
+
+      &:hover
+        box-shadow: 0 14px 30px rgba(0, 0, 0, .14)
+
+        .bangumi-title
+          color: #8a6a26
+
+      &:focus-visible
+        outline-color: #b99c4d
+
+    // 分类 tab 金色化
+    .bangumi-tab
+      background: rgba(120, 94, 32, .08)
+      border-color: rgba(0, 0, 0, .06)
+
+      &:hover
+        color: #8a6a26
+        border-color: #b99c4d
+
+      &.is-active
+        background: linear-gradient(180deg, #efe3b6, #e2d193)
+        border-color: transparent
+        color: #3a3527
+
+    .bangumi-latest
+      background: rgba(120, 94, 32, .08)
+
+      i
+        color: #b08d3a
+
+// 夜间模式：深色磨砂 + 金
+[data-theme="dark"]
+  .container .bangumi .bangumi-card
+    background: rgba(20, 20, 31, .72)
+    border-color: rgba(232, 217, 160, .16)
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .4)
+
+    &:hover
+      box-shadow: 0 14px 32px rgba(0, 0, 0, .5)
+      border-color: rgba(232, 217, 160, .32)
+
+      .bangumi-title
+        color: #e8d9a0
+
+    &:focus-visible
+      outline-color: #e8d9a0
+
+  .container .bangumi .bangumi-tab
+    background: rgba(232, 217, 160, .08)
+    border-color: rgba(232, 217, 160, .14)
+
+    &:hover
+      color: #e8d9a0
+      border-color: rgba(232, 217, 160, .4)
+
+    &.is-active
+      background: #e8d9a0
+      border-color: #e8d9a0
+      color: #2a2618
+
+      em
+        opacity: .75
+
+  .container .bangumi .bangumi-latest
+    background: rgba(232, 217, 160, .07)
+
+    i
+      color: #e8d9a0
