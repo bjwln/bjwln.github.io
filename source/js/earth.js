@@ -46,6 +46,7 @@
   const spin = new THREE.Group();
   tilt.add(spin);
   scene.add(tilt);
+  let starsObj = null;
 
   // ---------- 程序化贴图(光晕/圆点) ----------
   const glowTexture = (inner, outer) => {
@@ -93,6 +94,7 @@
     }));
     stars.name = 'stars';
     scene.add(stars);
+    starsObj = stars;
   }
 
   // ---------- 地球本体:深海军蓝 + 边缘泛光(着色器) ----------
@@ -139,6 +141,7 @@
   }
 
   // ---------- 陆地点阵 ----------
+  let dotsPts = null;
   {
     const dots = EARTH_DATA.dots;
     const pos = new Float32Array(dots.length * 3);
@@ -149,13 +152,15 @@
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    spin.add(new THREE.Points(geo, new THREE.PointsMaterial({
+    dotsPts = new THREE.Points(geo, new THREE.PointsMaterial({
       color: '#5eb0ff', size: 0.0115, sizeAttenuation: true,
       transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false,
-    })));
+    }));
+    spin.add(dotsPts);
   }
 
   // ---------- 国界线 ----------
+  let bordersLines = null;
   {
     const arcs = EARTH_DATA.arcs;
     let segCount = 0;
@@ -174,9 +179,10 @@
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    spin.add(new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
+    bordersLines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({
       color: '#6fc0ff', transparent: true, opacity: 0.26, depthWrite: false,
-    })));
+    }));
+    spin.add(bordersLines);
   }
 
   // ---------- 中枢(浙江)与城市 ----------
@@ -194,6 +200,10 @@
 
   const hubV = ll2v(HUB.lon, HUB.lat, 1.006);
   const cityV = CITIES.map(c => ll2v(c[1], c[2], 1.006));
+  const arcsGroup = new THREE.Group();
+  spin.add(arcsGroup);
+  const barsGroup = new THREE.Group();
+  spin.add(barsGroup);
 
   // 飞线:二次贝塞尔,高度随角距
   const flights = [];
@@ -208,7 +218,7 @@
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     const orange = ORANGE[c[0]];
-    spin.add(new THREE.Line(geo, new THREE.LineBasicMaterial({
+    arcsGroup.add(new THREE.Line(geo, new THREE.LineBasicMaterial({
       color: orange ? '#ffb36b' : '#7fd0ff',
       transparent: true, opacity: orange ? 0.34 : 0.4,
       blending: THREE.AdditiveBlending, depthWrite: false,
@@ -219,7 +229,7 @@
       transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
     }));
     sprite.scale.setScalar(orange ? 0.075 : 0.055);
-    spin.add(sprite);
+    arcsGroup.add(sprite);
     flights.push({
       curve, sprite,
       speed: 0.05 + Math.random() * 0.06,
@@ -233,7 +243,17 @@
     }));
     dot.position.copy(cityV[i]);
     dot.scale.setScalar(0.032);
-    spin.add(dot);
+    arcsGroup.add(dot);
+    // 柱状图:城市上方的发光柱(默认关闭,顶部 chips 可开)
+    const h = 0.035 + (((i * 7) % 13) / 13) * 0.075;
+    const bar = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.003, 0.008, h, 8, 1, true),
+      new THREE.MeshBasicMaterial({ color: '#5da8e8', transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+    );
+    const n = cityV[i].clone().normalize();
+    bar.position.copy(n).multiplyScalar(1 + h / 2);
+    bar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), n);
+    barsGroup.add(bar);
   });
 
   // 中枢:金色光核 + 双呼吸波纹
@@ -315,16 +335,81 @@
   }
 
   // ---------- HTML 标签层 ----------
+  let labelsOn = true;
   const labels = [];
-  const addLabel = (text, isHub, anchorObj, localPos) => {
+  const addLabel = (text, isHub, anchorObj, localPos, onClick) => {
     const el = document.createElement('div');
     el.className = 'earth-label' + (isHub ? ' is-hub' : '');
     el.textContent = text;
+    if (onClick) {
+      el.style.pointerEvents = 'auto';
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', e => { e.stopPropagation(); onClick(); });
+    }
     stage.appendChild(el);
     labels.push({ el, anchorObj, localPos });
   };
-  addLabel(HUB.name, true, spin, hubV.clone());
-  CITIES.forEach((c, i) => addLabel(c[0], false, spin, cityV[i].clone()));
+
+  // ---------- 城市信息卡(点击标签弹出) ----------
+  const distKm = (a, b) => {
+    const f1 = a.lat * DEG, f2 = b.lat * DEG, dl = (b.lon - a.lon) * DEG;
+    const c = Math.sin(f1) * Math.sin(f2) + Math.cos(f1) * Math.cos(f2) * Math.cos(dl);
+    return Math.round(Math.acos(Math.max(-1, Math.min(1, c))) * 6371);
+  };
+  const bearingCN = (a, b) => {
+    const f1 = a.lat * DEG, f2 = b.lat * DEG, dl = (b.lon - a.lon) * DEG;
+    const t = Math.atan2(Math.sin(dl) * Math.cos(f2), Math.cos(f1) * Math.sin(f2) - Math.sin(f1) * Math.cos(f2) * Math.cos(dl));
+    const names = ['正北', '东北', '正东', '东南', '正南', '西南', '正西', '西北'];
+    return names[Math.round(((t / DEG + 360) % 360) / 45) % 8];
+  };
+  const coordText = (lon, lat) => Math.abs(lon).toFixed(1) + '°' + (lon >= 0 ? 'E' : 'W') + ' / ' + Math.abs(lat).toFixed(1) + '°' + (lat >= 0 ? 'N' : 'S');
+  const card = document.createElement('div');
+  card.className = 'earth-card';
+  stage.appendChild(card);
+  const showCard = (en, title, rows) => {
+    card.innerHTML = '<button class="earth-card-close" type="button">✕ 关闭</button>'
+      + '<div class="earth-card-tag">' + en + '</div>'
+      + '<h4 class="earth-card-title">' + title + '</h4>'
+      + rows.map(r => '<div class="earth-card-row"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>').join('');
+    card.classList.add('is-show');
+  };
+  card.addEventListener('click', e => {
+    if (e.target.classList.contains('earth-card-close')) card.classList.remove('is-show');
+  });
+
+  addLabel(HUB.name, true, spin, hubV.clone(), () => showCard('HUB · ZHEJIANG', HUB.name, [
+    ['角色', '全球航线中枢'],
+    ['坐标', coordText(HUB.lon, HUB.lat)],
+    ['覆盖航线', CITIES.length + ' 条'],
+  ]));
+  CITIES.forEach((c, i) => addLabel(c[0], false, spin, cityV[i].clone(), () => {
+    const dist = distKm(HUB, { lon: c[1], lat: c[2] });
+    const status = ORANGE[c[0]] ? '洲际干线' : (LONG_HAUL[c[0]] ? '长途航线' : '区域航线');
+    showCard(status.toUpperCase(), c[0], [
+      ['坐标', coordText(c[1], c[2])],
+      ['距浙江', dist.toLocaleString() + ' km'],
+      ['航向', bearingCN(HUB, { lon: c[1], lat: c[2] })],
+      ['航线状态', '✈ 已开通'],
+    ]);
+  }));
+
+  // ---------- 图层开关(顶部 chips,对应视频左侧菜单) ----------
+  const LAYERS = {
+    dots:   { on: true, apply: v => { if (dotsPts) dotsPts.visible = v; } },
+    border: { on: true, apply: v => { if (bordersLines) bordersLines.visible = v; } },
+    flight: { on: true, apply: v => { arcsGroup.visible = v; } },
+    bars:   { on: false, apply: v => { barsGroup.visible = v; } },
+    ring:   { on: true, apply: v => { ringGroup.visible = v; } },
+    stars:  { on: true, apply: v => { if (starsObj) starsObj.visible = v; } },
+    label:  { on: true, apply: v => { labelsOn = v; if (!v) card.classList.remove('is-show'); } },
+  };
+  document.querySelectorAll('.earth-chip[data-layer]').forEach(chip => {
+    const L = LAYERS[chip.dataset.layer];
+    if (!L) return;
+    const sync = () => chip.classList.toggle('is-off', !L.on);
+    chip.addEventListener('click', e => { e.preventDefault(); L.on = !L.on; L.apply(L.on); sync(); });
+    L.apply(L.on); sync();
+  });
 
   // ---------- 相机:初始对准浙江 ----------
   const camDir = hubV.clone().normalize();
@@ -380,11 +465,30 @@
   const clock = new THREE.Clock();
   const wp = new THREE.Vector3();
   const proj = new THREE.Vector3();
-  let firstFrame = true;
+
+  // 标签投影(首帧与每帧共用)
+  const updateLabels = () => {
+    for (const L of labels) {
+      if (!labelsOn) { L.el.style.visibility = 'hidden'; continue; }
+      L.anchorObj.localToWorld(wp.copy(L.localPos));
+      const facing = wp.clone().normalize().dot(camBase);
+      proj.copy(wp).project(camera);
+      const x = (proj.x * 0.5 + 0.5) * W;
+      const y = (-proj.y * 0.5 + 0.5) * H;
+      L.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-140%)';
+      const o = facing > 0.16 ? Math.min(1, (facing - 0.16) / 0.22) : 0;
+      L.el.style.opacity = o.toFixed(2);
+      L.el.style.visibility = o > 0.03 ? 'visible' : 'hidden';
+    }
+  };
+
+  // 首帧同步渲染:后台标签页 rAF 暂停时也立刻可见,不再卡加载圈
+  try { renderer.render(scene, camera); } catch { }
+  updateLabels();
+  if (loading) loading.style.display = 'none';
 
   const frame = () => {
     requestAnimationFrame(frame);
-    if (document.hidden) return;
     // 尺寸自愈:主题布局/字体加载晚于首帧时跟上
     if (stage.clientWidth !== lastW || stage.clientHeight !== lastH) resize();
     const dt = Math.min(clock.getDelta(), 0.05);
@@ -424,22 +528,9 @@
     setCam();
 
     // 标签投影
-    for (const L of labels) {
-      L.anchorObj.localToWorld(wp.copy(L.localPos));
-      const facing = wp.clone().normalize().dot(camBase);
-      proj.copy(wp).project(camera);
-      const x = (proj.x * 0.5 + 0.5) * W;
-      const y = (-proj.y * 0.5 + 0.5) * H;
-      L.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-140%)';
-      const o = facing > 0.16 ? Math.min(1, (facing - 0.16) / 0.22) : 0;
-      L.el.style.opacity = o.toFixed(2);
-    }
+    updateLabels();
 
     renderer.render(scene, camera);
-    if (firstFrame) {
-      firstFrame = false;
-      if (loading) loading.style.display = 'none';
-    }
   };
   frame();
 })();

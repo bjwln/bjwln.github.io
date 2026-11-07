@@ -1,8 +1,19 @@
 /* ---------- 3D 地球页(摸鱼·星航线) ---------- */
-/* 本样式表仅在 /earth/ 页引入:隐藏主题页头大标题,给地球腾出沉浸空间 */
+/* 本样式表仅在 /earth/ 页引入:隐藏主题页头大标题;内容面板透明化,
+   避免"主题面板 + 全宽面板"两层叠加的观感 */
 #page-header.not-top-img { display: none !important; }
 #page .page-title { display: none !important; }
-#article-container { padding-top: 8px !important; }
+#article-container {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+#page { background: transparent !important; box-shadow: none !important; }
+#content-inner { padding-top: 66px !important; }
 
 .earth-wrap {
   /* 全出血:突破文章容器留白 */
@@ -25,7 +36,35 @@
   font-size: 11px; letter-spacing: 1.5px; color: #8fb6e0;
   border: 1px solid rgba(110, 165, 235, .28); border-radius: 999px; padding: 3px 11px;
   background: rgba(10, 24, 46, .5);
+  cursor: pointer; user-select: none; transition: color .2s, border-color .2s, opacity .2s;
 }
+.earth-chip:hover { color: #fff; border-color: rgba(160, 205, 255, .6); }
+.earth-chip.is-off { opacity: .38; text-decoration: line-through; }
+
+/* 城市信息卡(点标签弹出,仿视频右侧详情面板) */
+.earth-card {
+  position: absolute; z-index: 6; right: 16px; top: 64px; width: 232px;
+  background: rgba(7, 18, 38, .88); border: 1px solid rgba(120, 180, 255, .3);
+  border-radius: 10px; padding: 14px 16px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
+  opacity: 0; visibility: hidden; transform: translateX(14px);
+  transition: opacity .25s, transform .25s, visibility .25s;
+}
+.earth-card.is-show { opacity: 1; visibility: visible; transform: translateX(0); }
+.earth-card-close {
+  position: absolute; right: 9px; top: 8px; font-size: 11px; letter-spacing: 1px;
+  color: #7d9ec6; background: none; border: none; cursor: pointer; padding: 3px 6px;
+}
+.earth-card-close:hover { color: #fff; }
+.earth-card-tag { font-size: 10px; letter-spacing: 2.5px; color: #6d92bd; margin-bottom: 6px; }
+.earth-card-title { margin: 0 0 10px; font-size: 18px; letter-spacing: 4px; color: #e8f3ff; font-weight: 600; }
+.earth-card-row {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 12px; padding: 5px 0; border-top: 1px solid rgba(110, 165, 235, .14);
+  color: #9db8d8;
+}
+.earth-card-row b { color: #e8f3ff; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
 
 .earth-stage {
   position: relative; max-width: 1180px; margin: 0 auto;
@@ -92,4 +131,5 @@
   .earth-label { font-size: 10px; padding: 2px 6px; }
   .earth-chips { display: none; }
   .earth-hint { display: none; }
+  .earth-card { right: 10px; top: 10px; width: 200px; padding: 12px 13px 10px; }
 }

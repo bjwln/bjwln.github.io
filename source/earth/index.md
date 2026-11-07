@@ -7,7 +7,7 @@ comment: false
 description: Three.js 渲染的 3D 地球——陆地点阵、国界线、从浙江出发的飞线与星海光环
 ---
 
-<link rel="stylesheet" href="/css/earth.css?v=20261107c">
+<link rel="stylesheet" href="/css/earth.css?v=20261108b">
 
 <div class="earth-wrap">
 
@@ -15,11 +15,13 @@ description: Three.js 渲染的 3D 地球——陆地点阵、国界线、从浙
 <span class="earth-title">星航线</span>
 <span class="earth-sub">BLUE PLANET · THREE.JS</span>
 <span class="earth-chips">
-<span class="earth-chip">陆地点阵</span>
-<span class="earth-chip">飞线</span>
-<span class="earth-chip">标签</span>
-<span class="earth-chip">粒子光环</span>
-<span class="earth-chip">星海</span>
+<span class="earth-chip" data-layer="dots">陆地点阵</span>
+<span class="earth-chip" data-layer="border">国界线</span>
+<span class="earth-chip" data-layer="flight">飞线</span>
+<span class="earth-chip" data-layer="bars">柱状图</span>
+<span class="earth-chip" data-layer="label">标签</span>
+<span class="earth-chip" data-layer="ring">粒子光环</span>
+<span class="earth-chip" data-layer="stars">星海</span>
 </span>
 </div>
 
@@ -34,5 +36,5 @@ description: Three.js 渲染的 3D 地球——陆地点阵、国界线、从浙
 </div>
 
 <script src="/js/lib/three.min.js"></script>
-<script src="/js/earth-data.js?v=20261107a"></script>
-<script src="/js/earth.js?v=20261107c" defer></script>
+<script src="/js/earth-data.js?v=20261108a"></script>
+<script src="/js/earth.js?v=20261108b" defer></script>
