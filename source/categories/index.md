@@ -7,7 +7,7 @@ comment: false
 description: 按分类浏览全部文章
 ---
 
-<link rel="stylesheet" href="/css/hot-wall.css?v=20261107a">
+<link rel="stylesheet" href="/css/hot-wall.css?v=20261108a">
 
 <div id="hot-posts-page" data-sort="date">
   <div class="hot-toolbar">
