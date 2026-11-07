@@ -1,0 +1,153 @@
+/* ============================================================
+ * PDF 工具箱 · pdftool.css（/moyu/pdf/ 专用，starlite 设计语言）
+ * 结构：去底板重置 → hero 间距 → tabs → 面板 → 控件 → 结果区
+ * 双模式：夜间深磨砂金字，白天白磨砂深金字
+ * ============================================================ */
+body:has(#pdf-app) div#page,
+[data-theme="dark"] body:has(#pdf-app) div#page {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 16px !important;
+}
+.page-title { display: none !important; }
+
+#pdf-app {
+  --pt-line: rgba(232, 217, 160, 0.16);
+  --pt-gold: #e8d9a0;
+  --pt-gold-dim: #c9bd8e;
+  --pt-text: #e6e4dc;
+  --pt-muted: #8f8e9a;
+  --pt-card: rgba(20, 20, 31, 0.72);
+  --pt-ink: #3a3527;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4px 6px 30px;
+  color: var(--pt-text);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ---------- tabs ---------- */
+.pt-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px 0 18px; }
+.pt-tab {
+  padding: 7px 18px; border-radius: 999px; border: 1px solid var(--pt-line);
+  background: rgba(232, 217, 160, 0.06); color: var(--pt-muted);
+  font-size: 13.5px; font-family: inherit; cursor: pointer; letter-spacing: 1px;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.pt-tab:hover { color: var(--pt-gold); border-color: rgba(232, 217, 160, .4); }
+.pt-tab.is-active {
+  background: linear-gradient(180deg, #efe3b6, #e2d193); color: var(--pt-ink);
+  border-color: transparent; font-weight: 600; box-shadow: 0 2px 10px rgba(178, 144, 62, .25);
+}
+
+/* ---------- 面板 ---------- */
+.pt-panel {
+  display: none; border: 1px solid var(--pt-line); border-radius: 14px;
+  background: linear-gradient(180deg, rgba(232, 217, 160, .035), rgba(232, 217, 160, .012)), var(--pt-card);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 22px 24px; margin: 0 2px 18px;
+}
+.pt-panel.is-active { display: block; }
+.pt-h { margin: 0 0 14px; font-size: 17px; letter-spacing: 2px; color: var(--pt-gold); font-weight: 600; font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; }
+.pt-h small { font-size: 12px; color: var(--pt-muted); letter-spacing: 1px; margin-left: 10px; font-family: inherit; }
+
+/* ---------- 文件选择 ---------- */
+.pt-file { display: block; cursor: pointer; }
+.pt-file input { display: none; }
+.pt-file span {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  border: 1.5px dashed rgba(232, 217, 160, .35); border-radius: 12px;
+  padding: 18px 16px; color: var(--pt-muted); font-size: 14px;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.pt-file span i { color: var(--pt-gold-dim); font-size: 18px; }
+.pt-file:hover span { border-color: rgba(232, 217, 160, .6); color: var(--pt-text); background: rgba(232, 217, 160, .04); }
+
+/* ---------- 其他控件 ---------- */
+.pt-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--pt-muted); margin: 14px 0 0; }
+.pt-field input, .pt-field select {
+  background: rgba(20, 20, 31, .55); border: 1px solid var(--pt-line); color: var(--pt-text);
+  border-radius: 9px; padding: 10px 12px; font-size: 14px; outline: none; width: 100%;
+  font-family: inherit; transition: border-color .2s;
+}
+.pt-field input:focus, .pt-field select:focus { border-color: var(--pt-gold-dim); }
+.pt-field select option { background: #1a1a28; color: var(--pt-text); }
+.pt-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.pt-row .pt-field { flex: 1 1 150px; margin-top: 14px; }
+.pt-row .pt-grow { flex: 2 1 220px; }
+
+/* ---------- 文件列表 ---------- */
+.pt-list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pt-list li {
+  display: flex; align-items: center; gap: 10px; font-size: 13.5px;
+  border: 1px solid var(--pt-line); border-radius: 9px; padding: 8px 12px;
+  background: rgba(232, 217, 160, .03);
+}
+.pt-list li .pt-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-list li .pt-size { color: var(--pt-muted); font-size: 12px; flex: none; }
+.pt-list li button {
+  background: none; border: 1px solid var(--pt-line); color: var(--pt-muted);
+  border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 12px; font-family: inherit;
+  transition: color .2s, border-color .2s;
+}
+.pt-list li button:hover { color: var(--pt-gold); border-color: rgba(232, 217, 160, .4); }
+.pt-list li button:disabled { opacity: .35; cursor: default; }
+
+/* ---------- 按钮 / 状态 ---------- */
+.pt-actions { display: flex; align-items: center; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
+.pt-btn {
+  background: linear-gradient(180deg, #efe3b6, #e2d193); color: var(--pt-ink); border: none;
+  padding: 11px 24px; border-radius: 10px; font-size: 14.5px; font-weight: 600; letter-spacing: 2px;
+  cursor: pointer; box-shadow: 0 2px 14px rgba(232, 217, 160, .13);
+  transition: transform .18s, box-shadow .18s; font-family: "Noto Serif SC", "SimSun", serif;
+}
+.pt-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232, 217, 160, .22); }
+.pt-btn:disabled { opacity: .45; cursor: not-allowed; }
+.pt-err { color: #d98f7e; font-size: 13px; }
+.pt-status { color: var(--pt-muted); font-size: 13px; }
+
+/* ---------- 结果区 ---------- */
+.pt-results { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.pt-results:empty { display: none; }
+.pt-results a {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--pt-gold-dim);
+  font-size: 13.5px; text-decoration: none; border: 1px solid var(--pt-line);
+  border-radius: 9px; padding: 8px 12px; transition: border-color .2s, color .2s;
+}
+.pt-results a:hover { color: var(--pt-gold); border-color: rgba(232, 217, 160, .4); }
+
+/* ---------- 页脚 ---------- */
+.pt-foot { margin-top: 6px; padding: 0 4px; }
+.pt-foot p { font-size: 12.5px; color: var(--pt-muted); line-height: 1.8; }
+.pt-foot a { color: var(--pt-gold-dim); }
+
+/* ---------- 白天模式 ---------- */
+[data-theme="light"] #pdf-app {
+  --pt-line: rgba(90, 70, 20, 0.18);
+  --pt-gold: #8a6a26;
+  --pt-gold-dim: #9c7a2d;
+  --pt-text: #33333b;
+  --pt-muted: #5f6b7a;
+  --pt-card: rgba(255, 255, 255, 0.66);
+  --pt-ink: #3a3527;
+}
+[data-theme="light"] .pt-tab { background: rgba(120, 94, 32, .07); }
+[data-theme="light"] .pt-tab.is-active { background: linear-gradient(180deg, #efe3b6, #e2d193); color: var(--pt-ink); }
+[data-theme="light"] .pt-field input, [data-theme="light"] .pt-field select { background: rgba(255, 255, 255, .7); }
+[data-theme="light"] .pt-field select option { background: #fff; color: #33333b; }
+[data-theme="light"] .pt-list li { background: rgba(120, 94, 32, .04); }
+[data-theme="light"] .pt-file span { border-color: rgba(120, 94, 32, .3); }
+[data-theme="light"] .pt-file:hover span { border-color: rgba(120, 94, 32, .55); background: rgba(120, 94, 32, .04); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 600px) {
+  #pdf-app { font-size: 14px; }
+  .pt-panel { padding: 16px 16px; }
+  .pt-tab { padding: 6px 14px; font-size: 12.5px; }
+  .pt-row { flex-direction: column; }
+  .pt-row .pt-field { flex: 1 1 auto; }
+}

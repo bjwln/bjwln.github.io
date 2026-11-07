@@ -1,3 +1,5 @@
+!=partial('includes/page/starlite-hero', { icon: 'book', sub: 'READING PLAN', motto: '先把路画在纸上，再一步步走完。' })
+
 #article-container.research-plan-container.container
   - const researchPosts = site.posts.filter(post => post.research).toArray()
   - const postManifest = researchPosts.map(post => ({ title: post.title, path: url_for(post.path) }))

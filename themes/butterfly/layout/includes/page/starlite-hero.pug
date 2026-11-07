@@ -1,0 +1,19 @@
+//- starlite-hero：内容页统一头部（图标 + 衬线大标题 + 字距副标 + 一句话）
+//- 用法: !=partial('includes/page/starlite-hero', { icon: 'tv', sub: 'BANGUMI · WATCHLIST', motto: '...' })
+//- title 缺省取 page.title；icon 可选 tv/fire/flask/book/tag
+- const shTitle = title || page.title
+- const shIcons = {}
+- shIcons.tv = '<svg viewBox="0 0 64 48" width="44" height="33"><rect x="10" y="16" width="44" height="28" rx="5"/><path d="M24 16 L16 5 M40 16 L48 5"/><path d="M17 24 L47 24 M17 31 L38 31"/></svg>'
+- shIcons.fire = '<svg viewBox="0 0 48 56" width="33" height="39"><path d="M24 4 C30 14 40 18 40 32 A16 16 0 0 1 8 32 C8 24 13 20 16 14 C18 20 22 21 24 16 C26 12 25 8 24 4 Z"/><path d="M24 44 C20 44 17 41 17 37 C17 33 21 31 24 27 C27 31 31 33 31 37 C31 41 28 44 24 44 Z"/></svg>'
+- shIcons.flask = '<svg viewBox="0 0 52 52" width="36" height="36"><path d="M20 6 L32 6 M23 6 L23 22 L11 40 A5 5 0 0 0 15 47 L37 47 A5 5 0 0 0 41 40 L29 22 L29 6"/><path d="M17 33 L35 33"/><circle cx="24" cy="40" r="1.4"/><circle cx="31" cy="38" r="1"/></svg>'
+- shIcons.book = '<svg viewBox="0 0 56 48" width="38" height="33"><path d="M28 10 C22 5 12 4 6 6 L6 40 C12 38 22 39 28 44 C34 39 44 38 50 40 L50 6 C44 4 34 5 28 10 Z"/><path d="M28 10 L28 44"/><path d="M12 15 L22 15 M12 22 L22 22 M34 15 L44 15 M34 22 L44 22"/></svg>'
+- shIcons.tag = '<svg viewBox="0 0 56 48" width="38" height="33"><path d="M30 5 L49 5 L49 24 L27 46 L7 26 Z"/><circle cx="40" cy="14" r="3.5"/><path d="M18 24 L32 38"/></svg>'
+- const shSvg = shIcons[icon] || shIcons.fire
+
+.starlite-hero
+  span.sh-icon!= shSvg
+  h1.sh-title= shTitle
+  if sub
+    span.sh-sub= sub
+  if motto
+    p.sh-motto= motto

@@ -1,0 +1,88 @@
+// ============================================================
+// ★ starlite-hero：内容页统一 hero 头部（与「摸鱼」同设计语言）
+//   结构：线稿图标 + 衬线大标题 + 字距副标 + 一句话
+//   由 includes/page/starlite-hero.pug 输出 .starlite-hero；
+//   页面一旦存在 hero，主题的 .page-title 自动隐藏
+//   双模式：夜间金字/奶白标题，白天深金/深灰标题
+// ============================================================
+
+// 有 hero 的页面：隐藏主题页标题（:has 现代浏览器均支持）
+body:has(.starlite-hero) .page-title,
+[data-theme="dark"] body:has(.starlite-hero) .page-title
+  display: none !important
+
+.starlite-hero
+  text-align: center
+  padding: 30px 16px 6px
+  color: #3a3a42
+
+  .sh-icon
+    display: block
+    margin: 0 auto 14px
+    color: #8a6a26
+    line-height: 1
+
+  .sh-title
+    margin: 0
+    font-size: 36px
+    font-weight: 600
+    letter-spacing: 14px
+    text-indent: 14px
+    font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", "SimSun", serif
+    color: #2e2e36
+
+  .sh-sub
+    display: block
+    margin-top: 10px
+    font-size: 11.5px
+    letter-spacing: 4px
+    color: #3f5470
+
+  .sh-motto
+    margin: 14px auto 0
+    max-width: 480px
+    font-size: 14px
+    color: #46586e
+
+[data-theme="dark"] .starlite-hero
+  color: var(--fg-muted, #8f8e9a)
+
+  .sh-icon
+    color: #e8d9a0
+
+  .sh-title
+    color: #e6e4dc
+
+  .sh-sub
+    color: #8f8e9a
+
+  .sh-motto
+    color: #9a99a4
+
+.starlite-hero
+  .sh-icon svg
+    display: block
+    margin: 0 auto
+
+  svg *
+    fill: none
+    stroke: currentColor
+    stroke-width: 1.6
+    stroke-linecap: round
+    stroke-linejoin: round
+
+@media (max-width: 600px)
+  .starlite-hero
+    padding: 18px 14px 2px
+
+    .sh-title
+      font-size: 26px
+      letter-spacing: 8px
+      text-indent: 8px
+
+    .sh-sub
+      font-size: 10.5px
+      letter-spacing: 3px
+
+    .sh-motto
+      font-size: 13px

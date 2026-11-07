@@ -1,3 +1,5 @@
+!=partial('includes/page/starlite-hero', { icon: 'flask', sub: 'RESEARCH · TIMELINE', motto: '读文献，也记录走过的每一步。' })
+
 #article-container.research-container.container
   - const research = site.data.research || {}
   - const researchPosts = site.posts.filter(post => post.research).sort('-date').toArray()

@@ -99,6 +99,19 @@
 .m-ph-title { margin: 0 0 6px; font-size: 15px; letter-spacing: 3px; color: var(--m-muted); font-weight: 600; }
 .m-ph-desc { margin: 0; font-size: 12.5px; color: var(--m-muted); opacity: .7; }
 
+/* 工具卡（PDF 工具箱等） */
+.m-tool { display: flex; align-items: center; gap: 18px; padding: 24px 26px; text-decoration: none; color: inherit; }
+.m-tool-icon { flex: none; color: var(--m-gold); line-height: 1; opacity: .9; transition: transform .3s; }
+.m-tool-icon svg rect { fill: none; stroke: currentColor; stroke-width: 1.8; }
+.m-tool-icon svg path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.m-tool:hover .m-tool-icon { transform: translateY(-3px); }
+.m-tool-body { flex: 1; min-width: 0; }
+.m-tool-title { margin: 0 0 3px; font-size: 18px; letter-spacing: 3px; color: var(--m-gold); font-weight: 600; font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; }
+.m-tool-en { display: block; font-size: 10px; letter-spacing: 2.5px; color: var(--m-muted); margin-bottom: 8px; }
+.m-tool-desc { margin: 0; font-size: 13px; color: var(--m-text); opacity: .8; }
+.m-tool-arrow { flex: none; color: var(--m-gold-dim); transition: transform .25s; }
+.m-tool:hover .m-tool-arrow { transform: translateX(4px); color: var(--m-gold); }
+
 /* ---------- 页脚 ---------- */
 .m-foot { text-align: center; margin-top: 26px; color: var(--m-muted); font-size: 12.5px; opacity: .75; }
 

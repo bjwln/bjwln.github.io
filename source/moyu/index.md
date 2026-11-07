@@ -8,7 +8,7 @@ comment: false
 description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261107c">
+<link rel="stylesheet" href="/css/moyu.css?v=20261108c">
 
 <div id="moyu-app">
 
@@ -88,16 +88,20 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 </div>
 </a>
 
-<div class="m-card m-placeholder">
-<i class="fas fa-gamepad" aria-hidden="true"></i>
-<h3 class="m-ph-title">游戏位 · 一号</h3>
-<p class="m-ph-desc">还在鱼塘里游着，快了。</p>
+<a class="m-card m-tool" href="/moyu/pdf/">
+<span class="m-tool-icon"><svg viewBox="0 0 48 56" width="30" height="35"><path d="M8 4 L30 4 L40 14 L40 52 L8 52 Z"/><path d="M30 4 L30 14 L40 14"/><path d="M15 24 L33 24 M15 31 L33 31 M15 38 L27 38"/></svg></span>
+<div class="m-tool-body">
+<h3 class="m-tool-title">PDF 工具箱</h3>
+<span class="m-tool-en">PDF TOOLKIT · LOCAL</span>
+<p class="m-tool-desc">合并、提取页面、删除页面、旋转、图片互转——文件不出浏览器，处理完即走。灵感来自 PDFCraft。</p>
 </div>
+<span class="m-tool-arrow"><i class="fas fa-arrow-right"></i></span>
+</a>
 
 <div class="m-card m-placeholder">
-<i class="fas fa-dice" aria-hidden="true"></i>
-<h3 class="m-ph-title">游戏位 · 二号</h3>
-<p class="m-ph-desc">别催，鱼还没上钩。</p>
+<i class="fas fa-gamepad" aria-hidden="true"></i>
+<h3 class="m-ph-title">游戏位 · 敬请期待</h3>
+<p class="m-ph-desc">还在鱼塘里游着，快了。</p>
 </div>
 
 </section>
