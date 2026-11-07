@@ -636,7 +636,8 @@
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
     spin.rotation.y += dx * 0.005;
-    tilt.rotation.x = Math.max(-0.7, Math.min(0.7, tilt.rotation.x + dy * 0.003));
+    // 相机从上方俯视:dy<0(上滑)需增大 rotation.x 才能让球面点跟着鼠标向上走
+    tilt.rotation.x = Math.max(-0.7, Math.min(0.7, tilt.rotation.x - dy * 0.002));
     velY = dx * 0.005;
     lastTouch = performance.now();
   };
@@ -740,4 +741,6 @@
     renderer.render(scene, camera);
   };
   frame();
+  // 调试钩子(控制台:__earth() 查看当前旋转/缩放)
+  window.__earth = () => ({ tiltX: tilt.rotation.x, spinY: spin.rotation.y, dist: camDist });
 })();

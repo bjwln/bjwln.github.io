@@ -42,4 +42,4 @@ description: Three.js 渲染的 3D 地球——陆地点阵、国界线、从浙
 
 <script src="/js/lib/three.min.js"></script>
 <script src="/js/earth-data.js?v=20261108a"></script>
-<script src="/js/earth.js?v=20261108c" defer></script>
+<script src="/js/earth.js?v=20261108d" defer></script>
