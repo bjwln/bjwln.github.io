@@ -114,6 +114,27 @@
 }
 .earth-fps { position: absolute; z-index: 5; right: 14px; bottom: 12px; font-size: 10px; color: #3c5474; pointer-events: none; font-variant-numeric: tabular-nums; }
 
+/* 实时数据 HUD(航班/地震/ISS) */
+.earth-live {
+  position: absolute; z-index: 5; right: 14px; bottom: 12px;
+  display: flex; gap: 10px; align-items: center;
+  font-size: 11px; letter-spacing: 1px; color: #9db8d8;
+  background: rgba(6, 15, 32, .66); border: 1px solid rgba(110, 165, 235, .22);
+  border-radius: 999px; padding: 5px 13px;
+  pointer-events: none; font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.earth-live span[data-ok="0"] { color: #b0685a; }
+.earth-live span[data-ok="1"] { color: #a7e0b2; }
+.earth-label.is-iss {
+  color: #ffe1a1; border-color: rgba(255, 205, 110, .5);
+  background: rgba(30, 20, 5, .8); font-weight: 600;
+  box-shadow: 0 0 10px rgba(255, 190, 80, .3);
+}
+.earth-live-hint {
+  font-size: 10px; letter-spacing: 1px; color: #4f6b8e; text-align: center; padding: 10px 0 0;
+}
+
 /* 加载/降级 */
 .earth-loading {
   position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column;

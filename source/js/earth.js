@@ -393,6 +393,208 @@
     ]);
   }));
 
+  // ============================================================
+  // 实时数据层(致敬 God's Eye View:公开数据源,全部无需 Key)
+  //   ✈ 航班:OpenSky Network(东亚范围,10 分钟刷新)
+  //   🌍 地震:USGS 24h Feed(5 分钟刷新,M≥5 有扩散脉冲)
+  //   🛰 ISS:WhereTheISS.at(12 秒刷新)
+  // ============================================================
+  const liveGroup = new THREE.Group();
+  spin.add(liveGroup);
+  const quakesGroup = new THREE.Group();
+  liveGroup.add(quakesGroup);
+  const issGroup = new THREE.Group();
+  spin.add(issGroup);
+  let planesOn = true, quakesOn = true, issOn = true;
+  let planesPts = null, planesList = [];
+  const quakePulses = [];
+  const issSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: TEX_GOLD, color: '#ffe9b8', transparent: true,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+  issSprite.scale.setScalar(0.085);
+  issGroup.add(issSprite);
+  const issLabel = document.createElement('div');
+  issLabel.className = 'earth-label is-iss';
+  issLabel.textContent = '🛰 ISS';
+  stage.appendChild(issLabel);
+  const issData = { lat: 0, lon: 0, alt: 0, at: 0 };
+  const issPos = new THREE.Vector3();
+
+  // HUD 状态条
+  const liveBar = document.createElement('div');
+  liveBar.className = 'earth-live';
+  liveBar.innerHTML = '<span id="live-f">✈ 航班加载中</span><span id="live-q">🌍 地震加载中</span><span id="live-i">🛰 ISS …</span>';
+  stage.appendChild(liveBar);
+  const liveF = liveBar.querySelector('#live-f');
+  const liveQ = liveBar.querySelector('#live-q');
+  const liveI = liveBar.querySelector('#live-i');
+
+  const fetchJSON = async (url, ms) => {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), ms || 15000);
+    try {
+      const r = await fetch(url, { signal: ctl.signal });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return await r.json();
+    } finally { clearTimeout(timer); }
+  };
+  const minsAgo = ts => { const m = Math.round((Date.now() - ts) / 60000); return m <= 0 ? '刚刚' : m + ' 分钟前'; };
+
+  // ---- 航班 ----
+  function setPlanes(states) {
+    const rows = (states || []).filter(s => s[5] != null && s[6] != null && !s[8]);
+    planesList = rows;
+    const pos = new Float32Array(rows.length * 3);
+    const col = new Float32Array(rows.length * 3);
+    const cLow = new THREE.Color('#eaf4ff'), cMid = new THREE.Color('#7fd0ff'), cHigh = new THREE.Color('#3f8dff');
+    const v = new THREE.Vector3();
+    rows.forEach((s, i) => {
+      const alt = Math.max(0, s[7] || 0);
+      v.copy(ll2v(s[5], s[6], 1.005 + Math.min(0.018, alt / 900000)));
+      pos[i * 3] = v.x; pos[i * 3 + 1] = v.y; pos[i * 3 + 2] = v.z;
+      const c = alt < 3000 ? cLow : alt < 9000 ? cMid : cHigh;
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+    });
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    if (planesPts) { liveGroup.remove(planesPts); planesPts.geometry.dispose(); planesPts.material.dispose(); }
+    planesPts = new THREE.Points(geo, new THREE.PointsMaterial({
+      size: 0.012, vertexColors: true, map: TEX_WHITE, transparent: true, opacity: 0.95,
+      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+    }));
+    planesPts.visible = planesOn;
+    liveGroup.add(planesPts);
+    liveF.textContent = '✈ ' + rows.length.toLocaleString() + ' 架在空 · ' + minsAgo(Date.now());
+    liveF.dataset.ok = '1';
+  }
+  let flightFails = 0;
+  async function pollFlights() {
+    if (document.hidden) return;
+    liveF.textContent = '✈ 航班刷新中…';
+    try {
+      const d = await fetchJSON('https://opensky-network.org/api/states/all?lamin=0&lomin=70&lamax=55&lomax=150', 20000);
+      flightFails = 0;
+      setPlanes(d.states || []);
+    } catch (e) {
+      liveF.textContent = '✈ 航班源限流,稍后自动重试';
+      liveF.dataset.ok = '0';
+      flightFails++;
+      if (flightFails <= 3) setTimeout(pollFlights, 90000); // 快速重试几次,别让首访一直等
+    }
+  }
+
+  // ---- 地震 ----
+  function setQuakes(features) {
+    quakesGroup.clear();
+    quakePulses.length = 0;
+    const rows = (features || []).filter(f => f.geometry && f.geometry.coordinates);
+    const pos = new Float32Array(rows.length * 3);
+    const v = new THREE.Vector3();
+    rows.forEach((f, i) => {
+      const [lon, lat, dep] = f.geometry.coordinates;
+      v.copy(ll2v(lon, lat, 1.004 + Math.min(0.01, Math.max(0, dep) / 500000)));
+      pos[i * 3] = v.x; pos[i * 3 + 1] = v.y; pos[i * 3 + 2] = v.z;
+      if ((f.properties.mag || 0) >= 5 && quakePulses.length < 14) {
+        const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: TEX_GOLD, color: '#ff9c6b', transparent: true,
+          blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.5,
+        }));
+        sp.position.copy(v);
+        quakesGroup.add(sp);
+        quakePulses.push({ sprite: sp, phase: Math.random(), mag: f.properties.mag || 5 });
+      }
+    });
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    quakesGroup.add(new THREE.Points(geo, new THREE.PointsMaterial({
+      color: '#ff8a5c', size: 0.011, map: TEX_WHITE, transparent: true, opacity: 0.9,
+      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+    })));
+    liveQ.textContent = '🌍 ' + rows.length + ' 次地震(24h) · ' + minsAgo(Date.now());
+    liveQ.dataset.ok = '1';
+  }
+  async function pollQuakes() {
+    if (document.hidden) return;
+    try {
+      const d = await fetchJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson', 15000);
+      setQuakes(d.features || []);
+    } catch (e) {
+      liveQ.textContent = '🌍 地震源暂不可用';
+    }
+  }
+
+  // ---- ISS ----
+  async function pollISS() {
+    if (document.hidden) return;
+    try {
+      const d = await fetchJSON('https://api.wheretheiss.at/v1/satellites/25544', 10000);
+      issData.lat = d.latitude; issData.lon = d.longitude; issData.alt = d.altitude; issData.at = Date.now();
+      issPos.copy(ll2v(d.longitude, d.latitude, 1 + Math.max(0, d.altitude) / 6371000));
+      issSprite.position.copy(issPos);
+      liveI.textContent = '🛰 ISS ' + Math.round(d.altitude) + 'km';
+      liveI.dataset.ok = '1';
+    } catch (e) { /* 保持上次位置 */ }
+  }
+  pollFlights(); pollQuakes(); pollISS();
+  setInterval(pollFlights, 600000);
+  setInterval(pollQuakes, 300000);
+  setInterval(pollISS, 12000);
+  setInterval(() => { // HUD 时效性(不依赖 rAF)
+    if (liveF.dataset.ok === '1') liveF.textContent = '✈ ' + planesList.length.toLocaleString() + ' 架在空 · ' + minsAgo(Date.now());
+    if (liveQ.dataset.ok === '1') liveQ.textContent = liveQ.textContent.replace(/ · .*$/, '') + ' · ' + minsAgo(Date.now());
+    if (issData.at) liveI.textContent = '🛰 ISS ' + Math.round(issData.alt) + 'km · ' + Math.round((Date.now() - issData.at) / 1000) + 's 前';
+  }, 4000);
+
+  // ---- 点选航班 → 信息卡 ----
+  const raycaster = new THREE.Raycaster();
+  raycaster.params.Points.threshold = 0.018;
+  const ndc = new THREE.Vector2();
+  let downX = 0, downY = 0, downT = 0;
+  stage.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; downT = performance.now(); });
+  stage.addEventListener('click', e => {
+    if (Math.hypot(e.clientX - downX, e.clientY - downY) > 5 || performance.now() - downT > 700) return;
+    if (!planesOn || !planesPts || !planesList.length) return;
+    const r = stage.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    raycaster.setFromCamera(ndc, camera);
+    const hits = raycaster.intersectObject(planesPts);
+    if (hits.length && hits[0].index != null) {
+      const s = planesList[hits[0].index];
+      const cs = String(s[1] || '').trim();
+      showCard('LIVE FLIGHT', cs || String(s[0]).toUpperCase(), [
+        ['ICAO24', String(s[0])],
+        ['注册地', String(s[2] || '-')],
+        ['高度', Math.round(s[7] || 0).toLocaleString() + ' m'],
+        ['地速', Math.round(s[9] || 0) + ' km/h'],
+        ['航向', Math.round(s[10] || 0) + '°'],
+      ]);
+    } else {
+      card.classList.remove('is-show');
+    }
+  });
+
+  // 每帧更新:地震脉冲 + ISS 动态标签
+  const issWp = new THREE.Vector3();
+  function updateLive(t) {
+    for (const p of quakePulses) {
+      const k = (t * 0.45 + p.phase) % 1;
+      p.sprite.scale.setScalar(0.05 + k * (0.14 + p.mag * 0.035));
+      p.sprite.material.opacity = 0.55 * (1 - k);
+    }
+    if (!issOn || !issData.at) { issLabel.style.visibility = 'hidden'; return; }
+    issSprite.getWorldPosition(issWp);
+    const facing = issWp.clone().normalize().dot(camBase);
+    proj.copy(issWp).project(camera);
+    const x = (proj.x * 0.5 + 0.5) * W;
+    const y = (-proj.y * 0.5 + 0.5) * H;
+    issLabel.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-150%)';
+    const o = facing > -0.05 ? 1 : 0;
+    issLabel.style.opacity = o.toFixed(2);
+    issLabel.style.visibility = o > 0 ? 'visible' : 'hidden';
+  }
+
   // ---------- 图层开关(顶部 chips,对应视频左侧菜单) ----------
   const LAYERS = {
     dots:   { on: true, apply: v => { if (dotsPts) dotsPts.visible = v; } },
@@ -402,6 +604,9 @@
     ring:   { on: true, apply: v => { ringGroup.visible = v; } },
     stars:  { on: true, apply: v => { if (starsObj) starsObj.visible = v; } },
     label:  { on: true, apply: v => { labelsOn = v; if (!v) card.classList.remove('is-show'); } },
+    planes: { on: true, apply: v => { planesOn = v; if (planesPts) planesPts.visible = v; } },
+    quakes: { on: true, apply: v => { quakesOn = v; quakesGroup.visible = v; } },
+    iss:    { on: true, apply: v => { issOn = v; issGroup.visible = v; if (!v) issLabel.style.visibility = 'hidden'; } },
   };
   document.querySelectorAll('.earth-chip[data-layer]').forEach(chip => {
     const L = LAYERS[chip.dataset.layer];
@@ -529,6 +734,8 @@
 
     // 标签投影
     updateLabels();
+    // 实时层:地震脉冲 + ISS 动态标签
+    updateLive(t);
 
     renderer.render(scene, camera);
   };
