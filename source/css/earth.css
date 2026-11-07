@@ -12,7 +12,13 @@
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-#page { background: transparent !important; box-shadow: none !important; }
+/* 主题 custom.css 用 [data-theme="dark"] div#page 上灰底(优先级 0,2,1),这里用同优先级选择器反杀(本文件最后加载,平级时后者胜) */
+[data-theme="dark"] div#page,
+#page {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 #content-inner { padding-top: 66px !important; }
 
 .earth-wrap {

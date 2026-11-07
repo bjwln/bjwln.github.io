@@ -53,15 +53,19 @@ svg.icon {
     background-color: transparent !important;
 }
 
-/* 卡片恢复半透明，透出全屏背景图（2026-09 Typora 改版时曾改为实底白，现按用户要求还原） */
+/* 卡片 75% 半透明 + 毛玻璃，透出全屏背景图（2026-11-08 用户要求，替代此前的 0.9 白） */
 /* 首页文章卡片（Butterfly 5.5 在 #recent-posts 与卡片之间有一层 .recent-post-items 包装，须用后代选择器） */
 #recent-posts .recent-post-item {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
 }
 
 /* 首页侧栏卡片 */
 #aside-content .card-widget {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
 }
 
 /* 文章页面正文背景 */
@@ -89,14 +93,18 @@ div#category {
     background: rgba(255, 255, 255, 0.9);
 }
 
-/*夜间模式：Typora Night 适配，卡片深灰 + 细边框*/
+/*夜间模式：Typora Night 适配，首页卡片 75% 半透明玻璃 + 细边框（2026-11-08）*/
 [data-theme="dark"] #recent-posts .recent-post-item {
-    background: #282828;
+    background: rgba(40, 40, 40, 0.75);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .card-widget {
-    background: #282828 !important;
+    background: rgba(40, 40, 40, 0.75) !important;
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
