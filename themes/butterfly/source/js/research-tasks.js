@@ -285,7 +285,9 @@
       svg.appendChild(svgEl('path', { d: `M ${coords.join(' L ')}`, fill: 'none', stroke: accent, 'stroke-width': '2.5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }))
     }
 
-    // 数据点(有链接的文章包一层 <a>)
+    // 数据点(有链接的文章包一层 <a>);点旁常驻文章题目(截断+避让+边缘对齐)
+    const labelBoxes = []
+    const labelsG = svgEl('g') // 标签统一画在最上层,避免被折线/圆点盖住
     points.forEach((point, i) => {
       const cx = X(dates[i])
       const cy = Y(cum[i])
@@ -299,12 +301,48 @@
       })
       holder.appendChild(hit)
       holder.appendChild(core)
+
+      // 点旁的文章题目:矩形碰撞检测(上/下 × 多级偏移),避开已放标签与所有数据点
+      const t = String(point.title || '').trim()
+      if (t) {
+        const text = t.length > 16 ? t.slice(0, 16) + '…' : t
+        const tw = text.length * 6.3 // 10.5px 字体宽度估算
+        let anchor = 'middle'
+        let tx = cx
+        if (cx - tw / 2 < M.l + 4) { anchor = 'start'; tx = cx + 8 }       // 左缘:右对齐展开
+        else if (cx + tw / 2 > W - M.r - 4) { anchor = 'end'; tx = cx - 8 } // 右缘:左对齐展开
+        const bx0 = anchor === 'middle' ? tx - tw / 2 : (anchor === 'start' ? tx : tx - tw)
+        const bx1 = bx0 + tw
+        const overlaps = box =>
+          labelBoxes.some(b => b.x0 < box.x1 - 2 && b.x1 > box.x0 + 2 && b.y0 < box.y1 - 2 && b.y1 > box.y0 + 2) ||
+          points.some((_, k) => { // 数据点圆周避让
+            const px = X(dates[k]), py = Y(cum[k])
+            return px + 10 > box.x0 && px - 10 < box.x1 && py + 10 > box.y0 && py - 10 < box.y1
+          })
+        let chosen = null
+        for (const [side, extra] of [['above', 0], ['below', 0], ['above', -17], ['below', 17], ['above', -34], ['below', 34]]) {
+          const ty = side === 'above' ? cy - 13 + extra : cy + 21 + extra
+          const box = { x0: bx0, x1: bx1, y0: ty - 11, y1: ty + 4 }
+          if (!overlaps(box)) { chosen = { ty, box }; break }
+          if (!chosen) chosen = { ty, box } // 兜底:先记住第一个候选
+        }
+        labelBoxes.push(chosen.box)
+        const ty = Math.max(12, Math.min(H - M.b - 6, chosen.ty))
+        const label = svgEl('text', {
+          x: tx.toFixed(1), y: ty.toFixed(1), 'text-anchor': anchor,
+          style: 'fill:var(--card-meta,#888);font-size:10.5px;pointer-events:none;paint-order:stroke;stroke:var(--card-bg,#fff);stroke-width:3px;stroke-linejoin:round'
+        })
+        label.textContent = text
+        labelsG.appendChild(label)
+      }
+
       holder.addEventListener('mouseenter', () => { core.style.transform = 'scale(1.45)'; showTip(state, point, cx, cy, W) })
       holder.addEventListener('mouseleave', () => { core.style.transform = ''; hideTip(state) })
       holder.addEventListener('focus', () => showTip(state, point, cx, cy, W))
       holder.addEventListener('blur', () => hideTip(state))
       svg.appendChild(holder)
     })
+    svg.appendChild(labelsG)
 
     return svg
   }
