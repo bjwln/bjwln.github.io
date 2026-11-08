@@ -85,6 +85,7 @@ const ROUTES = [
   [/^#\/comments$/, () => vComments()],
   [/^#\/stats$/, () => vStats()],
   [/^#\/bangumi$/, () => vBangumi()],
+  [/^#\/moyulinks$/, () => vMoyuLinks()],
   [/^#\/build$/, () => vBuild()],
   [/^#\/settings$/, () => vSettings()],
 ];
@@ -1030,6 +1031,58 @@ async function doPublish() {
   if (!(await confirmBox(msg ? `提交信息:「${msg}」,确认发布?` : '使用默认提交信息「update」,确认发布?'))) return;
   await api('/api/build/publish', { json: { message: msg || undefined } });
   toast('发布任务已开始,日志见下方', 'ok');
+}
+
+// ---------- 摸鱼页网址推荐 ----------
+let moyuLinksData = [];
+async function vMoyuLinks() {
+  const d = await api('/api/data/moyulinks');
+  moyuLinksData = d.parsed.links || [];
+  main().innerHTML = `
+    <div class="page-head"><h2>摸鱼链接</h2><span class="muted" style="font-size:12px">摸鱼页「实用工具 · 网址推荐」区块的数据，保存后需构建发布才会上线</span></div>
+    <div class="panel"><div id="ml-rows"></div>
+      <div class="flex" style="margin-top:10px"><button onclick="mlAdd()">➕ 添加一条</button>
+      <span class="muted" style="font-size:12px">网址需以 http(s):// 开头；描述建议一两句话，超长会自动截断显示</span></div></div>
+    <div class="toolbar"><button onclick="mlSave()">💾 保存全部</button>
+      <button class="ghost" onclick="route()">放弃修改</button>
+      <a href="/moyu/" target="_blank"><button class="ghost">打开摸鱼页预览 ↗</button></a></div>`;
+  mlRender();
+}
+function mlRender() {
+  const box = $('#ml-rows');
+  if (!moyuLinksData.length) { box.innerHTML = '<p class="muted">还没有条目，点下方「添加一条」。</p>'; return; }
+  box.innerHTML = moyuLinksData.map((it, i) => `
+    <div class="ml-row" data-i="${i}" style="border:1px solid var(--line,#2a2a35);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+      <div class="fm-grid">
+        <label class="wide">名称 <input value="${esc(it.name || '')}" oninput="mlSet(${i},'name',this.value)"></label>
+        <label class="wide">网址 <input value="${esc(it.url || '')}" oninput="mlSet(${i},'url',this.value)" placeholder="https://..."></label>
+        <label class="wide">简介 <input value="${esc(it.desc || '')}" oninput="mlSet(${i},'desc',this.value)" placeholder="一两句话介绍这个网站"></label>
+      </div>
+      <div class="flex" style="margin-top:6px">
+        <button class="ghost" onclick="mlMove(${i},-1)" ${i === 0 ? 'disabled' : ''}>↑ 上移</button>
+        <button class="ghost" onclick="mlMove(${i},1)" ${i === moyuLinksData.length - 1 ? 'disabled' : ''}>↓ 下移</button>
+        <button class="ghost" onclick="mlDel(${i})">🗑 删除</button>
+        <a href="${esc(it.url || '#')}" target="_blank"><button class="ghost">打开 ↗</button></a>
+      </div></div>`).join('');
+}
+function mlSet(i, key, val) { moyuLinksData[i][key] = val.trim(); }
+function mlAdd() { moyuLinksData.push({ name: '', url: 'https://', desc: '' }); mlRender(); }
+function mlDel(i) {
+  confirmBox('确认删除「' + (moyuLinksData[i].name || '未命名') + '」?').then(ok => {
+    if (!ok) return;
+    moyuLinksData.splice(i, 1); mlRender();
+  });
+}
+function mlMove(i, dir) {
+  const j = i + dir;
+  [moyuLinksData[i], moyuLinksData[j]] = [moyuLinksData[j], moyuLinksData[i]];
+  mlRender();
+}
+async function mlSave() {
+  const empty = moyuLinksData.findIndex(x => !x.name || !x.url);
+  if (empty >= 0) { toast(`第 ${empty + 1} 条的名称/网址没填完`, 'err'); return; }
+  await api('/api/data/moyulinks', { method: 'PUT', json: { parsed: { links: moyuLinksData } } });
+  toast(`已保存 ${moyuLinksData.length} 条`, 'ok');
 }
 
 // ---------- 设置 ----------

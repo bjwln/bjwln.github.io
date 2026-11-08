@@ -12,6 +12,8 @@ const U = require('./util');
 const RESEARCH = path.join(U.DATA, 'research.yml');
 const BANGUMI = path.join(U.DATA, 'bangumi.yml');
 const WIDGET = path.join(U.DATA, 'widget.yml');
+// 摸鱼页「网址推荐」:JSON 文件放 source/data/(hexo 原样拷贝到 public,页面 JS 直接 fetch)
+const MOYULINKS = path.join(U.ROOT, 'source', 'data', 'moyulinks.json');
 
 async function loadYaml(file, fallback) {
   try {
@@ -93,4 +95,26 @@ async function putWidget(raw) {
   return { ok: true };
 }
 
-module.exports = { getResearch, putResearch, getBangumi, putBangumi, getWidget, putWidget };
+// 摸鱼页网址推荐(JSON):name/url/desc 三字段,前端 fetch 渲染
+async function getMoyuLinks() {
+  try {
+    const parsed = JSON.parse(await fsp.readFile(MOYULINKS, 'utf8'));
+    if (!Array.isArray(parsed.links)) parsed.links = [];
+    return { parsed };
+  } catch {
+    return { parsed: { links: [] } };
+  }
+}
+
+async function putMoyuLinks(parsed) {
+  if (!parsed || !Array.isArray(parsed.links)) { const e = new Error('数据格式错误:缺少 links 数组'); e.status = 400; throw e; }
+  for (const [i, it] of parsed.links.entries()) {
+    if (!it.name || !it.url) { const e = new Error(`第 ${i + 1} 条的名称和网址不能为空`); e.status = 400; throw e; }
+    if (!/^https?:\/\//i.test(it.url)) { const e = new Error(`第 ${i + 1} 条「${it.name}」的网址必须以 http(s):// 开头`); e.status = 400; throw e; }
+  }
+  await U.ensureDir(path.dirname(MOYULINKS));
+  await U.atomicWrite(MOYULINKS, JSON.stringify(parsed, null, 2) + '\n');
+  return { ok: true, count: parsed.links.length };
+}
+
+module.exports = { getResearch, putResearch, getBangumi, putBangumi, getWidget, putWidget, getMoyuLinks, putMoyuLinks };

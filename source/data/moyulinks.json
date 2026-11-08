@@ -1,0 +1,34 @@
+{
+  "links": [
+    {
+      "name": "PDFCraft 完整版",
+      "url": "https://pdfcraft.devtoolcafe.com",
+      "desc": "90+ 浏览器本地 PDF 工具：OCR、Office 转换、加密，文件不出浏览器。本站 PDF 工具箱的灵感来源。"
+    },
+    {
+      "name": "Videdown",
+      "url": "https://github.com/cshuangyy/videdown",
+      "desc": "MIT 开源视频下载桌面版，yt-dlp 引擎支持 1000+ 网站，无水印高清。"
+    },
+    {
+      "name": "Squoosh",
+      "url": "https://squoosh.app",
+      "desc": "Google 出品的图片压缩器，纯本地处理，支持 WebP / AVIF / MozJPEG。"
+    },
+    {
+      "name": "Photopea",
+      "url": "https://www.photopea.com",
+      "desc": "网页版 Photoshop，免安装直接打开 PSD / XD / Sketch 文件。"
+    },
+    {
+      "name": "Excalidraw",
+      "url": "https://excalidraw.com",
+      "desc": "手绘风白板，画示意图和架构图的神器，支持协作。"
+    },
+    {
+      "name": "TinyWow",
+      "url": "https://tinywow.com",
+      "desc": "免费无登录的 PDF / 图片 / 视频 / 文件在线工具合集，用完即走。"
+    }
+  ]
+}

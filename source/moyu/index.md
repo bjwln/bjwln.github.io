@@ -8,7 +8,7 @@ comment: false
 description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261108c">
+<link rel="stylesheet" href="/css/moyu.css?v=20261108e">
 
 <div id="moyu-app">
 
@@ -98,14 +98,32 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 <span class="m-tool-arrow"><i class="fas fa-arrow-right"></i></span>
 </a>
 
-<div class="m-card m-placeholder">
-<i class="fas fa-gamepad" aria-hidden="true"></i>
-<h3 class="m-ph-title">游戏位 · 敬请期待</h3>
-<p class="m-ph-desc">还在鱼塘里游着，快了。</p>
-</div>
+<button class="m-card m-placeholder m-links-card" id="moyu-links-card" type="button" aria-haspopup="dialog">
+<i class="fas fa-compass" aria-hidden="true"></i>
+<h3 class="m-ph-title">实用工具 · 推荐</h3>
+<p class="m-ph-desc">收藏夹里的好用网站，点开看看。<b id="moyu-links-count"></b></p>
+</button>
 
 </section>
 
 <footer class="m-foot">摸鱼虽好，可不要耽误正经事哦。</footer>
 
+<div class="m-modal" id="moyu-links-modal" role="dialog" aria-modal="true" aria-label="实用工具推荐">
+<div class="m-modal-panel">
+<div class="m-modal-head">
+<div>
+<h3 class="m-modal-title">实用工具 · 网址推荐</h3>
+<span class="m-modal-sub">点开即用 · 新窗口打开</span>
 </div>
+<button class="m-modal-close" id="moyu-links-close" type="button" aria-label="关闭"><i class="fas fa-xmark"></i></button>
+</div>
+<div class="m-modal-list" id="moyu-links-list">
+<div class="m-links-loading"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>
+</div>
+<p class="m-links-empty" id="moyu-links-empty" hidden>还没有推荐，去后台管理「摸鱼链接」里加几个吧。</p>
+</div>
+</div>
+
+</div>
+
+<script src="/js/moyulinks.js?v=20261108b" defer></script>
