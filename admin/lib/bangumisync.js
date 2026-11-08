@@ -375,6 +375,42 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
 
     const watchedBvid = (String(item.watched_url || '').match(/video\/(BV[0-9A-Za-z]+)/) || [])[1] || ''
 
+    // ---- 通道〇:动态 feed(带登录 Cookie)——badge 明确标注「抢先看/充电专属」,
+    //      是唯一能可靠区分付费抢先视频的数据源;recArchives 接口无此标记,只能兜底。
+    //      按时间倒序收集视频动态,跳过抢先看,直到拿到足够多正常投稿。
+    if (mid) {
+      try {
+        const feedArcs = []
+        let offset = null
+        for (let page = 0; page < 6 && feedArcs.length < 30; page++) {
+          const url = 'https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space?host_mid=' + mid
+            + (offset ? '&offset_dynamic=' + encodeURIComponent(offset) : '')
+          const d = await fetchJson(url, 'https://space.bilibili.com/' + mid)
+          if (d.code !== 0 || !d.data) break
+          let gotVideo = false
+          for (const it of (d.data.items || [])) {
+            const md = it.modules && it.modules.module_dynamic
+            const ar = md && md.major && md.major.archive
+            if (!ar || !ar.title || !ar.bvid) continue
+            gotVideo = true
+            const badge = String((md.badge && md.badge.text) || (ar.badge && ar.badge.text) || '')
+            if (/抢先看|充电/.test(badge)) continue // 抢先看/充电专属:未充电看不到,不算集数
+            const pub = (it.modules && it.modules.module_author && it.modules.module_author.pub_ts) || 0
+            feedArcs.push({ bvid: ar.bvid, title: String(ar.title || ''), pic: String(ar.cover || ar.pic || ''), pubdate: pub })
+          }
+          if (!gotVideo) break // 连续无视频动态(全是图文)就没必要再翻
+          const off = d.data.offset && d.data.offset.offset_dynamic
+          if (!off) break
+          offset = off
+        }
+        if (feedArcs.length) {
+          feedArcs.sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
+          const result = buildUpResult(feedArcs, title)
+          if (result) return result
+        }
+      } catch { /* feed 被风控/Cookie 失效时退回 recArchives 通道 */ }
+    }
+
     // 空间投稿接口拉取(带重试,可翻页):返回 { archives, complete }
     let lastMsg = ''
     const fetchArchives = async (m, keywords) => {
@@ -443,6 +479,15 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
     }
     if (!archives.length) throw new Error((lastMsg || '未找到该UP主的投稿') + '(可能被B站风控,稍后自动重试)')
 
+    const result = buildUpResult(archives, watchedBvid, complete)
+    if (!result) throw new Error('该UP投稿超过500条且标题无「第N集」编号,无法统计总数')
+    return result
+  }
+
+  // 从一批投稿(对象含 bvid/title/pic/pubdate)计算 UP 条目结果:
+  // 总数=标题「第N集」最大值(充电/抢先看/预告已在来源层过滤,此处再兜底过滤标题含「充电」的);
+  // 最新=过滤后时间最新的一条;未看=已看视频在列表(新→旧)中的位置
+  function buildUpResult(archives, watchedBvid, complete) {
     archives = archives.slice().sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
     // 充电专属视频不计入集数、也不作为「最新一集」(未充电看不了;标题必带「充电」标注)。
     // 若全部被过滤(整UP都是充电)则保留原列表,避免条目报错
@@ -467,7 +512,7 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
       latest_url: newest.bvid ? 'https://www.bilibili.com/video/' + newest.bvid : '',
       latest_pubdate: newest.pubdate || null,
     }
-    if (result.total == null) throw new Error('该UP投稿超过500条且标题无「第N集」编号,无法统计总数')
+    if (result.total == null) return null
 
     // 未看对比:已看视频在投稿列表(新→旧)中的位置 = 之后还有几支没看;
     // 「看到」自动填写:已看视频标题带第N集直接用;否则用投稿序号(第 count-wi 支)
