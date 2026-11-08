@@ -256,21 +256,23 @@
     barsGroup.add(bar);
   });
 
-  // 中枢:金色光核 + 双呼吸波纹
+  // 中枢:金色光核 + 双呼吸波纹(调弱,别抢景点视角的戏)
+  let hubCore = null;
   {
     const core = new THREE.Sprite(new THREE.SpriteMaterial({
       map: TEX_GOLD, color: '#ffe9b8', transparent: true,
       blending: THREE.AdditiveBlending, depthWrite: false,
     }));
     core.position.copy(hubV);
-    core.scale.setScalar(0.13);
+    core.scale.setScalar(0.085);
     spin.add(core);
+    hubCore = core;
   }
   const pulses = [];
   {
     for (let i = 0; i < 2; i++) {
       const mat = new THREE.MeshBasicMaterial({
-        color: '#ffcf7a', transparent: true, opacity: 0.6,
+        color: '#ffcf7a', transparent: true, opacity: 0.4,
         blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
       });
       const ring = new THREE.Mesh(new THREE.RingGeometry(0.92, 1, 48), mat);
@@ -509,6 +511,7 @@
   const SITES = [
     {
       name: '灯塔', en: 'LIGHTHOUSE', region: '中国 · 舟山群岛', lon: 122.4, lat: 30.0, build: buildLighthouse,
+      off: [24, 18], // 屏幕偏移:避开紧邻的浙江中枢标签,防止叠字
       desc: '矗立在海岸的岩石之上，白色的塔身与红色的塔屋，在湛蓝的天空和深蓝的大海映衬下，醒目而美丽。夜幕降临，光束缓缓扫过海面，为归航的船指引方向。',
     },
     {
@@ -689,7 +692,8 @@
       const facing = wp.clone().normalize().dot(camBase);
       const o = facing > 0.16 ? Math.min(1, (facing - 0.16) / 0.22) : 0;
       proj.copy(wp).project(camera);
-      el.style.transform = 'translate(' + ((proj.x * 0.5 + 0.5) * W).toFixed(1) + 'px,' + ((-proj.y * 0.5 + 0.5) * H).toFixed(1) + 'px) translate(-50%,-50%)';
+      const off = focusIdx === i ? [0, 0] : (SITES[i].off || [0, 0]); // 聚焦时居中,平时错开冲突标签
+      el.style.transform = 'translate(' + ((proj.x * 0.5 + 0.5) * W + off[0]).toFixed(1) + 'px,' + ((-proj.y * 0.5 + 0.5) * H + off[1]).toFixed(1) + 'px) translate(-50%,-50%)';
       el.style.opacity = o.toFixed(2);
       el.style.visibility = o > 0.03 ? 'visible' : 'hidden';
       el.classList.toggle('is-active', focusIdx === i);
@@ -999,7 +1003,8 @@
   // 标签投影(首帧与每帧共用)
   const updateLabels = () => {
     for (const L of labels) {
-      if (!labelsOn) { L.el.style.visibility = 'hidden'; continue; }
+      // 景点聚焦时收起城市/中枢标签,避免压在景象上
+      if (!labelsOn || focusIdx >= 0) { L.el.style.visibility = 'hidden'; continue; }
       L.anchorObj.localToWorld(wp.copy(L.localPos));
       const facing = wp.clone().normalize().dot(camBase);
       proj.copy(wp).project(camera);
@@ -1048,13 +1053,17 @@
       const fade = Math.sin(k * Math.PI);
       f.sprite.material.opacity = 0.35 + 0.65 * fade;
     }
-    // 中枢呼吸波纹
+    // 中枢呼吸波纹(聚焦景点时隐藏)
     for (const p of pulses) {
       const k = (t * 0.5 + p.phase) % 1;
-      const s = 0.03 + k * 0.3;
+      p.mesh.visible = focusIdx < 0;
+      const s = 0.03 + k * 0.22;
       p.mesh.scale.setScalar(s);
-      p.mesh.material.opacity = 0.55 * (1 - k);
+      p.mesh.material.opacity = 0.36 * (1 - k);
     }
+    // 聚焦景点时收起航线与中枢光核,让景象独占视野(退出后恢复)
+    arcsGroup.visible = LAYERS.flight.on && focusIdx < 0;
+    hubCore.visible = focusIdx < 0;
     // 光环自转 + 卫星
     const band = ringGroup.getObjectByName('band');
     if (band) band.rotation.y = t * 0.03;

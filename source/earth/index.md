@@ -45,4 +45,4 @@ description: Three.js 渲染的 3D 地球——编号景点交互视角：灯塔
 
 <script src="/js/lib/three.min.js"></script>
 <script src="/js/earth-data.js?v=20261108a"></script>
-<script src="/js/earth.js?v=20261109a" defer></script>
+<script src="/js/earth.js?v=20261109b" defer></script>
