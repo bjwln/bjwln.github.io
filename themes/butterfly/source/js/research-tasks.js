@@ -305,8 +305,9 @@
       // 点旁的文章题目:矩形碰撞检测(上/下 × 多级偏移),避开已放标签与所有数据点
       const t = String(point.title || '').trim()
       if (t) {
-        const text = t.length > 16 ? t.slice(0, 16) + '…' : t
-        const tw = text.length * 6.3 // 10.5px 字体宽度估算
+        const text = t.length > 14 ? t.slice(0, 14) + '…' : t
+        // 宽度估算:中日韩全宽字符 ≈ 1em,拉丁 ≈ 0.55em
+        const tw = [...text].reduce((n, ch) => n + (/[\u2E80-\u9FFF\uF900-\uFAFF\u3000-\u303F\uFF01-\uFF5E\u2014\u2018-\u201D]/.test(ch) ? 12 : 6.5), 0)
         let anchor = 'middle'
         let tx = cx
         if (cx - tw / 2 < M.l + 4) { anchor = 'start'; tx = cx + 8 }       // 左缘:右对齐展开
@@ -321,8 +322,8 @@
           })
         let chosen = null
         for (const [side, extra] of [['above', 0], ['below', 0], ['above', -17], ['below', 17], ['above', -34], ['below', 34]]) {
-          const ty = side === 'above' ? cy - 13 + extra : cy + 21 + extra
-          const box = { x0: bx0, x1: bx1, y0: ty - 11, y1: ty + 4 }
+          const ty = side === 'above' ? cy - 14 + extra : cy + 22 + extra
+          const box = { x0: bx0, x1: bx1, y0: ty - 12, y1: ty + 4 }
           if (!overlaps(box)) { chosen = { ty, box }; break }
           if (!chosen) chosen = { ty, box } // 兜底:先记住第一个候选
         }
@@ -330,7 +331,7 @@
         const ty = Math.max(12, Math.min(H - M.b - 6, chosen.ty))
         const label = svgEl('text', {
           x: tx.toFixed(1), y: ty.toFixed(1), 'text-anchor': anchor,
-          style: 'fill:var(--card-meta,#888);font-size:10.5px;pointer-events:none;paint-order:stroke;stroke:var(--card-bg,#fff);stroke-width:3px;stroke-linejoin:round'
+          style: 'fill:#98a6bb;font-size:12px;pointer-events:none'
         })
         label.textContent = text
         labelsG.appendChild(label)
