@@ -108,4 +108,11 @@ plans:
         link: Prompt优化
         label: Prompt优化
         order: 1
+      - date: 2026-11-08
+        title: 数据集
+        track: system
+        summary: 列举了几个常见的数据集
+        link: 数据集
+        label: 数据集
+        order: 2
     unlimited: true
