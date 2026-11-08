@@ -65,7 +65,7 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 <span class="m-card-tag">三维 · Three.js</span>
 <h2 class="m-card-title">蓝星航线</h2>
 <span class="m-card-en">BLUE PLANET · 3D EARTH</span>
-<p class="m-card-desc">一颗发光的蓝色地球悬在星海里，飞线从浙江出发连向世界各大城市，外面还有一圈慢慢转的粒子光环。可以拖着转、滚轮缩放，发呆专用。</p>
+<p class="m-card-desc">一颗发光的蓝色地球悬在星海里，飞线从浙江出发连向世界各大城市。可以拖着转、滚轮缩放，还能点击编号视角——灯塔、小船、沙滩、飞鸟、礁石，飞过去看细节景象，发呆专用。</p>
 <span class="m-card-btn m-btn-blue">进入轨道 <i class="fas fa-arrow-right"></i></span>
 </div>
 <div class="m-card-art" aria-hidden="true">

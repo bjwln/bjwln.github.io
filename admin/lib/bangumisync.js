@@ -151,15 +151,37 @@ async function fromBangumiPage(link) {
   // 「预告」分集不进统计:预告上线后仍留在分集列表里(badge=预告),凡人修仙传/牧神记
   // 都因此被顶高过一集,必须先过滤;new_ep 万一指向预告时同样不认
   const eps = r.episodes || [];
-  const isPreview = e => /预告/.test(String(e && e.badge || '') + String(e && e.title || '') + String(e && e.long_title || ''));
+  // 「预告/抢先看」分集不算正片:预告上线后仍留在分集列表里(badge=预告),凡人修仙传/牧神记
+  // 都因此被顶高过一集;抢先看(充电专属)同理不计
+  const isPreview = e => /预告|抢先看/.test(String(e && e.badge || '') + String(e && e.title || '') + String(e && e.long_title || ''));
   const previewIds = new Set(eps.filter(isPreview).map(e => e.id));
-  const nums = eps.filter(e => !isPreview(e))
+  const valid = eps.filter(e => !isPreview(e));
+  const nums = valid
     .map(e => firstNum(e.title, e.long_title))
     .filter(Boolean).map(Number).filter(n => n > 0 && n < 3000);
   const official = r.new_ep && !previewIds.has(r.new_ep.id) ? (Number(firstNum(r.new_ep.title)) || 0) : 0;
   const best = Math.max(official, nums.length ? Math.max(...nums) : 0);
   if (!best) return null;
-  return { total: String(best), source: 'B站番剧' };
+  // 最新一集(非预告/抢先看中编号最大的):long_title 是分集剧情简介,供卡片「介绍」自动更新
+  let newest = null, newestN = -1;
+  for (const e of valid) {
+    const n = Number(firstNum(e.title, e.long_title)) || 0;
+    if (n > newestN) { newestN = n; newest = e; }
+  }
+  const latest_desc = String((newest && newest.long_title) || (newest && newest.title) || '')
+    .replace(/\s+/g, ' ').trim().slice(0, 300);
+  // 最新标题:PGC 的 ep.title 只有集号,拼上分集简介更有信息量(避免与简介重复)
+  let latest_title = String((newest && newest.title) || '');
+  if (latest_desc && !/第\s*\d+\s*集/.test(latest_desc)) latest_title = `第${best}集 ${latest_desc}`;
+  else if (!latest_title) latest_title = latest_desc;
+  return {
+    total: String(best),
+    source: 'B站番剧',
+    latest_title: latest_title.slice(0, 120),
+    latest_desc,
+    latest_cover: String((newest && newest.cover) || ''),
+    latest_url: newest && newest.id ? 'https://www.bilibili.com/bangumi/play/ep' + newest.id : '',
+  };
 }
 
 // B站普通视频(BV 链接) → 合集(ugc_season)或分P;view 接口被风控(412)时退化为按条目标题搜索
@@ -338,6 +360,22 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
     return null
   }
 
+  // 投稿列表接口(feed/recArchives)的简介常为空串:补一次单视频 view 拿完整简介
+  async function enrichLatestDesc(result) {
+    if (result.latest_desc) return
+    const bv = (String(result.latest_url || '').match(/video\/(BV[0-9A-Za-z]+)/) || [])[1] || ''
+    if (!bv) return
+    let v = null
+    try {
+      const d = await fetchJson('https://api.bilibili.com/x/web-interface/view?bvid=' + bv)
+      if (d.code === 0 && d.data) v = d.data
+    } catch { }
+    if (!v) {
+      try { const r = await cf.viewVideo(bv); if (r && r.code === 0 && r.data) v = r.data } catch { }
+    }
+    if (v && v.desc) result.latest_desc = String(v.desc).replace(/\s+/g, ' ').trim().slice(0, 300)
+  }
+
   async function fetchUpInfo(item) {
     const syncUrl = String(item.sync_url || '')
     const title = String(item.title || '').trim()
@@ -396,7 +434,8 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
             const badge = String((md.badge && md.badge.text) || (ar.badge && ar.badge.text) || '')
             if (/抢先看|充电/.test(badge)) continue // 抢先看/充电专属:未充电看不到,不算集数
             const pub = (it.modules && it.modules.module_author && it.modules.module_author.pub_ts) || 0
-            feedArcs.push({ bvid: ar.bvid, title: String(ar.title || ''), pic: String(ar.cover || ar.pic || ''), pubdate: pub })
+            const arDesc = (md.desc && md.desc.text) || ''
+            feedArcs.push({ bvid: ar.bvid, title: String(ar.title || ''), pic: String(ar.cover || ar.pic || ''), pubdate: pub, desc: arDesc })
           }
           if (!gotVideo) break // 连续无视频动态(全是图文)就没必要再翻
           const off = d.data.offset && d.data.offset.offset_dynamic
@@ -406,7 +445,7 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
         if (feedArcs.length) {
           feedArcs.sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
           const result = buildUpResult(feedArcs, title)
-          if (result) return result
+          if (result) { await enrichLatestDesc(result); return result }
         }
       } catch { /* feed 被风控/Cookie 失效时退回 recArchives 通道 */ }
     }
@@ -466,7 +505,7 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
             const d = await fetchJson('https://api.bilibili.com/x/web-interface/search/type?search_type=video&order=pubdate&keyword=' + encodeURIComponent(keyword) + '&page=' + page)
             let rows = ((d.data || {}).result || [])
               .filter(v => v.bvid)
-              .map(v => ({ bvid: v.bvid, title: String(v.title || '').replace(/<[^>]+>/g, ''), pic: v.pic || '', pubdate: v.pubdate || 0, mid: String(v.mid || '') }))
+              .map(v => ({ bvid: v.bvid, title: String(v.title || '').replace(/<[^>]+>/g, ''), pic: v.pic || '', pubdate: v.pubdate || 0, mid: String(v.mid || ''), desc: String(v.description || '') }))
             if (!mid && watchedBvid) {
               const mine = rows.find(v => v.bvid === watchedBvid)
               if (mine) rows = rows.filter(v => v.mid === mine.mid) // 用已看视频定位 UP,滤掉同关键词的其他UP
@@ -481,6 +520,7 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
 
     const result = buildUpResult(archives, watchedBvid, complete)
     if (!result) throw new Error('该UP投稿超过500条且标题无「第N集」编号,无法统计总数')
+    await enrichLatestDesc(result)
     return result
   }
 
@@ -504,10 +544,12 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
       if (Number.isFinite(n) && n > 0 && n < 3000 && (maxEp == null || n > maxEp)) maxEp = n
     }
     const count = archives.length
+    const latest_desc = String(newest.desc || '').replace(/\s+/g, ' ').trim().slice(0, 300)
     const result = {
       total: maxEp != null ? String(maxEp) : (complete ? String(count) : null),
       source: 'UP主最新投稿',
       latest_title: String(newest.title || ''),
+      latest_desc,
       latest_cover: String(newest.pic || '').replace(/^http:\/\//, 'https://'),
       latest_url: newest.bvid ? 'https://www.bilibili.com/video/' + newest.bvid : '',
       latest_pubdate: newest.pubdate || null,
@@ -547,13 +589,17 @@ async function syncAll() {
         row.unwatched = r.unwatched != null ? r.unwatched : null;
         // 「看到」自动填写:仅当条目还没填且同步结果能推出时
         const epAuto = r.episode != null && !String(item.episode || '').trim();
-        row.changed = String(r.total) !== String(item.total || '') || String(r.latest_url || '') !== String(item.latest_url || '') || epAuto;
+        // 卡片「介绍」自动更新为最新一集的剧情简介:抓不到简介时保留原介绍
+        const descClean = String(r.latest_desc || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+        const newIntro = descClean || String(item.intro || '');
+        row.introChanged = newIntro !== String(item.intro || '');
+        row.changed = String(r.total) !== String(item.total || '') || String(r.latest_url || '') !== String(item.latest_url || '') || epAuto || row.introChanged;
         if (row.changed) {
           if (isUp) {
-            // UP条目:整体保存(含自动推出的「看到」),再写最新视频信息
-            await cf.bangumiAction({ action: 'item.save', id: item.id, title: item.title, author: item.author || '', image: item.image || '', link: item.link || '', intro: item.intro || '', episode: epAuto ? r.episode : (item.episode || ''), total: row.total, sync_url: item.sync_url || '', watched_url: item.watched_url || '', status: item.status || '在看', category_id: item.category_id, sort: item.sort || 0 });
+            // UP条目:整体保存(含自动推出的「看到」与新介绍),再写最新视频信息
+            await cf.bangumiAction({ action: 'item.save', id: item.id, title: item.title, author: item.author || '', image: item.image || '', link: item.link || '', intro: newIntro, episode: epAuto ? r.episode : (item.episode || ''), total: row.total, sync_url: item.sync_url || '', watched_url: item.watched_url || '', status: item.status || '在看', category_id: item.category_id, sort: item.sort || 0 });
           }
-          const payload = { action: 'item.setTotal', id: item.id, total: row.total };
+          const payload = { action: 'item.setTotal', id: item.id, total: row.total, intro: newIntro };
           if (r.latest_title !== undefined) {
             payload.latest_title = r.latest_title || ''
             payload.latest_cover = r.latest_cover || ''

@@ -30,8 +30,15 @@
 
 .earth-head {
   max-width: 1080px; margin: 0 auto; padding: 6px 20px 14px;
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
 }
+/* 编号标题(仿 dragonir/3d README 的 [4]. 地球 ・ The Earth ・ 地球) */
+.earth-index {
+  font-size: 24px; font-weight: 700; letter-spacing: 1px; color: #7fc4ff;
+  font-family: "Cascadia Code", Consolas, "JetBrains Mono", monospace;
+  text-shadow: 0 0 16px rgba(110, 180, 255, .55);
+}
+.earth-title-box { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .earth-title {
   font-size: 22px; letter-spacing: 6px; font-weight: 600; color: #cfe6ff;
   font-family: "Noto Serif SC", "Source Han Serif SC", "STZhongsong", serif;
@@ -71,6 +78,41 @@
   color: #9db8d8;
 }
 .earth-card-row b { color: #e8f3ff; font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+.earth-card-desc { font-size: 12px; line-height: 1.78; color: #9db8d8; margin: 0 0 10px; text-align: justify; }
+.earth-card-back {
+  margin-top: 10px; width: 100%; font-size: 12px; letter-spacing: 2px; color: #ffd9a0;
+  background: rgba(120, 80, 20, .25); border: 1px solid rgba(255, 200, 110, .45);
+  border-radius: 6px; padding: 7px 0; cursor: pointer; transition: background .2s, color .2s;
+}
+.earth-card-back:hover { background: rgba(200, 130, 40, .42); color: #fff; }
+
+/* 编号景点徽章(仿 [3]. 海岛 IsLand 的数字视角:点击飞到该处) */
+.earth-point {
+  position: absolute; left: 0; top: 0; z-index: 3;
+  will-change: transform, opacity; transition: opacity .18s linear;
+}
+.earth-point .ep-label {
+  width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%;
+  background: rgba(5, 14, 30, .74); border: 1px solid rgba(160, 210, 255, .8);
+  color: #eaf4ff; text-align: center; line-height: 29px;
+  font-size: 14px; font-weight: 300; font-family: Georgia, serif;
+  cursor: pointer; user-select: none;
+  box-shadow: 0 0 12px rgba(110, 180, 255, .4), inset 0 0 8px rgba(110, 180, 255, .18);
+  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), background .2s, border-color .2s, box-shadow .2s;
+}
+.earth-point:hover .ep-label { transform: scale(1.28); background: rgba(60, 120, 210, .85); border-color: #fff; }
+.earth-point.is-active .ep-label {
+  background: rgba(232, 162, 62, .92); border-color: #ffe1a1; color: #2b1500;
+  font-weight: 600; box-shadow: 0 0 16px rgba(255, 190, 80, .55); transform: scale(1.18);
+}
+.earth-point .ep-name {
+  position: absolute; top: 26px; left: 50%; transform: translate(-50%, 4px);
+  white-space: nowrap; font-size: 10.5px; letter-spacing: 1px; color: #cfe6ff;
+  background: rgba(6, 15, 32, .82); border: 1px solid rgba(120, 180, 255, .3);
+  border-radius: 4px; padding: 3px 8px; opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.earth-point:hover .ep-name { opacity: 1; transform: translate(-50%, 0); }
 
 .earth-stage {
   position: relative; max-width: 1180px; margin: 0 auto;
@@ -158,5 +200,7 @@
   .earth-label { font-size: 10px; padding: 2px 6px; }
   .earth-chips { display: none; }
   .earth-hint { display: none; }
+  .earth-index { font-size: 19px; }
+  .earth-point .ep-label { width: 26px; height: 26px; margin: -13px 0 0 -13px; line-height: 25px; font-size: 12px; }
   .earth-card { right: 10px; top: 10px; width: 200px; padding: 12px 13px 10px; }
 }

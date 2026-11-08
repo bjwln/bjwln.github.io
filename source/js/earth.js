@@ -334,6 +334,220 @@
     }
   }
 
+  // ============================================================
+  // 编号景点视角(致敬 [3]. 海岛 ・ IsLand ・ 小島 的交互式)
+  // 在球面放置 5 个编号景点:点击数字,相机飞到该处放大,
+  // 以"全息微缩景象"呈现该地样貌(灯塔/小船/沙滩/飞鸟/礁石)
+  // ============================================================
+  const holoMat = (color, opacity) => new THREE.MeshBasicMaterial({
+    color, transparent: true, opacity: opacity == null ? 0.85 : opacity,
+    blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+  });
+  const mk = (geo, color, opt) => {
+    const m = new THREE.Mesh(geo, holoMat(color, opt && opt.o));
+    if (opt) {
+      if (opt.p) m.position.set(opt.p[0], opt.p[1], opt.p[2]);
+      if (opt.r) m.rotation.set(opt.r[0], opt.r[1], opt.r[2]);
+      if (opt.s) m.scale.set(opt.s[0], opt.s[1], opt.s[2]);
+    }
+    return m;
+  };
+  const mkGlow = (tex, color, scale, opacity) => {
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: tex, color, transparent: true, opacity: opacity == null ? 1 : opacity,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    }));
+    sp.scale.setScalar(scale);
+    return sp;
+  };
+
+  // 1 灯塔:岩座 + 白塔红顶 + 旋转光束与信标
+  const buildLighthouse = g => {
+    g.add(mk(new THREE.IcosahedronGeometry(0.05, 0), '#3d6ca6', { p: [0, 0.008, 0], s: [1.5, 0.4, 1.15], o: 0.5 }));
+    g.add(mk(new THREE.IcosahedronGeometry(0.032, 0), '#4a7ab8', { p: [0.052, 0.01, 0.018], s: [1.15, 0.5, 1], o: 0.45 }));
+    g.add(mk(new THREE.IcosahedronGeometry(0.026, 0), '#345e96', { p: [-0.048, 0.008, -0.02], s: [1.1, 0.45, 1], o: 0.45 }));
+    g.add(mk(new THREE.CylinderGeometry(0.028, 0.034, 0.012, 16), '#8fb8e0', { p: [0, 0.022, 0], o: 0.7 }));
+    g.add(mk(new THREE.CylinderGeometry(0.014, 0.021, 0.075, 12), '#e8f4ff', { p: [0, 0.062, 0], o: 0.92 }));
+    g.add(mk(new THREE.CylinderGeometry(0.019, 0.019, 0.011, 12), '#ff8a6b', { p: [0, 0.09, 0], o: 0.85 }));
+    g.add(mk(new THREE.CylinderGeometry(0.011, 0.011, 0.016, 10), '#ffcf8f', { p: [0, 0.103, 0], o: 0.95 }));
+    g.add(mk(new THREE.ConeGeometry(0.015, 0.026, 12), '#ff7a5c', { p: [0, 0.123, 0], o: 0.9 }));
+    const beacon = mkGlow(TEX_GOLD, '#ffe9b8', 0.05);
+    beacon.position.set(0, 0.104, 0); g.add(beacon);
+    const beamHolder = new THREE.Group();
+    beamHolder.position.set(0, 0.104, 0); g.add(beamHolder);
+    const beam = mk(new THREE.ConeGeometry(0.02, 0.14, 12, 1, true), '#a8d8ff', { o: 0.12 });
+    beam.position.set(0.078, 0.02, 0); beam.rotation.z = -Math.PI / 2 + 0.28;
+    beamHolder.add(beam);
+    const beam2 = beam.clone();
+    beam2.position.x = -0.078; beam2.rotation.z = Math.PI / 2 - 0.28;
+    beamHolder.add(beam2);
+    return t => {
+      beacon.material.opacity = 0.5 + 0.5 * Math.sin(t * 3.1);
+      beamHolder.rotation.y = t * 0.85;
+    };
+  };
+
+  // 2 小船:起伏海面 + 扩散波纹 + 白帆小舟
+  const buildBoat = g => {
+    g.add(mk(new THREE.CircleGeometry(0.1, 32), '#2f7fd0', { p: [0, 0.001, 0], r: [-Math.PI / 2, 0, 0], o: 0.18 }));
+    const ring1 = mk(new THREE.RingGeometry(0.86, 1, 40), '#7fd0ff', { p: [0, 0.003, 0], r: [-Math.PI / 2, 0, 0] });
+    const ring2 = mk(new THREE.RingGeometry(0.86, 1, 40), '#7fd0ff', { p: [0, 0.003, 0], r: [-Math.PI / 2, 0, 0] });
+    g.add(ring1); g.add(ring2);
+    const boat = new THREE.Group();
+    boat.position.set(0, 0.013, 0); boat.rotation.y = 0.6; g.add(boat);
+    const hull = mk(new THREE.CylinderGeometry(0.014, 0.006, 0.03, 3), '#d8ecff', { o: 0.9 });
+    hull.rotation.z = Math.PI / 2; boat.add(hull);
+    boat.add(mk(new THREE.CylinderGeometry(0.0012, 0.0012, 0.042, 6), '#cfe4ff', { p: [0, 0.021, 0], o: 0.9 }));
+    const sailShape = new THREE.Shape();
+    sailShape.moveTo(0, 0); sailShape.lineTo(0.019, 0.004); sailShape.lineTo(0, 0.03); sailShape.closePath();
+    const sailGeo = new THREE.ShapeGeometry(sailShape);
+    const sail = new THREE.Mesh(sailGeo, holoMat('#ffffff', 0.85));
+    sail.position.set(0.0015, 0.006, 0.003); boat.add(sail);
+    const sail2 = new THREE.Mesh(sailGeo, holoMat('#bfe0ff', 0.7));
+    sail2.rotation.y = Math.PI; sail2.position.set(-0.0015, 0.006, -0.003); boat.add(sail2);
+    return t => {
+      boat.rotation.z = Math.sin(t * 1.3) * 0.09;
+      boat.position.y = 0.013 + Math.sin(t * 1.3 + 1.2) * 0.004;
+      const k1 = (t * 0.32) % 1, k2 = (t * 0.32 + 0.5) % 1;
+      ring1.scale.setScalar(0.03 + k1 * 0.07); ring1.material.opacity = 0.45 * (1 - k1);
+      ring2.scale.setScalar(0.03 + k2 * 0.07); ring2.material.opacity = 0.45 * (1 - k2);
+    };
+  };
+
+  // 3 沙滩:金沙滩洲 + 双棕榈 + 贝壳微光
+  const buildBeach = g => {
+    g.add(mk(new THREE.CircleGeometry(0.11, 32), '#3f9fe0', { p: [0, 0.001, 0], r: [-Math.PI / 2, 0, 0], o: 0.14 }));
+    g.add(mk(new THREE.SphereGeometry(0.07, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), '#dcc890', { p: [0, 0.002, 0], s: [1.35, 0.38, 1], o: 0.42 }));
+    const palm = (x, z, h, lean) => {
+      const tr = new THREE.Group();
+      tr.position.set(x, 0.02, z); tr.rotation.z = lean; g.add(tr);
+      tr.add(mk(new THREE.CylinderGeometry(0.0022, 0.0042, h, 6), '#7fbf9f', { p: [0, h / 2, 0], o: 0.8 }));
+      const crown = new THREE.Group();
+      crown.position.set(0, h, 0); tr.add(crown);
+      for (let i = 0; i < 5; i++) {
+        const lw = new THREE.Group();
+        lw.rotation.y = (i / 5) * Math.PI * 2 + lean * 2;
+        lw.rotation.z = -0.55;
+        lw.add(mk(new THREE.PlaneGeometry(0.04, 0.009), '#58d9a8', { p: [0.019, -0.003, 0], r: [0.3, 0, 0], o: 0.85 }));
+        crown.add(lw);
+      }
+      return tr;
+    };
+    palm(0.045, 0.018, 0.058, -0.16);
+    palm(-0.042, -0.028, 0.042, 0.22);
+    const shells = [mkGlow(TEX_WHITE, '#f0e8d0', 0.014), mkGlow(TEX_WHITE, '#ffe9c8', 0.011)];
+    shells[0].position.set(-0.02, 0.012, 0.04);
+    shells[1].position.set(0.055, 0.01, -0.03);
+    shells.forEach(sp => g.add(sp));
+    return t => {
+      shells[0].material.opacity = 0.4 + 0.4 * Math.sin(t * 1.7);
+      shells[1].material.opacity = 0.4 + 0.4 * Math.sin(t * 1.7 + 2.1);
+    };
+  };
+
+  // 4 飞鸟:云影 + 绕圈海燕(扑翼)
+  const buildBirds = g => {
+    const c1 = mkGlow(TEX_WHITE, '#9cc8f0', 0.1, 0.25); c1.position.set(-0.05, 0.075, -0.02); g.add(c1);
+    const c2 = mkGlow(TEX_WHITE, '#8cc0f0', 0.075, 0.22); c2.position.set(0.06, 0.055, 0.03); g.add(c2);
+    const birds = [];
+    const mkBird = () => {
+      const b = new THREE.Group();
+      const body = mk(new THREE.ConeGeometry(0.0045, 0.016, 6), '#eaf4ff', { o: 0.9 });
+      body.rotation.x = Math.PI / 2; b.add(body);
+      const wl = new THREE.Group(); wl.add(mk(new THREE.PlaneGeometry(0.02, 0.007), '#cfe8ff', { p: [0.01, 0, 0], o: 0.9 }));
+      const wr = new THREE.Group(); wr.add(mk(new THREE.PlaneGeometry(0.02, 0.007), '#cfe8ff', { p: [-0.01, 0, 0], o: 0.9 }));
+      b.add(wl); b.add(wr);
+      g.add(b);
+      birds.push({ b, wl, wr });
+    };
+    mkBird(); mkBird(); mkBird();
+    return t => {
+      for (let i = 0; i < birds.length; i++) {
+        const o = birds[i];
+        const a = t * (0.5 + i * 0.14) + i * 2.2;
+        const r = 0.048 + i * 0.018;
+        o.b.position.set(Math.cos(a) * r, 0.062 + Math.sin(t * 1.1 + i * 1.3) * 0.009, Math.sin(a) * r);
+        o.b.rotation.y = -a;
+        const flap = 0.35 + Math.sin(t * 8 + i * 1.7) * 0.5;
+        o.wl.rotation.z = flap; o.wr.rotation.z = -flap;
+      }
+    };
+  };
+
+  // 5 礁石:礁岩群 + 浪花呼吸与环波
+  const buildReef = g => {
+    g.add(mk(new THREE.CircleGeometry(0.1, 32), '#2f7fd0', { p: [0, 0.001, 0], r: [-Math.PI / 2, 0, 0], o: 0.16 }));
+    const rocks = [
+      mk(new THREE.IcosahedronGeometry(0.034, 0), '#4a7ab0', { p: [0, 0.014, 0], s: [1.2, 0.75, 1], o: 0.55 }),
+      mk(new THREE.IcosahedronGeometry(0.026, 0), '#5585bc', { p: [0.046, 0.01, 0.02], s: [1, 0.7, 1.1], o: 0.5 }),
+      mk(new THREE.IcosahedronGeometry(0.02, 0), '#3f6ea4', { p: [-0.042, 0.009, -0.014], s: [1.1, 0.6, 1], o: 0.5 }),
+      mk(new THREE.IcosahedronGeometry(0.015, 0), '#6a95c8', { p: [0.018, 0.006, -0.046], s: [1, 0.55, 1], o: 0.45 }),
+    ];
+    rocks.forEach(r => g.add(r));
+    const foam = [];
+    for (let i = 0; i < 4; i++) {
+      const sp = mkGlow(TEX_WHITE, '#eaf6ff', 0.016, 0.5);
+      const a = (i / 4) * Math.PI * 2 + 0.5;
+      sp.position.set(Math.cos(a) * 0.052, 0.008, Math.sin(a) * 0.052);
+      g.add(sp); foam.push(sp);
+    }
+    const ring = mk(new THREE.RingGeometry(0.86, 1, 40), '#7fd0ff', { p: [0, 0.003, 0], r: [-Math.PI / 2, 0, 0] });
+    g.add(ring);
+    return t => {
+      foam.forEach((sp, i) => {
+        const k = (t * 0.42 + i * 0.25) % 1;
+        sp.material.opacity = 0.55 * (1 - k);
+        sp.scale.setScalar(0.01 + k * 0.024);
+      });
+      const k = (t * 0.26) % 1;
+      ring.scale.setScalar(0.03 + k * 0.072);
+      ring.material.opacity = 0.4 * (1 - k);
+    };
+  };
+
+  // 景点数据:编号 / 名称 / 位置 / 介绍(介绍文案致敬海岛篇) / 景象构建
+  const SITES = [
+    {
+      name: '灯塔', en: 'LIGHTHOUSE', region: '中国 · 舟山群岛', lon: 122.4, lat: 30.0, build: buildLighthouse,
+      desc: '矗立在海岸的岩石之上，白色的塔身与红色的塔屋，在湛蓝的天空和深蓝的大海映衬下，醒目而美丽。夜幕降临，光束缓缓扫过海面，为归航的船指引方向。',
+    },
+    {
+      name: '小船', en: 'BOAT', region: '中国 · 南海', lon: 111.8, lat: 16.5, build: buildBoat,
+      desc: '梦中又见那宁静的大海，我前进了，驶向远方。我知道我是船，只属于远方——这一天，我用奋斗作为白帆，要和明天一起飘扬。',
+    },
+    {
+      name: '沙滩', en: 'BEACH', region: '澳大利亚 · 大堡礁', lon: 146.3, lat: -18.9, build: buildBeach,
+      desc: '宇宙展开的一小角。不想说来这里是暗自疗伤，那过于矫情——只想对每一粒沙子、每一朵浪花，问声你们好吗。',
+    },
+    {
+      name: '飞鸟', en: 'SEABIRD', region: '厄瓜多尔 · 加拉帕戈斯群岛', lon: -90.8, lat: -0.6, build: buildBirds,
+      desc: '在苍茫的大海上，狂风卷集着乌云。在乌云和大海之间，海燕像黑色的闪电，在高傲地飞翔。',
+    },
+    {
+      name: '礁石', en: 'REEF', region: '挪威 · 罗弗敦群岛', lon: 13.9, lat: 68.4, build: buildReef,
+      desc: '寂寞又怎么样？礁石都不说话，但是水流过去之后，礁石留下。',
+    },
+  ];
+  const siteV = SITES.map(s => ll2v(s.lon, s.lat, 1.008));
+  const siteGroups = [];
+  SITES.forEach((s, i) => {
+    const root = new THREE.Group();
+    root.position.copy(siteV[i]);
+    root.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), siteV[i].clone().normalize());
+    // 门户基座:双光环 + 中心辉光
+    const base = new THREE.Group();
+    base.rotation.x = -Math.PI / 2; root.add(base);
+    const r1 = mk(new THREE.RingGeometry(0.078, 0.085, 48), '#6fc0ff', { o: 0.5 }); base.add(r1);
+    const r2 = mk(new THREE.RingGeometry(0.05, 0.054, 48), '#a8dcff', { o: 0.6 }); base.add(r2);
+    base.add(mkGlow(TEX_CYAN, '#bfe8ff', 0.1, 0.5));
+    const stageG = new THREE.Group(); root.add(stageG);
+    const anim = s.build(stageG);
+    root.scale.setScalar(0.001); root.visible = false;
+    spin.add(root);
+    siteGroups.push({ root, r1, r2, anim });
+  });
+  const siteFade = SITES.map(() => 0);
+
   // ---------- HTML 标签层 ----------
   let labelsOn = true;
   const labels = [];
@@ -375,6 +589,7 @@
   };
   card.addEventListener('click', e => {
     if (e.target.classList.contains('earth-card-close')) card.classList.remove('is-show');
+    if (e.target.classList.contains('earth-card-back')) exitFocus();
   });
 
   addLabel(HUB.name, true, spin, hubV.clone(), () => showCard('HUB · ZHEJIANG', HUB.name, [
@@ -392,6 +607,109 @@
       ['航线状态', '✈ 已开通'],
     ]);
   }));
+
+  // ============================================================
+  // 编号景点交互(仿 [3]. 海岛:点击数字 → 相机飞到该处放大看景象)
+  // ============================================================
+  const pointEls = [];
+  SITES.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'earth-point';
+    el.innerHTML = '<div class="ep-label">' + (i + 1) + '</div><span class="ep-name">' + s.name + ' · ' + s.region + '</span>';
+    el.addEventListener('pointerdown', e => e.stopPropagation());
+    el.addEventListener('click', e => { e.stopPropagation(); focusSite(i); });
+    stage.appendChild(el);
+    pointEls.push(el);
+  });
+
+  // 把球面点 (lon,lat) 转到相机正前方所需的 spin.y / tilt.x 解析解
+  // 推导:世界方向 = Rx(tiltX)·Ry(spinY)·p,要求等于相机方向 camBase。
+  // 先用 Ry 把点转到 x 分量 = camBase.x 的位置(两个分支,取 |tilt| 更小者),
+  // 再用 Rx 绕 x 轴把 (y,z) 角转到相机方向。Rx 保留 x,故该解为精确解。
+  const alignView = (lon, lat) => {
+    const p = ll2v(lon, lat, 1).normalize();
+    const cx = camBase.x, cy = camBase.y, cz = camBase.z;
+    const r = Math.hypot(p.x, p.z);                        // 点到自转轴的水平距
+    const aP = Math.atan2(p.z, p.x);                       // 点的 xz 平面角
+    const bc = Math.atan2(cz, cy);                         // 相机方向的 (y,z) 角
+    const ph = Math.acos(Math.max(-1, Math.min(1, cx / r))); // 中间向量的 xz 角幅值
+    const w = Math.sqrt(Math.max(0, r * r - cx * cx));     // 中间向量的 |z|
+    const t1 = bc - Math.atan2(w, p.y);                    // 分支 +: z 取正
+    const t2 = bc - Math.atan2(-w, p.y);                   // 分支 -: z 取负
+    const plus = Math.abs(t1) <= Math.abs(t2);
+    return { ry: plus ? aP - ph : aP + ph, rx: plus ? t1 : t2 };
+  };
+
+  // 视角补间(自研轻量 tween,替代 TWEEN.js;同一时间只保留最新一个)
+  const easeInOutCubic = k => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+  const wrapPi = a => { a = (a + Math.PI) % (Math.PI * 2); if (a < 0) a += Math.PI * 2; return a - Math.PI; };
+  let viewTween = null;
+  const animateView = (ry, rx, dist, dur, cb) => {
+    const from = { ry: spin.rotation.y, rx: tilt.rotation.x, d: camTarget };
+    viewTween = { t0: performance.now(), dur, from, to: { ry: from.ry + wrapPi(ry - from.ry), rx, d: dist }, cb };
+  };
+
+  // 景点介绍卡(复用右侧信息面板)
+  const showSiteCard = i => {
+    const s = SITES[i];
+    card.innerHTML = '<button class="earth-card-close" type="button">✕ 关闭</button>'
+      + '<div class="earth-card-tag">VIEWPOINT 0' + (i + 1) + ' · ' + s.en + '</div>'
+      + '<h4 class="earth-card-title">' + s.name + '</h4>'
+      + '<p class="earth-card-desc">' + s.desc + '</p>'
+      + '<div class="earth-card-row"><span>位置</span><b>' + s.region + '</b></div>'
+      + '<div class="earth-card-row"><span>坐标</span><b>' + coordText(s.lon, s.lat) + '</b></div>'
+      + '<button class="earth-card-back" type="button">↩ 返回全景</button>';
+    card.classList.add('is-show');
+  };
+
+  let focusIdx = -1;
+  const focusSite = i => {
+    focusIdx = i;
+    const v = alignView(SITES[i].lon, SITES[i].lat);
+    animateView(v.ry, v.rx, 1.85, 1500);
+    lastTouch = performance.now();
+    showSiteCard(i);
+  };
+  const exitFocus = () => {
+    if (focusIdx < 0 && !viewTween) return;
+    focusIdx = -1;
+    animateView(spin.rotation.y, 0, 3.55, 1400);
+    card.classList.remove('is-show');
+  };
+
+  // ESC 返回全景
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') exitFocus(); });
+
+  // 编号徽章投影(背面隐藏,规则同城市标签)
+  const updatePoints = () => {
+    for (let i = 0; i < SITES.length; i++) {
+      const el = pointEls[i];
+      if (!labelsOn) { el.style.visibility = 'hidden'; continue; }
+      spin.localToWorld(wp.copy(siteV[i]));
+      const facing = wp.clone().normalize().dot(camBase);
+      const o = facing > 0.16 ? Math.min(1, (facing - 0.16) / 0.22) : 0;
+      proj.copy(wp).project(camera);
+      el.style.transform = 'translate(' + ((proj.x * 0.5 + 0.5) * W).toFixed(1) + 'px,' + ((-proj.y * 0.5 + 0.5) * H).toFixed(1) + 'px) translate(-50%,-50%)';
+      el.style.opacity = o.toFixed(2);
+      el.style.visibility = o > 0.03 ? 'visible' : 'hidden';
+      el.classList.toggle('is-active', focusIdx === i);
+    }
+  };
+
+  // 景象淡入/收回 + 各景点自身动画
+  const easeOutBack = k => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); };
+  const updateSites = (t, dt) => {
+    for (let i = 0; i < siteGroups.length; i++) {
+      const G = siteGroups[i];
+      siteFade[i] += ((focusIdx === i ? 1 : 0) - siteFade[i]) * Math.min(1, dt * 3);
+      if (siteFade[i] <= 0.012) { G.root.visible = false; continue; }
+      G.root.visible = true;
+      G.root.scale.setScalar(Math.max(0.001, easeOutBack(Math.min(1, Math.max(0, siteFade[i])))));
+      G.r1.rotation.z = t * 0.4;
+      G.r2.rotation.z = -t * 0.3;
+      G.anim(t);
+    }
+  };
 
   // ============================================================
   // 实时数据层(致敬 God's Eye View:公开数据源,全部无需 Key)
@@ -627,6 +945,7 @@
   // ---------- 交互:拖拽 + 惯性 + 滚轮 ----------
   let dragging = false, lastX = 0, lastY = 0, velY = 0, lastTouch = 0;
   const onDown = e => {
+    if (viewTween) return; // 视角飞行中不接管拖拽
     dragging = true; lastX = e.clientX; lastY = e.clientY; velY = 0;
     stage.classList.add('is-dragging');
     lastTouch = performance.now();
@@ -637,7 +956,9 @@
     lastX = e.clientX; lastY = e.clientY;
     spin.rotation.y += dx * 0.005;
     // 相机从上方俯视:dy<0(上滑)需增大 rotation.x 才能让球面点跟着鼠标向上走
-    tilt.rotation.x = Math.max(-0.7, Math.min(0.7, tilt.rotation.x - dy * 0.002));
+    // 景点聚焦时放宽俯仰限制(南半球景点需要更大的翻转角)
+    const lim = focusIdx >= 0 ? 2.2 : 0.7;
+    tilt.rotation.x = Math.max(-lim, Math.min(lim, tilt.rotation.x - dy * 0.002));
     velY = dx * 0.005;
     lastTouch = performance.now();
   };
@@ -647,10 +968,13 @@
   window.addEventListener('pointerup', onUp);
   stage.addEventListener('wheel', e => {
     e.preventDefault();
-    camTarget = Math.max(1.9, Math.min(5.6, camTarget + e.deltaY * 0.0016));
+    camTarget = Math.max(1.6, Math.min(5.6, camTarget + e.deltaY * 0.0016));
     lastTouch = performance.now();
   }, { passive: false });
-  stage.addEventListener('dblclick', () => { camTarget = 3.55; tilt.rotation.x = 0; });
+  stage.addEventListener('dblclick', () => {
+    if (focusIdx >= 0) exitFocus();       // 景点视角下双击 = 返回全景
+    else animateView(spin.rotation.y, 0, 3.55, 900); // 平滑复位
+  });
 
   // ---------- 尺寸 ----------
   let W = 1, H = 1, lastW = 0, lastH = 0;
@@ -700,11 +1024,21 @@
     const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.elapsedTime;
 
-    // 惯性 + 闲置自转
+    // 惯性 + 闲置自转(景点聚焦时暂停,保持对准视角)
     if (!dragging) {
       spin.rotation.y += velY;
       velY *= 0.93;
-      if (!reduced && performance.now() - lastTouch > 2600) spin.rotation.y += 0.05 * dt;
+      if (!reduced && focusIdx < 0 && !viewTween && performance.now() - lastTouch > 2600) spin.rotation.y += 0.05 * dt;
+    }
+
+    // 视角飞行(编号景点 / 复位)
+    if (viewTween) {
+      const k = Math.min(1, (performance.now() - viewTween.t0) / viewTween.dur);
+      const e = easeInOutCubic(k);
+      spin.rotation.y = viewTween.from.ry + (viewTween.to.ry - viewTween.from.ry) * e;
+      tilt.rotation.x = viewTween.from.rx + (viewTween.to.rx - viewTween.from.rx) * e;
+      camTarget = viewTween.from.d + (viewTween.to.d - viewTween.from.d) * e;
+      if (k >= 1) { const cb = viewTween.cb; viewTween = null; cb && cb(); }
     }
 
     // 飞线脉冲
@@ -735,6 +1069,9 @@
 
     // 标签投影
     updateLabels();
+    // 编号景点徽章投影 + 景象淡入与自身动画
+    updatePoints();
+    updateSites(t, dt);
     // 实时层:地震脉冲 + ISS 动态标签
     updateLive(t);
 

@@ -87,14 +87,15 @@ export async function onRequestPost(context) {
     return json({ ok: true, episode: row.total });
   }
 
-  // 自动同步:更新最新集数与最新视频信息,不动其他字段
+  // 自动同步:更新最新集数、最新视频信息与卡片介绍(最新一集剧情),不动其他字段
   if (action === 'item.setTotal') {
     const id = Number(body.id);
     if (!id) return json({ error: 'missing id' }, 400);
     await db.prepare(`UPDATE bangumi_items SET total = ?2, latest_title = ?3, latest_cover = ?4,
-      latest_url = ?5, latest_pubdate = ?6, updated_at = ?7 WHERE id = ?1`)
+      latest_url = ?5, latest_pubdate = ?6, intro = ?7, updated_at = ?8 WHERE id = ?1`)
       .bind(id, str(body.total, 50), str(body.latest_title, 300), str(body.latest_cover, 1000),
-        str(body.latest_url, 1000), body.latest_pubdate ? Number(body.latest_pubdate) : null, Date.now()).run();
+        str(body.latest_url, 1000), body.latest_pubdate ? Number(body.latest_pubdate) : null,
+        str(body.intro, 2000), Date.now()).run();
     return json({ ok: true });
   }
 
