@@ -128,6 +128,7 @@ function maxEpFromTitles(titles) {
   for (const t of titles || []) {
     const s = String(t || '');
     if (/预告/.test(s)) continue;
+    if (/充电/.test(s)) continue;  // 充电专属视频不计入集数(未充电看不了)
     const m = s.match(/第\s*(\d{1,4})\s*[集话]/);
     const n = Number(m ? m[1] : firstNum(s));
     if (!Number.isFinite(n) || n <= 0 || n >= 3000) continue;
@@ -397,20 +398,27 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
       return { archives: all, complete: false }
     }
 
-    // 通道一:带系列名关键词(连载UP的合集精准匹配) → 通道二:不带关键词(全部投稿,翻页统计总数)
+    // 通道一:带系列名关键词(合集/单集标题含系列名的UP) → 通道二:不带关键词(全部投稿)
+    // 两个通道结果合并去重:单集标题不含系列名的UP(如「第N集，xxx」)只靠关键词会漏抓单集,
+    // 只靠全量则杂项投稿混入;并集后按「第N集」最大值统计,两边互为补漏
     let archives = []
     let complete = false
+    const seenBv = new Set()
+    const absorb = (rows) => {
+      for (const a of rows || []) {
+        if (!a.bvid || seenBv.has(a.bvid)) continue
+        seenBv.add(a.bvid)
+        archives.push(a)
+      }
+    }
     if (mid) {
+      const tried = []
       for (const kw of [title, '']) {
+        if (tried.indexOf(kw) !== -1) continue
+        tried.push(kw)
         const got = await fetchArchives(mid, kw)
-        if (!got.archives.length) continue
-        const hasEp = got.archives.some(a => /第\s*\d{1,4}\s*[集话]/.test(String(a.title || '')))
-        if (hasEp || got.complete || kw === '') {
-          archives = got.archives
-          complete = got.complete
-          break
-        }
-        // 带关键词抓到但不完整又没分集编号 → 换全量通道
+        absorb(got.archives)
+        if (got.complete) complete = true
       }
     }
     // 通道三:搜索接口(按发布时间,抓两页;按 UP 过滤,防止关键词噪声混入)
@@ -436,6 +444,10 @@ async function fetchTotal(link, fallbackTitle, syncUrl) {
     if (!archives.length) throw new Error((lastMsg || '未找到该UP主的投稿') + '(可能被B站风控,稍后自动重试)')
 
     archives = archives.slice().sort((a, b) => (b.pubdate || 0) - (a.pubdate || 0))
+    // 充电专属视频不计入集数、也不作为「最新一集」(未充电看不了;标题必带「充电」标注)。
+    // 若全部被过滤(整UP都是充电)则保留原列表,避免条目报错
+    const freeArcs = archives.filter(a => !/充电/.test(String(a.title || '')))
+    if (freeArcs.length) archives = freeArcs
     const newest = archives[0]
 
     // 总数:优先认「第N集/话」强标记(连载UP);没有编号的杂谈型UP用投稿总数
@@ -520,4 +532,4 @@ async function syncAll() {
   return { results };
 }
 
-module.exports = { fetchTotal, syncAll };
+module.exports = { fetchTotal, syncAll, fetchUpInfo, fetchJson };

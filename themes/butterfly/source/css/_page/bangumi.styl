@@ -14,12 +14,12 @@
 
     .bangumi-grid
       display: grid
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr))
-      gap: 16px
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr))
+      gap: 18px
 
       +maxWidth600()
-        grid-template-columns: repeat(auto-fill, minmax(145px, 1fr))
-        gap: 12px
+        grid-template-columns: repeat(auto-fill, minmax(165px, 1fr))
+        gap: 14px
 
     .bangumi-card
       display: flex
@@ -47,7 +47,7 @@
 
     .bangumi-cover
       position: relative
-      aspect-ratio: 2 / 3
+      aspect-ratio: 16 / 9
       overflow: hidden
       background: var(--text-bg-hover)
 
