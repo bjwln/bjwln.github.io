@@ -128,26 +128,6 @@
   position: absolute; z-index: 5; font-size: 14px; letter-spacing: 6px;
   color: rgba(240, 248, 255, .97); text-shadow: 0 1px 8px rgba(26, 58, 100, .6);
 }
-.ew-clouds { position: absolute; inset: 0; }
-.ew-puff {
-  position: absolute; left: 0; top: var(--ty, 50%);
-  width: var(--s, 200px); height: calc(var(--s, 200px) * 0.36);
-  background: #ffffff; border-radius: 999px;
-  filter: blur(var(--b, 4px));
-  opacity: var(--o, .5);
-  will-change: transform;
-  animation: ew-fly var(--d, 6s) linear infinite;
-  animation-delay: var(--dl, 0s);
-}
-.ew-puff::before, .ew-puff::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
-.ew-puff::before { width: 42%; height: 170%; left: 20%; top: -68%; }
-.ew-puff::after { width: 28%; height: 120%; right: 14%; top: -40%; }
-@keyframes ew-fly {
-  from { transform: translate3d(105vw, 0, 0) scale(.9); }
-  50% { transform: translate3d(-8vw, 0, 0) scale(1.15); }
-  to { transform: translate3d(-125vw, 0, 0) scale(1.5); }
-}
-.earth-whiteout:not(.is-on) .ew-puff { animation-play-state: paused; }
 
 .earth-stage {
   position: relative; max-width: 1180px; margin: 0 auto;

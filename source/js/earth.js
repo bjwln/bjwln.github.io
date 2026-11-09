@@ -814,28 +814,7 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   // ---- 穿云过渡层:轻雾 + 飞掠云朵(地球从云隙透出;切换瞬间短暂加深) ----
   const whiteout = document.createElement('div');
   whiteout.className = 'earth-whiteout';
-  whiteout.innerHTML = '<div class="ew-veil"></div><div class="ew-clouds"></div><span class="ew-text"></span>';
-  {
-    const cloudBox = whiteout.querySelector('.ew-clouds');
-    const LAYERS_CONF = [
-      { s: [90, 200], d: [8, 12], b: 2, o: [0.2, 0.36], y: [6, 66] },
-      { s: [160, 320], d: [5, 8], b: 4, o: [0.3, 0.5], y: [18, 78] },
-      { s: [280, 540], d: [2.8, 4.6], b: 8, o: [0.45, 0.65], y: [28, 88] },
-    ];
-    for (let i = 0; i < 22; i++) {
-      const p = document.createElement('i');
-      p.className = 'ew-puff';
-      const c = LAYERS_CONF[i % 3];
-      const rnd = (a, b) => (a + Math.random() * (b - a));
-      p.style.setProperty('--s', rnd(c.s[0], c.s[1]).toFixed(0) + 'px');
-      p.style.setProperty('--d', rnd(c.d[0], c.d[1]).toFixed(2) + 's');
-      p.style.setProperty('--b', c.b + 'px');
-      p.style.setProperty('--o', rnd(c.o[0], c.o[1]).toFixed(2));
-      p.style.setProperty('--ty', rnd(c.y[0], c.y[1]).toFixed(0) + '%');
-      p.style.setProperty('--dl', (-rnd(0, c.d[1])).toFixed(2) + 's');
-      cloudBox.appendChild(p);
-    }
-  }
+  whiteout.innerHTML = '<div class="ew-veil"></div><span class="ew-text"></span>';
   stage.appendChild(whiteout);
   const ewText = whiteout.querySelector('.ew-text');
   const whitePeak = on => whiteout.classList.toggle('ew-peak', !!on);
