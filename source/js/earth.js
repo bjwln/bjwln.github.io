@@ -811,19 +811,18 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   stage.appendChild(isleLabel);
   labels.push({ el: isleLabel, anchorObj: spin, localPos: ll2v(ISLE.lon, ISLE.lat, 1.02) });
 
-  // ---- 穿云过渡层:天空 + 持续飞掠的云朵(加载期=穿云期) ----
+  // ---- 穿云过渡层:轻雾 + 飞掠云朵(地球从云隙透出;切换瞬间短暂加深) ----
   const whiteout = document.createElement('div');
   whiteout.className = 'earth-whiteout';
-  whiteout.innerHTML = '<div class="ew-clouds"></div><span class="ew-text"></span>';
+  whiteout.innerHTML = '<div class="ew-veil"></div><div class="ew-clouds"></div><span class="ew-text"></span>';
   {
-    // 三层景深云朵:远景小而慢、中景居中、近景大而快带模糊,负延迟让开场就有云在飞
     const cloudBox = whiteout.querySelector('.ew-clouds');
     const LAYERS_CONF = [
-      { s: [90, 200], d: [8, 12], b: 2, o: [0.35, 0.55], y: [6, 66] },
-      { s: [160, 320], d: [5, 8], b: 4, o: [0.5, 0.75], y: [18, 78] },
-      { s: [280, 540], d: [2.8, 4.6], b: 8, o: [0.68, 0.95], y: [28, 88] },
+      { s: [90, 200], d: [8, 12], b: 2, o: [0.2, 0.36], y: [6, 66] },
+      { s: [160, 320], d: [5, 8], b: 4, o: [0.3, 0.5], y: [18, 78] },
+      { s: [280, 540], d: [2.8, 4.6], b: 8, o: [0.45, 0.65], y: [28, 88] },
     ];
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 22; i++) {
       const p = document.createElement('i');
       p.className = 'ew-puff';
       const c = LAYERS_CONF[i % 3];
@@ -839,8 +838,9 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   }
   stage.appendChild(whiteout);
   const ewText = whiteout.querySelector('.ew-text');
+  const whitePeak = on => whiteout.classList.toggle('ew-peak', !!on);
   const showWhite = txt => { ewText.textContent = txt || ''; whiteout.classList.add('is-on'); };
-  const hideWhite = () => { whiteout.classList.remove('is-on'); };
+  const hideWhite = () => { whiteout.classList.remove('is-on', 'ew-peak'); };
 
   // ---- 海岛视角轨道相机参数 + 补间 ----
   let isleAz = 0, isleEl = 0.36, isleDist = 1807;
@@ -892,16 +892,18 @@ import { Water } from '/js/lib/addons/objects/Water.js';
       camDist = 3.55; camTarget = 3.55;
       tilt.rotation.x = 0;
       setTimeout(() => {
+        whitePeak(false);
         hideWhite();
         mode = 'island';
         // 从高空缓降到海面
         animateCam({ az: 0, el: 0.3, d: 170 }, 3000, showIsleCard);
       }, 420);
     }, k => {
-      // 推进途中:扩视场增加速度感,过半后白雾升起
+      // 推进途中:扩视场增加速度感,过半后轻雾升起,临切换前短暂加深遮住世界切换
       camera.fov = 38 + 14 * easeInOutCubic(k);
       camera.updateProjectionMatrix();
       if (k > 0.55 && !whiteStarted) { whiteStarted = true; showWhite('正在穿越云层…'); }
+      whitePeak(k > 0.93);
     });
   };
 
@@ -911,6 +913,7 @@ import { Water } from '/js/lib/addons/objects/Water.js';
     mode = 'fromIsland';
     card.classList.remove('is-show');
     showWhite('正在返回轨道…');
+    setTimeout(() => whitePeak(true), 1650); // 拉升末段加深雾气,遮住世界切换
     setTimeout(() => {
       animateCam({ az: isleAz, el: 0.36, d: 1807 }, 1500, () => {
         scene.fog = null;
@@ -1123,14 +1126,14 @@ import { Water } from '/js/lib/addons/objects/Water.js';
     const axis = camBase.clone().normalize();
     const perp1 = new THREE.Vector3(0, 1, 0).cross(axis).normalize();
     const perp2 = axis.clone().cross(perp1).normalize();
-    for (let i = 0; i < 14; i++) {
-      const d = 1.28 + Math.random() * 0.75;      // 云层高度带(1.28~2.03)
+    for (let i = 0; i < 22; i++) {
+      const d = 1.16 + Math.random() * 0.95;      // 云层高度带(1.16~2.11,覆盖整段推进)
       const pos = axis.clone().multiplyScalar(d)
-        .addScaledVector(perp1, (Math.random() - 0.5) * 0.9)
-        .addScaledVector(perp2, (Math.random() - 0.5) * 0.9);
+        .addScaledVector(perp1, (Math.random() - 0.5) * 1.05)
+        .addScaledVector(perp2, (Math.random() - 0.5) * 1.05);
       const cluster = new THREE.Group();
       cluster.position.copy(pos);
-      const n = 3 + Math.floor(Math.random() * 3); // 每朵云 3~5 个云絮
+      const n = 4 + Math.floor(Math.random() * 3); // 每朵云 4~6 个云絮
       for (let j = 0; j < n; j++) {
         const mat = new THREE.SpriteMaterial({
           map: TEX_WHITE, color: '#ffffff', transparent: true, opacity: 0,
@@ -1138,9 +1141,9 @@ import { Water } from '/js/lib/addons/objects/Water.js';
         });
         const sp = new THREE.Sprite(mat);
         sp.position.set((Math.random() - 0.5) * 0.24, (Math.random() - 0.5) * 0.14, (Math.random() - 0.5) * 0.24);
-        sp.scale.setScalar(0.22 + Math.random() * 0.3);
+        sp.scale.setScalar(0.28 + Math.random() * 0.34);
         cluster.add(sp);
-        cloudPuffs.push({ mat, base: 0.5 + Math.random() * 0.32 });
+        cloudPuffs.push({ mat, base: 0.42 + Math.random() * 0.3 }); // 半透明,地球从云隙透出
       }
       travelClouds.add(cluster);
     }
@@ -1278,7 +1281,7 @@ import { Water } from '/js/lib/addons/objects/Water.js';
 
     // 穿云云带:穿行时淡入并缓慢漂移,其余时段隐藏
     const cloudTarget = (mode === 'toIsland' || mode === 'fromIsland') ? 1 : 0;
-    cloudFade += (cloudTarget - cloudFade) * Math.min(1, dt * 2.5);
+    cloudFade += (cloudTarget - cloudFade) * Math.min(1, dt * 4);
     travelClouds.visible = cloudFade > 0.02;
     if (travelClouds.visible) {
       travelClouds.quaternion.setFromAxisAngle(camBase, t * 0.06);

@@ -110,18 +110,23 @@
 .earth-cap.is-major { font-size: 11.5px; color: #ffe9c0; font-weight: 600; line-height: 14px; }
 .earth-cap.is-major::before { width: 5px; height: 5px; margin-top: -2.5px; }
 
-/* 穿云 / 回退过渡层:高空天空渐变 + 三层景深云朵持续飞掠 */
+/* 穿云 / 回退过渡层:轻雾罩 + 三层景深云朵飞掠(地球从云隙透出) */
 .earth-whiteout {
   position: absolute; inset: 0; z-index: 8; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(180deg, #6f9cc9 0%, #9dbde0 35%, #cfe0ef 70%, #e9f2f9 100%);
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity .65s ease, visibility .65s;
 }
 .earth-whiteout.is-on { opacity: 1; visibility: visible; }
+.ew-veil {
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 100% at 50% 40%, rgba(226, 240, 254, .85) 0%, rgba(192, 222, 246, .72) 55%, rgba(164, 202, 236, .62) 100%);
+  opacity: .42; transition: opacity .5s ease;
+}
+.earth-whiteout.ew-peak .ew-veil { opacity: .94; }
 .earth-whiteout .ew-text {
   position: absolute; z-index: 5; font-size: 14px; letter-spacing: 6px;
-  color: #48749f; text-shadow: 0 1px 0 rgba(255, 255, 255, .9);
+  color: rgba(240, 248, 255, .97); text-shadow: 0 1px 8px rgba(26, 58, 100, .6);
 }
 .ew-clouds { position: absolute; inset: 0; }
 .ew-puff {
@@ -129,7 +134,7 @@
   width: var(--s, 200px); height: calc(var(--s, 200px) * 0.36);
   background: #ffffff; border-radius: 999px;
   filter: blur(var(--b, 4px));
-  opacity: var(--o, .6);
+  opacity: var(--o, .5);
   will-change: transform;
   animation: ew-fly var(--d, 6s) linear infinite;
   animation-delay: var(--dl, 0s);

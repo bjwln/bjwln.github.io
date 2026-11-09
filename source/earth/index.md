@@ -7,7 +7,7 @@ comment: false
 description: 真实贴图 3D 地球——云层与大气辉光、全球首都标注；点击南海水面，穿越云层进入 3D 海岛秘境
 ---
 
-<link rel="stylesheet" href="/css/earth.css?v=20261110c">
+<link rel="stylesheet" href="/css/earth.css?v=20261110d">
 
 <div class="earth-wrap">
 
@@ -39,4 +39,4 @@ description: 真实贴图 3D 地球——云层与大气辉光、全球首都标
 
 </div>
 
-<script type="module" src="/js/earth.js?v=20261110j"></script>
+<script type="module" src="/js/earth.js?v=20261110k"></script>
