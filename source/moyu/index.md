@@ -5,10 +5,10 @@ type: moyu
 top_img: false
 aside: false
 comment: false
-description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
+description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261108e">
+<link rel="stylesheet" href="/css/moyu.css?v=20261109d">
 
 <div id="moyu-app">
 
@@ -26,6 +26,70 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 <span class="m-sub">MOYU · TAKE A BREAK</span>
 <p class="m-motto">忙里偷闲的角落：玄学、小游戏，或者只是发发呆。</p>
 </header>
+
+<section class="m-brief" id="moyu-brief" aria-label="每日资讯">
+<div class="m-brief-head">
+<div class="m-brief-heading">
+<h2 class="m-brief-title"><i class="fas fa-newspaper" aria-hidden="true"></i>每日资讯</h2>
+<span class="m-brief-date" id="mb-date"></span>
+</div>
+<div class="m-brief-actions">
+<span class="m-brief-updated" id="mb-updated"></span>
+<button class="m-brief-refresh" id="mb-refresh" type="button" title="刷新数据" aria-label="刷新数据"><i class="fas fa-arrows-rotate" aria-hidden="true"></i></button>
+<button class="m-brief-toggle" id="mb-toggle" type="button" title="收起每日资讯" aria-label="收起每日资讯" aria-expanded="true" aria-controls="mb-body"><i class="fas fa-chevron-up" aria-hidden="true"></i></button>
+</div>
+</div>
+
+<div class="m-brief-mini" id="mb-mini">
+<div class="mb-mini-weather" id="mb-mini-weather"><span class="mb-mini-dim">天气加载中…</span></div>
+<div class="mb-mini-chips" id="mb-mini-market"><span class="mb-mini-dim">行情加载中…</span></div>
+<div class="mb-mini-hint">展开查看国内外新闻、AI 解读与完整建议</div>
+</div>
+
+<div class="m-brief-body" id="mb-body">
+<div class="m-brief-body-inner">
+
+<div class="m-brief-grid">
+
+<div class="mb-card mb-weather" id="mb-weather">
+<div class="mb-loading"><i class="fas fa-spinner fa-spin"></i> 正在定位…</div>
+</div>
+
+<div class="mb-card mb-market" id="mb-market">
+<div class="mb-loading"><i class="fas fa-spinner fa-spin"></i> 正在获取行情…</div>
+</div>
+
+<div class="mb-card mb-news">
+<div class="mb-news-col">
+<h3 class="mb-col-title"><i class="fas fa-flag" aria-hidden="true"></i>国内要闻</h3>
+<div class="mb-news-list" id="mb-news-cn"><div class="mb-loading"><i class="fas fa-spinner fa-spin"></i> 加载中…</div></div>
+</div>
+<div class="mb-news-col">
+<h3 class="mb-col-title"><i class="fas fa-globe" aria-hidden="true"></i>国际视野</h3>
+<div class="mb-news-list" id="mb-news-world"><div class="mb-loading"><i class="fas fa-spinner fa-spin"></i> 加载中…</div></div>
+</div>
+</div>
+
+<div class="mb-card mb-github">
+<h3 class="mb-col-title"><i class="fab fa-github" aria-hidden="true"></i>GitHub 今日热门<span class="mb-gh-sub">TRENDING · TOP 10</span></h3>
+<div class="mb-gh-grid" id="mb-github"><div class="mb-loading"><i class="fas fa-spinner fa-spin"></i> 加载中…</div></div>
+</div>
+
+<div class="mb-card mb-advice">
+<h3 class="mb-col-title"><i class="fas fa-lightbulb" aria-hidden="true"></i>今日解读 · 原因与建议</h3>
+<div class="mb-ai" id="mb-ai" hidden></div>
+<ul class="mb-advice-list" id="mb-advice"></ul>
+<p class="mb-note">解读由规则与 AI 依据公开行情和新闻生成，仅供参考，不构成投资建议。</p>
+</div>
+
+</div>
+
+<p class="m-brief-quote" id="mb-quote"></p>
+
+</div>
+</div>
+
+</section>
 
 <section class="m-grid">
 
@@ -65,7 +129,7 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 <span class="m-card-tag">三维 · Three.js</span>
 <h2 class="m-card-title">蓝星航线</h2>
 <span class="m-card-en">BLUE PLANET · 3D EARTH</span>
-<p class="m-card-desc">一颗发光的蓝色地球悬在星海里，飞线从浙江出发连向世界各大城市。可以拖着转、滚轮缩放，还能点击编号视角——灯塔、小船、沙滩、飞鸟、礁石，飞过去看细节景象，发呆专用。</p>
+<p class="m-card-desc">一颗真实贴图的蓝色地球悬在星海里，标着全球各国的首都。点击南海水面，穿越云层降落到一座海岛上发呆——记得点退出回来看星星。</p>
 <span class="m-card-btn m-btn-blue">进入轨道 <i class="fas fa-arrow-right"></i></span>
 </div>
 <div class="m-card-art" aria-hidden="true">
@@ -126,4 +190,5 @@ description: 忙里偷闲的角落——月下问运势，摸鱼小游戏
 
 </div>
 
+<script src="/js/moyu-brief.js?v=20261109c" defer></script>
 <script src="/js/moyulinks.js?v=20261108b" defer></script>

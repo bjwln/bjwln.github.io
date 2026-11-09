@@ -6,3 +6,5 @@ pages_build_output_dir = "public"
 binding = "DB"
 database_name = "number_of_visitors"
 database_id = "48d2ba82-57f2-4099-8d09-f6f164a578d7"
+[ai]
+binding = "AI"

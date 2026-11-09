@@ -34,3 +34,171 @@ compare.py 自动完成这个过程，打开两个结果文件，按题号配对
 # 优化前的配置
 
 由于MedQA 天花板锁死了统计检出力。94% 意味着 100 条里只剩 6 条错的。任何 prompt 改进最多翻动这 6 条——就算全部翻对也才 +6 个点。所以选择一个新的数据集DDXPlus来跑基线
+
+# 靠近OMGS
+
+## 一、自由文本病例➡可审计的上下文层。
+
+这一步不接 RAG、不改讨论逻辑、不改最终答案格式、不强制引用。
+
+```
+question
+  -> CaseFacts      患者事实
+  -> options        选项
+  -> decision       决策问题
+  -> EvidencePack   外部证据，默认空
+  -> prompt         给专家使用
+```
+
+### ①拆分模块Case_context
+
+核心功能为把一条自由文本医学题干，确定性地拆成“病例原文、结构化事实、决策问题、选项、外部证据包”，再渲染成给专家模型使用的上下文
+
+![image-20261109143918510](Prompt优化/image-20261109143918510.png)
+
+### ②实现prompt 
+
+修改`workflow`的`collect_opinions`函数
+
+![image-20261109145232392](Prompt优化/image-20261109145232392.png)
+
+
+
+`collect_opinions`这个函数配合 `prompt_builder.py`和 `prompt_protocol.json`可以完成问题或回答上下文的拼接
+
+![image-20261109150035152](Prompt优化/image-20261109150035152.png)
+
+`collect_opinions`中执行规则（本标题下第一张图黄框）：
+
+```python
+answer = task_prompt(
+    "任务名",
+    占位符1=真实值1,
+    占位符2=真实值2,
+)
+"任务名": "请派出 $占位符1 个专家分析：$占位符2"
+```
+
+例如`prompt_protocol.json` 里有
+
+```json
+"collect_opinions": "请派出 $count 个专家分析：$question"
+```
+
+他会把`collect_opinions`中以下这个代码替换为：请派出 3 个专家分析：患者发热 3 天，伴咳嗽。
+
+```python
+answer = task_prompt(
+    "collect_opinions",
+    question="患者发热 3 天，伴咳嗽。",
+    count=3,
+)
+```
+
+## 二、把医生意见结构化
+
+```
+CaseContext
+  -> 专家独立意见
+  -> StructuredOpinion
+       answer: 专家最终选择的答案，例如选择题里的 A、B、C。
+       stance: 专家的立场，也就是他为什么支持这个答案。
+       claims: 专家给出的具体理由列表。
+       uncertainty: 专家明确说明的不确定性。
+       parse_status: 解析状态，parsed 表示 JSON 正常解析，fallback 表示退回自然语言解析。
+       raw_response: 模型的原始输出，方便出错时排查。
+  -> 自然语言 opinion
+  -> 继续兼容现有讨论和 benchmark
+```
+
+### ①实现Opinion
+
+![image-20261109190910792](Prompt优化/image-20261109190910792.png)
+
+本文件的内部结构
+
+```python
+StructuredOpinion(
+    answer="B",
+    stance="急性肺水肿最可能",
+    claims=(
+        OpinionClaim(
+            claim_id="C1",
+            text="突发呼吸困难支持急性肺水肿",
+            fact_ids=("F2", "F3"),
+            evidence_ids=(),
+        ),
+    ),
+    uncertainty="仍需 BNP 和影像确认",
+    parse_status="parsed",
+    raw_response="模型原始输出",
+)
+
+
+"""
+其中OpinionClaim是理由
+claim_id 是程序自动生成的，模型不需要提供。
+fact_ids 只能引用 CaseContext.facts 里真实存在的 F1、F2 等；
+evidence_ids 只能引用外部证据包里的 E1、E2 等。无效引用会被过滤掉。
+"""
+
+OpinionClaim(
+    claim_id="C1",
+    text="突发呼吸困难支持急性肺水肿",
+    fact_ids=("F2", "F3"),
+    evidence_ids=(),
+)
+```
+
+专家模型会被要求返回一个原始的`json`
+
+```json
+{
+  "answer": "B",
+  "stance": "急性肺水肿最可能",
+  "claims": [
+    {
+      "text": "突发呼吸困难支持急性肺水肿",
+      "fact_ids": ["F2", "F3"],
+      "evidence_ids": []
+    }
+  ],
+  "uncertainty": "仍需 BNP 和影像确认"
+}
+```
+
+本文件调用`to_dict()`最终返回一个补全后的`json`文件
+
+```json
+{
+  "answer": "B",
+  "stance": "急性肺水肿最可能",
+  "claims": [
+    {
+      "claim_id": "C1",
+      "text": "突发呼吸困难支持急性肺水肿",
+      "fact_ids": ["F2", "F3"],
+      "evidence_ids": []
+    }
+  ],
+  "uncertainty": "仍需 BNP 和影像确认",
+  "parse_status": "parsed",
+  "raw_response": "模型原始输出"
+}
+```
+
+它也会通过 `to_natural_language()` 转回现有系统需要的文本，这一步是为了保持 benchmark 兼容，尤其是第一行的 `最终答案：<答案>`。
+```
+最终答案：B
+立场：急性肺水肿最可能
+关键主张：
+- [C1] 突发呼吸困难支持急性肺水肿 (facts: F2, F3)
+不确定性：仍需 BNP 和影像确认
+```
+
+### ②修改工作流中的collect_opinion函数
+
+使之结构化医生的意见
+
+![image-20261109205233469](Prompt优化/image-20261109205233469.png)
+
