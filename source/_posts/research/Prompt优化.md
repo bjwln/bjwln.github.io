@@ -202,3 +202,29 @@ OpinionClaim(
 
 ![image-20261109205233469](Prompt优化/image-20261109205233469.png)
 
+## 三、
+
+讨论从“每个人轮流重写一遍自己的意见”改成“默认沉默、有理由才发言，发言进共享记忆”
+
+```
+旧流程（阶段四现状）：
+收集意见 → 每人重写意见(discuss_once) → YES/NO共识 → 主持人反馈 → 再重写 → 综合
+                ↑ 问题：意见被重写后 structured_opinion 丢失；重写常是换措辞不换内容
+
+新流程（阶段五）：
+收集意见（不变）
+  ↓
+GlobalMemory.from_opinions()          ← 新增：把 3 份结构化意见汇总成共享记忆
+  ↓
+讨论轮（新机制）× 最多 2 轮：
+    每位专家看到【病例引用对照 + 全局记忆】，输出发言门控 JSON：
+    {"speak": "yes/no", "target": "对着谁说", "message": "1-2句", "why": "conflict/safety/missing/new_evidence"}
+    沉默是默认；发言必须给出理由分类；发言写入记忆的 Debate Log
+  ↓
+退出条件：共识 YES（沿用现有 check_consensus，阶段六才改三态）或 全员沉默 或 2 轮上限
+  ↓
+synthesize（升级）：主持人读【全局记忆 + 初始意见】，不再读散装重写文本
+  ↓
+最终答案：第一行仍是 最终答案：X —— benchmark 零改动
+```
+
