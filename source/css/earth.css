@@ -110,16 +110,39 @@
 .earth-cap.is-major { font-size: 11.5px; color: #ffe9c0; font-weight: 600; line-height: 14px; }
 .earth-cap.is-major::before { width: 5px; height: 5px; margin-top: -2.5px; }
 
-/* 穿云 / 回退的白雾过渡层 */
+/* 穿云 / 回退过渡层:高空天空渐变 + 三层景深云朵持续飞掠 */
 .earth-whiteout {
-  position: absolute; inset: 0; z-index: 8;
+  position: absolute; inset: 0; z-index: 8; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, .98), rgba(226, 240, 250, .95));
+  background: linear-gradient(180deg, #6f9cc9 0%, #9dbde0 35%, #cfe0ef 70%, #e9f2f9 100%);
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity .65s ease, visibility .65s;
 }
 .earth-whiteout.is-on { opacity: 1; visibility: visible; }
-.earth-whiteout .ew-text { font-size: 13px; letter-spacing: 5px; color: #6b90b8; text-shadow: 0 1px 0 #fff; }
+.earth-whiteout .ew-text {
+  position: absolute; z-index: 5; font-size: 14px; letter-spacing: 6px;
+  color: #48749f; text-shadow: 0 1px 0 rgba(255, 255, 255, .9);
+}
+.ew-clouds { position: absolute; inset: 0; }
+.ew-puff {
+  position: absolute; left: 0; top: var(--ty, 50%);
+  width: var(--s, 200px); height: calc(var(--s, 200px) * 0.36);
+  background: #ffffff; border-radius: 999px;
+  filter: blur(var(--b, 4px));
+  opacity: var(--o, .6);
+  will-change: transform;
+  animation: ew-fly var(--d, 6s) linear infinite;
+  animation-delay: var(--dl, 0s);
+}
+.ew-puff::before, .ew-puff::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+.ew-puff::before { width: 42%; height: 170%; left: 20%; top: -68%; }
+.ew-puff::after { width: 28%; height: 120%; right: 14%; top: -40%; }
+@keyframes ew-fly {
+  from { transform: translate3d(105vw, 0, 0) scale(.9); }
+  50% { transform: translate3d(-8vw, 0, 0) scale(1.15); }
+  to { transform: translate3d(-125vw, 0, 0) scale(1.5); }
+}
+.earth-whiteout:not(.is-on) .ew-puff { animation-play-state: paused; }
 
 .earth-stage {
   position: relative; max-width: 1180px; margin: 0 auto;

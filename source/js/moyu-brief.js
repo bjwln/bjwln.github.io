@@ -421,12 +421,54 @@
   function renderTrending(d) {
     var host = $('mb-github');
     if (!host) return;
+    hideGhTip();
     var list = (d && d.ok && d.repos) || [];
     if (!list.length) {
       host.innerHTML = errHtml('GitHub 趋势暂时不可用，稍后再试');
       return;
     }
     host.innerHTML = list.map(trendingItem).join('');
+    // 悬停浮窗: 完整中文介绍 + 英文原文
+    var items = host.querySelectorAll('.mb-gh-item');
+    items.forEach(function (el, i) {
+      var it = list[i];
+      if (!it) return;
+      el.addEventListener('mouseenter', function () { showGhTip(el, it); });
+      el.addEventListener('mouseleave', hideGhTip);
+      el.addEventListener('focus', function () { showGhTip(el, it); });
+      el.addEventListener('blur', hideGhTip);
+    });
+  }
+
+  /* ---------- GitHub 悬停浮窗 ----------
+   * 挂在 body 上用 fixed 定位: .m-brief-body-inner 有 overflow:hidden(收起动画用),
+   * 页面内绝对定位会被裁剪; fixed 相对视口并做边界钳制, 滚动时隐藏。 */
+  var ghTip = null;
+  function hideGhTip() {
+    if (ghTip) ghTip.hidden = true;
+  }
+  function showGhTip(anchor, it) {
+    if (!ghTip) {
+      ghTip = document.createElement('div');
+      ghTip.className = 'mb-gh-tip';
+      ghTip.setAttribute('role', 'tooltip');
+      document.body.appendChild(ghTip);
+    }
+    var meta = [it.language, it.stars ? '⭐ ' + it.stars : '', it.starsToday ? '今日 +' + it.starsToday : '']
+      .filter(Boolean).join(' · ');
+    ghTip.innerHTML = '<b class="mb-gh-tip-name">' + esc(it.repo) + '</b>'
+      + (it.description ? '<span class="mb-gh-tip-zh">' + esc(it.description) + '</span>' : '')
+      + (it.descriptionEn && it.descriptionEn !== it.description
+        ? '<span class="mb-gh-tip-en">' + esc(it.descriptionEn) + '</span>' : '')
+      + (meta ? '<span class="mb-gh-tip-meta">' + esc(meta) + '</span>' : '');
+    ghTip.hidden = false;
+    var r = anchor.getBoundingClientRect();
+    var tw = ghTip.offsetWidth, th = ghTip.offsetHeight;
+    var left = Math.min(Math.max(8, r.left), window.innerWidth - tw - 8);
+    var top = r.bottom + 8;
+    if (top + th > window.innerHeight - 8) top = Math.max(8, r.top - th - 8);
+    ghTip.style.left = left + 'px';
+    ghTip.style.top = top + 'px';
   }
 
   function loadTrending(force) {
@@ -642,6 +684,8 @@
       var el = $('moyu-brief');
       setCollapsed(!(el && el.classList.contains('collapsed')), true);
     });
+    // 浮窗是 fixed 定位, 页面滚动时位置会失效, 直接隐藏
+    window.addEventListener('scroll', hideGhTip, { passive: true });
     // 恢复上次收起偏好
     setCollapsed(readJSON(LS_COLLAPSED, localStorage) === true, false);
     loadDaily(false);

@@ -811,10 +811,32 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   stage.appendChild(isleLabel);
   labels.push({ el: isleLabel, anchorObj: spin, localPos: ll2v(ISLE.lon, ISLE.lat, 1.02) });
 
-  // ---- 白雾过渡层(穿云 / 回退的渐进遮罩) ----
+  // ---- 穿云过渡层:天空 + 持续飞掠的云朵(加载期=穿云期) ----
   const whiteout = document.createElement('div');
   whiteout.className = 'earth-whiteout';
-  whiteout.innerHTML = '<span class="ew-text"></span>';
+  whiteout.innerHTML = '<div class="ew-clouds"></div><span class="ew-text"></span>';
+  {
+    // 三层景深云朵:远景小而慢、中景居中、近景大而快带模糊,负延迟让开场就有云在飞
+    const cloudBox = whiteout.querySelector('.ew-clouds');
+    const LAYERS_CONF = [
+      { s: [90, 200], d: [8, 12], b: 2, o: [0.35, 0.55], y: [6, 66] },
+      { s: [160, 320], d: [5, 8], b: 4, o: [0.5, 0.75], y: [18, 78] },
+      { s: [280, 540], d: [2.8, 4.6], b: 8, o: [0.68, 0.95], y: [28, 88] },
+    ];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('i');
+      p.className = 'ew-puff';
+      const c = LAYERS_CONF[i % 3];
+      const rnd = (a, b) => (a + Math.random() * (b - a));
+      p.style.setProperty('--s', rnd(c.s[0], c.s[1]).toFixed(0) + 'px');
+      p.style.setProperty('--d', rnd(c.d[0], c.d[1]).toFixed(2) + 's');
+      p.style.setProperty('--b', c.b + 'px');
+      p.style.setProperty('--o', rnd(c.o[0], c.o[1]).toFixed(2));
+      p.style.setProperty('--ty', rnd(c.y[0], c.y[1]).toFixed(0) + '%');
+      p.style.setProperty('--dl', (-rnd(0, c.d[1])).toFixed(2) + 's');
+      cloudBox.appendChild(p);
+    }
+  }
   stage.appendChild(whiteout);
   const ewText = whiteout.querySelector('.ew-text');
   const showWhite = txt => { ewText.textContent = txt || ''; whiteout.classList.add('is-on'); };

@@ -341,10 +341,11 @@
 /* ---- GitHub 今日热门 ---- */
 .mb-gh-sub { margin-left: auto; font-size: 10px; letter-spacing: 2px; color: var(--m-muted); }
 .mb-gh-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px;
   margin-top: 4px;
 }
 .mb-gh-item {
+  min-width: 0;
   display: flex; align-items: flex-start; gap: 10px;
   padding: 7px 9px; border-radius: 8px;
   color: inherit; text-decoration: none; transition: background .15s;
@@ -378,6 +379,23 @@
 .mb-gh-stars { display: inline-flex; align-items: center; gap: 4px; }
 .mb-gh-stars i { font-size: 10px; }
 .mb-gh-today { color: var(--m-gold); font-weight: 600; }
+
+/* 悬停浮窗: fixed 定位挂在 body 上（页面内绝对定位会被 .m-brief-body-inner 的
+ * overflow:hidden 裁剪）。不在 #moyu-app 作用域内, 颜色用字面量保持同款深色金面板风格。 */
+.mb-gh-tip {
+  position: fixed; z-index: 9999; max-width: 440px;
+  padding: 12px 15px; border-radius: 10px;
+  background: #191926; border: 1px solid rgba(232, 217, 160, .3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .55);
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.mb-gh-tip[hidden] { display: none; }
+.mb-gh-tip-name { font-size: 13px; font-weight: 600; color: #e8d9a0; word-break: break-all; }
+.mb-gh-tip-zh { font-size: 12.5px; line-height: 1.75; color: #e6e4dc; }
+.mb-gh-tip-en { font-size: 11.5px; line-height: 1.65; color: #8f8e9a; }
+.mb-gh-tip-meta { font-size: 11px; color: #c9bd8e; font-variant-numeric: tabular-nums; }
 
 /* ---- 今日解读 ----
  * 注意: 主题 index.css 的 `.container p/.container ul li` 等标签规则
@@ -471,7 +489,10 @@
   .m-brief-title { font-size: 18px; letter-spacing: 3px; }
   .mb-news { grid-template-columns: 1fr; gap: 10px; }
   .mb-gh-grid { grid-template-columns: 1fr; gap: 2px; }
-  .mb-gh-desc { white-space: normal; }
+  .mb-gh-desc {
+    white-space: normal;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  }
   .mb-w-icon { font-size: 30px; }
   .mb-w-temp { font-size: 30px; }
   .mb-ai { margin-bottom: 10px; }

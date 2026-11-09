@@ -8,7 +8,7 @@ comment: false
 description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261109d">
+<link rel="stylesheet" href="/css/moyu.css?v=20261110a">
 
 <div id="moyu-app">
 
@@ -190,5 +190,5 @@ description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼�
 
 </div>
 
-<script src="/js/moyu-brief.js?v=20261109c" defer></script>
+<script src="/js/moyu-brief.js?v=20261110a" defer></script>
 <script src="/js/moyulinks.js?v=20261108b" defer></script>
