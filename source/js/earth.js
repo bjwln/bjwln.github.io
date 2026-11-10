@@ -8,6 +8,7 @@
 import * as THREE from '/js/lib/three.module.min.js';
 import { GLTFLoader } from '/js/lib/addons/loaders/GLTFLoader.js';
 import { Water } from '/js/lib/addons/objects/Water.js';
+import { buildStoreWorld } from '/js/earth-store.js?v=20261111f';
 
 (() => {
   'use strict';
@@ -44,9 +45,10 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   isleSun.visible = false;
   scene.add(isleSun);
 
-  // 相机参数档案:地球轨道 / 海岛世界
+  // 相机参数档案:地球轨道 / 海岛世界 / 雨夜便利店
   const CAM_EARTH = { n: 0.05, f: 120, fov: 38 };
   const CAM_ISLE = { n: 1, f: 30000, fov: 55 };
+  const CAM_STORE = { n: 0.1, f: 600, fov: 42 };
   const applyCamProfile = p => {
     camera.near = p.n; camera.far = p.f; camera.fov = p.fov;
     camera.updateProjectionMatrix();
@@ -916,8 +918,159 @@ import { Water } from '/js/lib/addons/objects/Water.js';
     }, 450);
   };
 
+  // ============================================================
+  // 江苏 · 雨夜便利店街角(三渲二微缩景观)
+  // 地球中国区域内的琥珀色标记,点击穿云降落到雨夜街角;
+  // 底座可自由拖拽旋转缩放,Esc / 左下按钮退出。
+  // ============================================================
+  const STORE = { lon: 119.45, lat: 32.9 };
+  let storeAz = -0.5, storeEl = 0.42, storeDist = 17;
+  let storeTween = null;
+  let storeBuilt = null;
+  let storeHitDisk = null;
+  const ensureStore = () => {
+    if (!storeBuilt) {
+      storeBuilt = buildStoreWorld(THREE);
+      scene.add(storeBuilt.world);
+      window.__storeWorld = storeBuilt.world; // 调试钩子
+    }
+    return storeBuilt;
+  };
+  const storeApplyCam = () => {
+    camera.position.set(
+      storeDist * Math.cos(storeEl) * Math.sin(storeAz),
+      storeDist * Math.sin(storeEl) + 1.1,
+      storeDist * Math.cos(storeEl) * Math.cos(storeAz)
+    );
+    camera.lookAt(0, 1.05, 0);
+  };
+
+  // ---- 地球上的入口标记(琥珀霓虹) ----
+  const storeMarker = new THREE.Group();
+  storeMarker.position.copy(ll2v(STORE.lon, STORE.lat, 1.004));
+  storeMarker.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), storeMarker.position.clone().normalize());
+  const storeRing = new THREE.Mesh(
+    new THREE.RingGeometry(0.05, 0.058, 48),
+    new THREE.MeshBasicMaterial({ color: '#ffc98a', transparent: true, opacity: 0.78, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+  );
+  storeRing.rotation.x = -Math.PI / 2;
+  storeMarker.add(storeRing);
+  const storePulse = new THREE.Mesh(
+    new THREE.RingGeometry(0.86, 1, 48),
+    new THREE.MeshBasicMaterial({ color: '#ffc98a', transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+  );
+  storePulse.rotation.x = -Math.PI / 2;
+  storeMarker.add(storePulse);
+  const storeGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: TEX_GOLD, color: '#ffcf96', transparent: true, opacity: 0.7,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  }));
+  storeGlow.scale.setScalar(0.085);
+  storeMarker.add(storeGlow);
+  storeHitDisk = new THREE.Mesh(
+    new THREE.CircleGeometry(0.13, 24),
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+  );
+  storeHitDisk.rotation.x = -Math.PI / 2;
+  storeHitDisk.position.y = 0.004;
+  storeMarker.add(storeHitDisk);
+  spin.add(storeMarker);
+
+  const storeLabel = document.createElement('div');
+  storeLabel.className = 'earth-label is-isle is-storemark';
+  storeLabel.textContent = '江苏 · 雨夜便利店';
+  storeLabel.style.pointerEvents = 'auto';
+  storeLabel.style.cursor = 'pointer';
+  storeLabel.addEventListener('click', e => { e.stopPropagation(); enterStore(); });
+  stage.appendChild(storeLabel);
+  labels.push({ el: storeLabel, anchorObj: spin, localPos: ll2v(STORE.lon, STORE.lat, 1.02) });
+
+  // ---- 退出按钮(页面级,雨夜里唯一的"人间入口") ----
+  const storeExitBtn = document.createElement('button');
+  storeExitBtn.className = 'earth-exit-store';
+  storeExitBtn.type = 'button';
+  storeExitBtn.innerHTML = '<i class="fas fa-arrow-rotate-left"></i> 退出雨夜';
+  storeExitBtn.addEventListener('click', e => { e.stopPropagation(); exitStore(); });
+  stage.appendChild(storeExitBtn);
+
+  // ---- 进入便利店:对准江苏 → 穿云 → 白雾 → 雨夜缓降 ----
+  const enterStore = () => {
+    if (mode !== 'earth') return;
+    mode = 'toStore';
+    card.classList.remove('is-show');
+    lastTouch = performance.now();
+    let whiteStarted = false;
+    const v = alignView(STORE.lon, STORE.lat);
+    animateView(v.ry, v.rx, 1.02, 2500, () => {
+      scene.fog = new THREE.Fog(0x04060d, 40, 115);
+      scene.background = new THREE.Color(0x04060d);
+      ensureStore().world.visible = true;
+      tilt.visible = false;
+      ambientLight.visible = false;
+      isleSun.visible = false;
+      sunLight.visible = false;
+      applyCamProfile(CAM_STORE);
+      storeAz = -0.62; storeEl = 0.52; storeDist = 42;
+      storeApplyCam();
+      camDist = 3.55; camTarget = 3.55;
+      tilt.rotation.x = 0;
+      stage.classList.add('is-store');
+      setTimeout(() => {
+        whitePeak(false);
+        hideWhite();
+        mode = 'store';
+        storeTween = {
+          t0: performance.now(), dur: 3000,
+          from: { az: -0.62, el: 0.52, d: 42 },
+          to: { az: -0.5, el: 0.4, d: 18.5 },
+        };
+      }, 420);
+    }, k => {
+      camera.fov = 38 + 14 * easeInOutCubic(k);
+      camera.updateProjectionMatrix();
+      if (k > 0.55 && !whiteStarted) { whiteStarted = true; showWhite('正在降落江苏的雨夜…'); }
+      whitePeak(k > 0.93);
+    });
+  };
+
+  // ---- 退出:白雾 → 拉远 → 切回地球全景 ----
+  const exitStore = () => {
+    if (mode !== 'store') return;
+    mode = 'fromStore';
+    showWhite('正在返回轨道…');
+    setTimeout(() => whitePeak(true), 1300);
+    setTimeout(() => {
+      storeTween = {
+        t0: performance.now(), dur: 1400,
+        from: { az: storeAz, el: storeEl, d: storeDist },
+        to: { az: storeAz, el: 0.56, d: 46 },
+        cb: () => {
+          scene.fog = null;
+          scene.background = null;
+          if (storeBuilt) storeBuilt.world.visible = false;
+          tilt.visible = true;
+          ambientLight.visible = true;
+          sunLight.visible = true;
+          applyCamProfile(CAM_EARTH);
+          camDist = 3.55; camTarget = 3.55;
+          tilt.rotation.x = 0;
+          setCam();
+          camera.lookAt(0, 0, 0);
+          stage.classList.remove('is-store');
+          setTimeout(() => {
+            hideWhite();
+            mode = 'earth';
+            setCam();
+            camera.lookAt(0, 0, 0);
+          }, 420);
+        },
+      };
+    }, 450);
+  };
+
   window.addEventListener('keydown', e => {
     if (e.key === 'Escape' && mode === 'island') exitIsland();
+    if (e.key === 'Escape' && mode === 'store') exitStore();
   });
 
   // ============================================================
@@ -1038,16 +1191,20 @@ import { Water } from '/js/lib/addons/objects/Water.js';
     raycaster.setFromCamera(ndc, camera);
     // 海面入口:点击南海水面进入海岛
     if (raycaster.intersectObject(isleHitDisk).length) { enterIsland(); return; }
+    // 江苏标记:点击进入雨夜便利店
+    if (storeHitDisk && raycaster.intersectObject(storeHitDisk).length) { enterStore(); return; }
     card.classList.remove('is-show');
   });
 
-  // 悬停南海水面 → 指针提示可进入
+  // 悬停南海水面 / 江苏标记 → 指针提示可进入
   stage.addEventListener('pointermove', e => {
     if (mode !== 'earth' || dragging) { renderer.domElement.style.cursor = ''; return; }
     const r = stage.getBoundingClientRect();
     ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     raycaster.setFromCamera(ndc, camera);
-    renderer.domElement.style.cursor = raycaster.intersectObject(isleHitDisk).length ? 'pointer' : '';
+    const onIsle = raycaster.intersectObject(isleHitDisk).length;
+    const onStore = storeHitDisk && raycaster.intersectObject(storeHitDisk).length;
+    renderer.domElement.style.cursor = (onIsle || onStore) ? 'pointer' : '';
   });
 
   // 每帧更新:地震脉冲 + ISS 动态标签
@@ -1132,7 +1289,7 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   // ---------- 交互:拖拽 + 惯性 + 滚轮 ----------
   let dragging = false, lastX = 0, lastY = 0, velY = 0, lastTouch = 0;
   const onDown = e => {
-    if (viewTween || camTween) return; // 飞行 / 缓降中不接管拖拽
+    if (viewTween || camTween || storeTween) return; // 飞行 / 缓降中不接管拖拽
     dragging = true; lastX = e.clientX; lastY = e.clientY; velY = 0;
     stage.classList.add('is-dragging');
     lastTouch = performance.now();
@@ -1145,6 +1302,10 @@ import { Water } from '/js/lib/addons/objects/Water.js';
       // 海岛世界:环绕轨道视角(拖右 → 场景跟手向右转)
       isleAz -= dx * 0.005;
       isleEl = Math.max(0.08, Math.min(1.32, isleEl + dy * 0.003));
+    } else if (mode === 'store') {
+      // 雨夜便利店:环绕底座轨道视角
+      storeAz -= dx * 0.005;
+      storeEl = Math.max(0.1, Math.min(1.32, storeEl + dy * 0.003));
     } else {
       spin.rotation.y += dx * 0.005;
       // 俯仰放宽到 ±2.4rad:足够把南北极都拖进视野
@@ -1160,6 +1321,7 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   stage.addEventListener('wheel', e => {
     e.preventDefault();
     if (mode === 'island') isleDist = Math.max(70, Math.min(900, isleDist + e.deltaY * 0.4));
+    else if (mode === 'store') storeDist = Math.max(6.5, Math.min(40, storeDist + e.deltaY * 0.02));
     else camTarget = Math.max(1.6, Math.min(5.6, camTarget + e.deltaY * 0.0016));
     lastTouch = performance.now();
   }, { passive: false });
@@ -1188,6 +1350,16 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   const wp = new THREE.Vector3();
   const proj = new THREE.Vector3();
 
+  // rAF 兜底:个别内嵌 webview(微信/QQ 内置浏览器等)会在页面可见时仍暂停 rAF,
+  // 双通道调度:正常时 rAF ~16ms 先到并取消定时器;rAF 被挂起时由 48ms 定时器驱动。
+  const nativeRAF = window.requestAnimationFrame.bind(window);
+  const safeRAF = cb => {
+    let done = false;
+    const run = t => { if (done) return; done = true; clearTimeout(tid); cb(t || performance.now()); };
+    const tid = setTimeout(() => run(performance.now()), 48);
+    nativeRAF(run);
+  };
+
   // 标签投影(首帧与每帧共用)
   const updateLabels = () => {
     for (const L of labels) {
@@ -1211,12 +1383,12 @@ import { Water } from '/js/lib/addons/objects/Water.js';
   updateLabels();
 
   const frame = () => {
-    requestAnimationFrame(frame);
+    safeRAF(frame);
     // 尺寸自愈:主题布局/字体加载晚于首帧时跟上
     if (stage.clientWidth !== lastW || stage.clientHeight !== lastH) resize();
     const dt = Math.min(clock.getDelta(), 0.05);
     const t = clock.elapsedTime;
-    const earthish = mode === 'earth' || mode === 'toIsland';
+    const earthish = mode === 'earth' || mode === 'toIsland' || mode === 'toStore';
 
     // 惯性 + 闲置自转(仅地球全景)
     if (!dragging) {
@@ -1253,6 +1425,18 @@ import { Water } from '/js/lib/addons/objects/Water.js';
       );
       camera.lookAt(0, 8, 0);
     }
+
+    // 雨夜便利店:轨道相机补间 + 应用
+    if (storeTween) {
+      const k = Math.min(1, (performance.now() - storeTween.t0) / storeTween.dur);
+      const e = easeInOutCubic(k);
+      storeAz = storeTween.from.az + (storeTween.to.az - storeTween.from.az) * e;
+      storeEl = storeTween.from.el + (storeTween.to.el - storeTween.from.el) * e;
+      storeDist = storeTween.from.d + (storeTween.to.d - storeTween.from.d) * e;
+      if (k >= 1) { const cb = storeTween.cb; storeTween = null; cb && cb(); }
+    }
+    if (mode === 'store' || mode === 'fromStore') storeApplyCam();
+    if (storeBuilt && storeBuilt.world.visible) storeBuilt.update(t, dt);
 
     // 太阳跟随相机(地球模式);云层缓慢漂移
     sunLight.position.copy(camBase).multiplyScalar(10);
@@ -1298,6 +1482,10 @@ import { Water } from '/js/lib/addons/objects/Water.js';
       islePulse.scale.setScalar(0.05 + pk * 0.08); // 小呼吸环,环绕海岛入口
       islePulse.material.opacity = 0.45 * (1 - pk);
       isleRing.rotation.z = t * 0.3;
+      const pk2 = (t * 0.5 + 0.5) % 1;
+      storePulse.scale.setScalar(0.05 + pk2 * 0.08); // 江苏入口呼吸环
+      storePulse.material.opacity = 0.45 * (1 - pk2);
+      storeRing.rotation.z = t * 0.3;
     }
 
     // 相机推拉平滑(地球轨道)

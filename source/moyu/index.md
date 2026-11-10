@@ -129,7 +129,7 @@ description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼�
 <span class="m-card-tag">三维 · Three.js</span>
 <h2 class="m-card-title">蓝星航线</h2>
 <span class="m-card-en">BLUE PLANET · 3D EARTH</span>
-<p class="m-card-desc">一颗真实贴图的蓝色地球悬在星海里，标着全球各国的首都。点击南海水面，穿越云层降落到一座海岛上发呆——记得点退出回来看星星。</p>
+<p class="m-card-desc">一颗真实贴图的蓝色地球悬在星海里，标着全球各国的首都。点击南海水面，穿越云层降落到一座海岛上发呆；或去江苏的街角，躲进一间雨夜便利店——记得点退出回来看星星。</p>
 <span class="m-card-btn m-btn-blue">进入轨道 <i class="fas fa-arrow-right"></i></span>
 </div>
 <div class="m-card-art" aria-hidden="true">

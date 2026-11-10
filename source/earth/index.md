@@ -7,7 +7,7 @@ comment: false
 description: 真实贴图 3D 地球——云层与大气辉光、全球首都标注；点击南海水面，穿越云层进入 3D 海岛秘境
 ---
 
-<link rel="stylesheet" href="/css/earth.css?v=20261110e">
+<link rel="stylesheet" href="/css/earth.css?v=20261111b">
 
 <div class="earth-wrap">
 
@@ -29,7 +29,7 @@ description: 真实贴图 3D 地球——云层与大气辉光、全球首都标
 
 <div id="earth-stage" class="earth-stage">
 <a class="earth-back" href="/moyu/"><i class="fas fa-arrow-left"></i> 返回摸鱼</a>
-<div class="earth-hint">拖动旋转 · 滚轮缩放 · 点击南海水面穿越云层进入海岛 · 双击复位</div>
+<div class="earth-hint">拖动旋转 · 滚轮缩放 · 点击南海水面进入海岛 · 点击江苏进入雨夜便利店 · 双击复位</div>
 <div class="earth-badge">THE EARTH · 蓝星航线</div>
 <div class="earth-loading"><i class="fas fa-circle-notch fa-spin"></i>正在点亮地球…</div>
 <div class="earth-error">你的浏览器暂时不支持 WebGL,换一个现代浏览器再来看看这颗星球吧。</div>
@@ -39,4 +39,4 @@ description: 真实贴图 3D 地球——云层与大气辉光、全球首都标
 
 </div>
 
-<script type="module" src="/js/earth.js?v=20261110l"></script>
+<script type="module" src="/js/earth.js?v=20261111f"></script>
