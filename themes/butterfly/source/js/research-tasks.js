@@ -482,6 +482,28 @@
   const initialKey = sections.some(section => section.dataset.planSection === hash) ? hash : sections[0].dataset.planSection
   activate(initialKey, false)
 
+  // ==================== 卡片墙浏览量填充(与 page-counter 共用 /api/all) ====================
+  const fillCardPv = () => {
+    const els = [...document.querySelectorAll('.research-card-pv[data-pv-path]')]
+    if (!els.length) return
+    fetch('/api/all')
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (!data || !Array.isArray(data.data)) return
+        const map = {}
+        data.data.forEach(row => {
+          if (row && row.path) map[row.path] = row.pv
+        })
+        els.forEach(el => {
+          const pv = map[el.getAttribute('data-pv-path')]
+          const text = el.querySelector('.research-card-pv-text')
+          if (text && typeof pv === 'number') text.textContent = String(pv).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' 次浏览'
+        })
+      })
+      .catch(() => {})
+  }
+  fillCardPv()
+
   // 容器尺寸变化 / 字体就绪 / 亮暗主题切换时,重画当前可见曲线
   const rerenderActive = () => {
     const active = sections.find(section => section.classList.contains('is-active'))

@@ -1,4 +1,4 @@
-!=partial('includes/page/starlite-hero', { icon: 'flask', sub: 'RESEARCH · TIMELINE', motto: '读文献，也记录走过的每一步。' })
+!=partial('includes/page/starlite-hero', { icon: 'flask', sub: 'RESEARCH · PAPERS', motto: '读文献，也记录走过的每一步。' })
 
 #article-container.research-container.container
   - const research = site.data.research || {}
@@ -6,40 +6,19 @@
   - const plans = research.plans || []
   - const linkedPostFor = (posts, title) => posts.find(post => post.title === title)
 
-  mixin researchCard(point)
-    a.research-timeline-card(href=point.href title=point.title aria-label=`${point.dateStr} ${point.title}`)
-      if point.cover
-        span.research-timeline-card-cover
-          if point.coverIsImg
-            img(src=point.cover alt='' loading='lazy' draggable='false')
-          else
-            span.research-timeline-card-cover-bg(style=`background: ${point.cover}`)
-          span.research-timeline-card-date
-            i.fas.fa-calendar(aria-hidden='true')
-            span= point.dateStr
-      span.research-timeline-card-body
-        span.research-timeline-card-meta
-          span.research-timeline-track(class=`track-${point.item.track}`)= point.trackLabel
-          if point.planned
-            span.research-timeline-status 规划中
-        span.research-timeline-card-title= point.title
-        if point.item.summary
-          span.research-timeline-card-summary= point.item.summary
-      span.research-timeline-card-footer(aria-hidden='true')
-        i.fas.fa-arrow-right
-
   - const chartData = plans.map(plan => {
-  -   const timeline = (plan.timeline || []).slice().sort((a, b) => {
-  -     const dateDiff = new Date(a.date) - new Date(b.date)
-  -     return dateDiff || (Number(a.order) || 0) - (Number(b.order) || 0)
-  -   })
   -   const tracks = plan.tracks || []
   -   const trackLabel = key => (tracks.find(track => track.key === key) || {}).axis_label || ''
-  -   const items = timeline.map(item => {
+  -   const items = (plan.timeline || []).slice().sort((a, b) => {
+  -     const dateDiff = new Date(a.date) - new Date(b.date)
+  -     return dateDiff || (Number(a.order) || 0) - (Number(b.order) || 0)
+  -   }).map(item => {
   -     const linkedPost = linkedPostFor(researchPosts, item.link)
   -     const cover = (linkedPost && linkedPost.cover) || ''
   -     const coverUrl = !cover || /^(https?:)?\/\//.test(cover) || cover[0] === '/' ? cover : '/' + cover
-  -     return { item, href: linkedPost ? url_for(linkedPost.path) : url_for(item.link), title: item.label || (linkedPost ? linkedPost.title : item.title), cover: cover ? url_for(coverUrl) : '', coverIsImg: Boolean(cover && linkedPost.cover_type === 'img'), trackLabel: trackLabel(item.track), dateStr: date(item.date, 'YYYY-MM-DD'), planned: item.status === 'planned' }
+  -     // 与 page-counter 写入 D1 的路径规则一致:去 index.html 与末尾斜杠
+  -     const pvPath = linkedPost ? '/' + String(linkedPost.path).replace(/^\/+/, '').replace(/index\.html$/, '').replace(/\/+$/, '') : ''
+  -     return { item, href: linkedPost ? url_for(linkedPost.path) : url_for(item.link), title: item.label || (linkedPost ? linkedPost.title : item.title), cover: cover ? url_for(coverUrl) : '', coverFit: linkedPost ? linkedPost.cover_fit : '', trackLabel: trackLabel(item.track), dateStr: date(item.date, 'YYYY-MM-DD'), planned: item.status === 'planned', pvPath }
   -   })
   -   const unlimited = Boolean(plan.unlimited)
   -   const completed = unlimited ? items.length : Number(plan.completed) || 0
@@ -52,7 +31,7 @@
   - })
 
   each chart, chartIndex in chartData
-    section.research-chart-section(id=`plan-${chart.plan.key}` class=`plan-${chart.plan.key}${chartIndex === 0 ? ' is-active' : ''}` data-plan-section=chart.plan.key role='tabpanel' aria-label=`${chart.plan.title}科研时间线`)
+    section.research-chart-section(id=`plan-${chart.plan.key}` class=`plan-${chart.plan.key}${chartIndex === 0 ? ' is-active' : ''}` data-plan-section=chart.plan.key role='tabpanel' aria-label=`${chart.plan.title}科研文章`)
       article.research-progress-card
         header.research-progress-header
           .research-task-tabs(role='tablist' aria-label='切换科研任务')
@@ -83,28 +62,33 @@
           script(type='application/json' class='research-linechart-data')!= JSON.stringify({ unlimited: chart.unlimited, total: chart.unlimited ? null : chart.total, tracks: chart.plan.tracks || [], points: chart.chartPoints }).replace(/</g, '\\u003c')
 
       if chart.items.length
-        section.research-timeline-chart
-          .research-timeline-viewport
-            .research-timeline-strip
-              each point, pointIndex in chart.items
-                - const isAbove = pointIndex % 2 === 0
-                .research-timeline-item(class=`${isAbove ? 'is-above' : 'is-below'} track-${point.item.track}${point.planned ? ' is-planned' : ''}`)
-                  .research-timeline-half.is-top
-                    if isAbove
-                      +researchCard(point)
-                      span.research-timeline-connector(aria-hidden='true')
-                    else
-                      time.research-timeline-date(datetime=point.dateStr)= point.dateStr
-                  span.research-timeline-dot(aria-hidden='true')
-                    span.research-timeline-dot-core
-                  .research-timeline-half.is-bottom
-                    if isAbove
-                      time.research-timeline-date(datetime=point.dateStr)= point.dateStr
-                    else
-                      span.research-timeline-connector(aria-hidden='true')
-                      +researchCard(point)
+        section.research-card-wall(aria-label=`${chart.plan.title}文章卡片墙`)
+          .research-card-grid
+            each point in chart.items
+              a.research-card(href=point.href title=point.title aria-label=`${point.dateStr} ${point.title}`)
+                if point.cover
+                  span.research-card-cover
+                    img(src=point.cover alt='' loading='lazy' draggable='false' style=point.coverFit === 'contain' ? 'object-fit:contain' : null)
+                span.research-card-body
+                  span.research-card-title= point.title
+                  span.research-card-meta
+                    span.research-card-date
+                      i.far.fa-calendar-alt(aria-hidden='true')
+                      span= point.dateStr
+                    if point.trackLabel
+                      span.research-card-track(class=`track-${point.item.track}`)= point.trackLabel
+                    if point.planned
+                      span.research-card-status 规划中
+                  if point.item.summary
+                    span.research-card-summary= point.item.summary
+                span.research-card-foot
+                  if point.pvPath
+                    span.research-card-pv(data-pv-path=point.pvPath)
+                      i.far.fa-eye(aria-hidden='true')
+                      span.research-card-pv-text 0 次浏览
+                  span.research-card-arrow(aria-hidden='true')
+                    i.fas.fa-arrow-right
       else
-        p.research-empty= chart.unlimited ? '还没有记录，读完第一篇后它会出现在这里' : '暂无时间线数据'
+        p.research-empty= chart.unlimited ? '还没有记录，读完第一篇后它会出现在这里' : '暂无文章数据'
 
-  script(src=(url_for('/js/research-timeline.js') + '?v=20261027d') defer)
-  script(src=(url_for('/js/research-tasks.js') + '?v=20261108a') defer)
+  script(src=(url_for('/js/research-tasks.js') + '?v=20261110a') defer)
