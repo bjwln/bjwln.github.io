@@ -231,8 +231,8 @@
   function buildCumulativeSvg(state, points, W) {
     const data = state.data
     const accent = accentFor(state)
-    const H = W < 520 ? 190 : 240
-    const M = { t: 22, r: 20, b: 30, l: 40 }
+    const H = W < 520 ? 280 : W < 900 ? 340 : 400
+    const M = { t: 26, r: 20, b: 36, l: 40 }
     const dates = points.map(point => parseDate(point.date).getTime())
     const first = dates[0]
     const last = dates[dates.length - 1]
@@ -361,7 +361,7 @@
   function buildTrackSvg(state, points, W) {
     const data = state.data
     const accent = accentFor(state)
-    const H = W < 520 ? 190 : 240
+    const H = W < 520 ? 280 : W < 900 ? 340 : 400
 
     // 纵轴 = 进度轴(轨道):每个轨道一条泳道,文章按所属轨道落点,按时间连线成阅读轨迹
     const tracks = (data.tracks || []).filter(t => t && t.key)
@@ -385,7 +385,7 @@
     const xMin = first - pad
     const xMax = last + pad
 
-    const M = { t: 22, r: 20, b: 30, l: 40 }
+    const M = { t: 26, r: 20, b: 36, l: 40 }
     // 左侧留白按最长的轨道名扩展
     const maxLabelLen = laneLabels.reduce((n, l) => Math.max(n, String(l).length), 0)
     M.l = Math.max(M.l, maxLabelLen * 12 + 20)
