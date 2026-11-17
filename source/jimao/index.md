@@ -7,7 +7,7 @@ comment: false
 description: 浏览器第一人称射击——雨没停,天没亮。五分钟内切断堆场、仓库、码头三处中继,登船撤离
 ---
 
-<link rel="stylesheet" href="/css/jimao.css?v=20261117a">
+<link rel="stylesheet" href="/css/jimao.css?v=20261118b">
 
 <div class="jimao-wrap">
 
@@ -26,7 +26,7 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 
 <div id="jm-stage" class="jm-stage">
 <a class="jm-back" href="/moyu/"><i class="fas fa-arrow-left"></i> 返回摸鱼</a>
-<div class="jm-badge">JIMAO PORT · 几猫港区</div>
+<div class="jm-badge">几猫港区 · JIMAO PORT</div>
 <div id="jm-damage" class="jm-damage" aria-hidden="true"></div>
 <div class="jm-vignette" aria-hidden="true"></div>
 <div class="jm-grain" aria-hidden="true"></div>
@@ -83,10 +83,10 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 <button class="jm-btn" id="jm-btn-about" type="button">项目介绍</button>
 <button class="jm-btn" id="jm-btn-settings" type="button">设置</button>
 </div>
-<div class="jm-menu-ver">v1.0.0 · 本地单机 · 浏览器第一人称射击 · 纯 Three.js · 开发体验版</div>
+<div class="jm-menu-ver">v1.1.0 · 本地单机 · 贴图与音效全部由代码实时生成,无需下载 · 开发体验版</div>
 </div>
 <div class="jm-menu-keys">
-<div class="jm-keys-title">CONTROLS · 操作</div>
+<div class="jm-keys-title">操作说明 · CONTROLS</div>
 <div class="jm-keys-grid">
 <span><b>W A S D</b>移动</span><span><b>鼠标</b>视角</span><span><b>左键</b>开火</span><span><b>右键</b>瞄准</span>
 <span><b>R</b>换弹</span><span><b>E</b>互动 · 切断</span><span><b>SPACE</b>跳跃</span><span><b>SHIFT</b>冲刺</span>
@@ -137,4 +137,4 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 
 </div>
 
-<script type="module" src="/js/jimao.js?v=20261117a"></script>
+<script type="module" src="/js/jimao.js?v=20261118b"></script>

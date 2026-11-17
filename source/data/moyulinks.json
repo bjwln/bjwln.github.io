@@ -1,34 +1,19 @@
 {
   "links": [
     {
-      "name": "PDFCraft 完整版",
-      "url": "https://pdfcraft.devtoolcafe.com",
-      "desc": "90+ 浏览器本地 PDF 工具：OCR、Office 转换、加密，文件不出浏览器。本站 PDF 工具箱的灵感来源。"
+      "name": "海外GPU价格实时更新表",
+      "url": "https://gpuprix.com/zh/gpus?sort=name&dir=desc&page=1",
+      "desc": "性价比推荐，每小时更新。"
     },
     {
-      "name": "Videdown",
-      "url": "https://github.com/cshuangyy/videdown",
-      "desc": "MIT 开源视频下载桌面版，yt-dlp 引擎支持 1000+ 网站，无水印高清。"
+      "name": "三角洲组号网站",
+      "url": "https://www.gdsjz88.com/welcome",
+      "desc": "三角洲行动组号查询、组队开黑。"
     },
     {
-      "name": "Squoosh",
-      "url": "https://squoosh.app",
-      "desc": "Google 出品的图片压缩器，纯本地处理，支持 WebP / AVIF / MozJPEG。"
-    },
-    {
-      "name": "Photopea",
-      "url": "https://www.photopea.com",
-      "desc": "网页版 Photoshop，免安装直接打开 PSD / XD / Sketch 文件。"
-    },
-    {
-      "name": "Excalidraw",
-      "url": "https://excalidraw.com",
-      "desc": "手绘风白板，画示意图和架构图的神器，支持协作。"
-    },
-    {
-      "name": "TinyWow",
-      "url": "https://tinywow.com",
-      "desc": "免费无登录的 PDF / 图片 / 视频 / 文件在线工具合集，用完即走。"
+      "name": "电视剧网站",
+      "url": "https://zhaoju1.com/player/av_sVRvdvBWX5POSpMxdLFjIP_dfzUFEH4ZYEklCosnDmeqSbE5knXk9KD37fqZVjPKOUlSMB7BuXeomPY?from=%2Fsession%2Fat_ev3vZO23CLyxoYOW-Svq3Yw0vJJgW_a31mj4NAg-YXnYPn4rKvUzEMQP0wEjmG4FO1hvoHCzJU86DZ907elh-MCDQ0iAVtg",
+      "desc": "在线看剧。"
     }
   ]
 }

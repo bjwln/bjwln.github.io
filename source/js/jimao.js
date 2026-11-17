@@ -222,7 +222,7 @@ function canvasTex(w, h, draw, repeat) {
   if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(repeat[0], repeat[1]); }
   return t;
 }
-/* 集装箱波纹板(灰度,实例颜色染色) */
+/* 集装箱波纹板(灰度,实例颜色染色;带品牌 stencil 印刷) */
 function texContainer() {
   return canvasTex(256, 256, (g, w, h) => {
     g.fillStyle = '#cfcfcf'; g.fillRect(0, 0, w, h);
@@ -232,6 +232,20 @@ function texContainer() {
     }
     g.fillStyle = 'rgba(0,0,0,.28)'; g.fillRect(0, 0, w, 10); g.fillRect(0, h - 14, w, 14);
     g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(0, h / 2 - 3, w, 6);
+    // 门缝竖线
+    g.fillStyle = 'rgba(0,0,0,.22)'; g.fillRect(3, 26, 3, h - 52); g.fillRect(w - 7, 26, 3, h - 52);
+    // stencil 印刷:中文品牌大字 + 航线名 + 箱号(染色后呈深色,各色箱体通用)
+    g.fillStyle = 'rgba(0,0,0,.5)';
+    g.font = '900 46px "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif';
+    g.textAlign = 'left'; g.textBaseline = 'middle';
+    g.fillText('几猫航运', 16, 148);
+    g.font = '700 17px "Arial Narrow", Impact, sans-serif';
+    g.fillText('JIMAO SHIPPING LINE', 16, 184);
+    g.textAlign = 'right';
+    g.font = '600 15px Consolas, monospace';
+    g.fillStyle = 'rgba(0,0,0,.44)';
+    g.fillText('JMAU ' + (300000 + Math.floor(Math.random() * 999999)), w - 14, h - 28);
+    // 掉漆磨损
     for (let i = 0; i < 46; i++) {
       g.fillStyle = `rgba(22,18,14,${rand(.04, .14)})`;
       g.beginPath(); g.ellipse(rand(0, w), rand(0, h), rand(6, 30), rand(4, 16), rand(0, 3), 0, 7); g.fill();
@@ -972,6 +986,71 @@ function spawnCasing() {
     return;
   }
 }
+/* 弹孔 decal 池 */
+const decals = [];
+let decalIdx = 0;
+const _m4tmp = new THREE.Matrix4(), _nm3 = new THREE.Matrix3();
+function texHole() {
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const gr = g.createRadialGradient(32, 32, 2, 32, 32, 30);
+  gr.addColorStop(0, 'rgba(8,8,10,.95)');
+  gr.addColorStop(.45, 'rgba(20,18,16,.72)');
+  gr.addColorStop(.75, 'rgba(30,28,26,.26)');
+  gr.addColorStop(1, 'rgba(30,28,26,0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(32, 32, 30, 0, 7); g.fill();
+  g.strokeStyle = 'rgba(10,10,12,.55)';
+  for (let i = 0; i < 7; i++) {
+    const a = rand(0, 6.3), r1 = rand(8, 16), r2 = rand(18, 27);
+    g.beginPath(); g.moveTo(32 + Math.cos(a) * r1, 32 + Math.sin(a) * r1);
+    g.lineTo(32 + Math.cos(a) * r2, 32 + Math.sin(a) * r2); g.stroke();
+  }
+  return new THREE.CanvasTexture(c);
+}
+function buildDecals() {
+  const holeTex = texHole();
+  const g = new THREE.PlaneGeometry(1, 1);
+  for (let i = 0; i < 40; i++) {
+    const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({
+      map: holeTex, transparent: true, depthWrite: false,
+      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2, opacity: 0,
+    }));
+    m.visible = false; m.renderOrder = 2;
+    scene.add(m);
+    decals.push({ m, life: 0 });
+  }
+}
+function spawnDecal(hit) {
+  if (!hit.face || !hit.object) return;
+  const o = hit.object;
+  const n = hit.face.normal.clone();
+  if (o.isInstancedMesh && hit.instanceId !== undefined) {
+    o.getMatrixAt(hit.instanceId, _m4tmp);
+    n.transformDirection(_m4tmp);
+  } else {
+    _nm3.getNormalMatrix(o.matrixWorld);
+    n.applyMatrix3(_nm3);
+  }
+  n.normalize();
+  const d = decals[decalIdx++ % decals.length];
+  d.life = 20;
+  d.m.visible = true;
+  d.m.material.opacity = .9;
+  d.m.position.copy(hit.point).addScaledVector(n, .028);
+  const s = rand(.16, .3);
+  d.m.scale.set(s, s, 1);
+  if (Math.abs(n.y) > .9) d.m.rotation.set(n.y > 0 ? -Math.PI / 2 : Math.PI / 2, 0, rand(0, 6.3));
+  else { d.m.lookAt(hit.point.x + n.x, hit.point.y + n.y, hit.point.z + n.z); d.m.rotateZ(rand(0, 6.3)); }
+}
+function updateDecals(dt) {
+  for (const d of decals) {
+    if (d.life <= 0) continue;
+    d.life -= dt;
+    if (d.life < 3) d.m.material.opacity = Math.max(0, d.life / 3 * .9);
+    if (d.life <= 0) d.m.visible = false;
+  }
+}
+
 function updateEffects(dt) {
   for (const sp of sparks) {
     if (sp.life <= 0) continue;
@@ -1128,6 +1207,7 @@ function shoot() {
       break;
     }
     if (h.distance > .8) {
+      spawnDecal(h);
       spawnSparks(h.point, 3, 0xffa050);
       break;
     }
@@ -1382,13 +1462,19 @@ const PPD = 2.2, HALF_W = 170;
 let compassMarks = [];
 function buildCompass() {
   const tape = $('jm-compass-tape');
-  const letters = ['N', 'E', 'S', 'W'];
+  const letters = ['北', '东', '南', '西']; // 与原版视频一致,罗盘用中文方位
   for (let i = -60; i <= 780; i += 15) {
     const deg = ((i % 360) + 360) % 360;
     const left = (i + 60) * PPD;
     if (deg % 90 === 0) {
       const b = document.createElement('b');
       b.textContent = letters[deg / 90];
+      b.style.left = left + 'px';
+      tape.appendChild(b);
+    } else if (deg % 30 === 0) {
+      const b = document.createElement('b');
+      b.className = 'jm-deg';
+      b.textContent = String(deg).padStart(3, '0');
       b.style.left = left + 'px';
       tape.appendChild(b);
     } else {
@@ -1482,8 +1568,14 @@ function completeRelay(r) {
   }
 }
 
-/* 主更新 */
+/* 主更新(子系统报错隔离:单个系统抛错不再拖垮整局) */
 let damageAlpha = 0;
+const safeErr = {};
+function safe(name, fn) {
+  try { fn(); } catch (e) {
+    if (!safeErr[name]) { safeErr[name] = 1; console.error('[jimao:' + name + ']', e); }
+  }
+}
 function update(dt) {
   game.elapsed += dt;
   game.remaining = MISSION_TIME - game.elapsed;
@@ -1503,17 +1595,17 @@ function update(dt) {
     lose('05:42 到了,泊区封锁完成,撤离窗口关闭。指挥中心:下次快点。');
     return;
   }
-  updatePlayer(dt);
-  updateCamera(dt);
-  updateGun(dt);
-  if (firing || touchFire) shoot(); else if (!firing) spreadVis = lerp(spreadVis, .011 + (1 - adsT) * .013 + player.moveFactor * .02, Math.min(1, dt * 6));
-  for (const e of enemies) e.update(dt);
-  updateEffects(dt);
-  updateRain(dt);
-  updateInteract(dt);
-  updateSub(dt);
-  updateTip(dt);
-  updateCompass();
+  safe('player', () => updatePlayer(dt));
+  safe('camera', () => updateCamera(dt));
+  safe('gun', () => updateGun(dt));
+  safe('fire', () => {
+    if (firing || touchFire) shoot();
+    else if (!firing) spreadVis = lerp(spreadVis, .011 + (1 - adsT) * .013 + player.moveFactor * .02, Math.min(1, dt * 6));
+  });
+  safe('enemies', () => { for (const e of enemies) e.update(dt); });
+  safe('fx', () => { updateEffects(dt); updateDecals(dt); updateRain(dt); });
+  safe('interact', () => updateInteract(dt));
+  safe('ui', () => { updateSub(dt); updateTip(dt); updateCompass(); });
   // 灯光呼吸 / 火焰 / 信标
   const t = game.elapsed;
   for (let i = 0; i < fireFlames.length; i++) {
@@ -1690,12 +1782,15 @@ document.addEventListener('pointerlockerror', () => {
 function setPhase(p) {
   phase.cur = p;
   stage.classList.toggle('jm-playing', p === 'playing');
+  stage.classList.toggle('jm-menu-open', p === 'menu' || p === 'loading');
   if (gun) gun.visible = (p === 'playing' || p === 'paused');
 }
 function startGame() {
   AudioFX.init(); AudioFX.resume();
   resetGame();
-  $('jm-menu').hidden = true;
+  const menuEl = $('jm-menu');
+  menuEl.classList.add('jm-exit');
+  setTimeout(() => { menuEl.hidden = true; menuEl.classList.remove('jm-exit'); }, 400);
   $('jm-pause').hidden = true;
   $('jm-result').hidden = true;
   $('jm-hud').hidden = false;
@@ -1876,19 +1971,31 @@ function setLoading(pct, msg) {
   $('jm-loading-fill').style.width = pct + '%';
   if (msg) $('jm-loading-sub').textContent = msg;
 }
-const step = (fn, pct, msg) => new Promise(res => {
-  fn();
-  setLoading(pct, msg);
-  setTimeout(res, 24); // 不用 rAF:后台/遮挡时 rAF 会停摆,setTimeout 仍会触发
-});
 
+/* 菜单运镜:贴地穿行堆场巷道(attract mode) */
+const MENU_PATH = [
+  { p: [-64, 1.8, 48], l: [-38, 1.9, 44] },
+  { p: [-40, 1.8, 44], l: [-27, 1.8, 16] },
+  { p: [-27, 1.8, 15], l: [-36, 1.7, -6] },
+  { p: [-36, 1.7, -6], l: [-70, 1.8, -6] },
+  { p: [-70, 1.8, -6], l: [-70, 1.8, -16] },
+  { p: [-70, 1.8, -16], l: [-70, 1.8, 28] },
+  { p: [-70, 1.8, 28], l: [-64, 1.8, 48] },
+];
 let menuT = 0;
 function menuCamera(dt) {
-  menuT += dt * .1;
-  const cx = -32, cz = 0;
-  camera.position.set(cx + Math.cos(menuT) * 22, 8 + Math.sin(menuT * .7) * 1.2, cz + Math.sin(menuT) * 22);
-  camera.lookAt(cx + 4, 2.5, cz - 6);
-  camera.rotation.order = 'YXZ';
+  menuT += dt * .3;
+  const n = MENU_PATH.length;
+  const f = menuT % n;
+  const i = Math.floor(f), t = ss(0, 1, f - i);
+  const a = MENU_PATH[i], b = MENU_PATH[(i + 1) % n];
+  camera.position.set(
+    lerp(a.p[0], b.p[0], t),
+    lerp(a.p[1], b.p[1], t) + Math.sin(menuT * 7) * .02,
+    lerp(a.p[2], b.p[2], t)
+  );
+  _v1.set(lerp(a.l[0], b.l[0], t), lerp(a.l[1], b.l[1], t), lerp(a.l[2], b.l[2], t));
+  camera.lookAt(_v1);
 }
 
 let lastT = performance.now();
@@ -1915,37 +2022,43 @@ function loop(t) {
 }
 
 async function boot() {
-  setLoading(4, '正在准备脊峰画面');
-  const t0 = performance.now();
-  matContainer = new THREE.MeshStandardMaterial({ map: texContainer(), roughness: .82, metalness: .12 });
-  matConcrete = new THREE.MeshStandardMaterial({ color: 0x3a3e45, roughness: .95 });
-  matWood = new THREE.MeshStandardMaterial({ color: 0x6b543a, roughness: .9 });
-  matDark = new THREE.MeshStandardMaterial({ color: 0x1a1e24, roughness: .7, metalness: .2 });
-  matSteel = new THREE.MeshStandardMaterial({ color: 0x2a2e36, roughness: .65, metalness: .35 });
-  matYellow = new THREE.MeshStandardMaterial({ color: 0xc7902e, roughness: .6 });
-  await step(buildGround, 16, '正在浇湿港区地面');
-  await step(buildContainers, 34, '正在堆放集装箱');
-  await step(buildWarehouse, 46, '正在给仓库拉闸');
-  await step(() => { buildCrane(); buildShip(); }, 56, '正在唤醒龙门吊与货轮');
-  await step(buildProps, 68, '正在点亮码头路灯');
-  await step(() => { buildRelays(); buildBeacon(); }, 76, '正在部署三处中继');
-  await step(buildEnemies, 84, '正在安排巡逻兵摸鱼');
-  await step(() => { buildGun(); buildEffects(); buildRain(); }, 92, '正在给弹匣压入子弹');
-  await step(() => { buildCompass(); bindUI(); bindInput(); applyQuality(); }, 98, '正在校准全息瞄具');
-  setLoading(100, '行动准备完毕');
-  const wait = Math.max(0, 1500 - (performance.now() - t0));
-  await new Promise(r => setTimeout(r, wait));
-  $('jm-loading').classList.add('jm-hide');
-  setTimeout(() => { $('jm-loading').hidden = true; }, 700);
-  setPhase('menu');
-  $('jm-menu').hidden = false;
-  const best = JSON.parse(localStorage.getItem('jm-best') || 'null');
-  if (best) {
-    $('jm-menu-best').hidden = false;
-    $('jm-menu-best').textContent = `最佳战绩 ${fmtTime(best.t)} · 击倒 ${best.k}`;
+  try {
+    setLoading(4, '正在准备脊峰画面');
+    const t0 = performance.now();
+    matContainer = new THREE.MeshStandardMaterial({ map: texContainer(), roughness: .82, metalness: .12 });
+    matConcrete = new THREE.MeshStandardMaterial({ color: 0x3a3e45, roughness: .95 });
+    matWood = new THREE.MeshStandardMaterial({ color: 0x6b543a, roughness: .9 });
+    matDark = new THREE.MeshStandardMaterial({ color: 0x1a1e24, roughness: .7, metalness: .2 });
+    matSteel = new THREE.MeshStandardMaterial({ color: 0x2a2e36, roughness: .65, metalness: .35 });
+    matYellow = new THREE.MeshStandardMaterial({ color: 0xc7902e, roughness: .6 });
+    // 全同步构建:不依赖任何定时器/rAF,后台标签被强节流也不会卡死
+    buildGround(); setLoading(16, '正在浇湿港区地面');
+    buildContainers(); setLoading(34, '正在堆放集装箱');
+    buildWarehouse(); setLoading(46, '正在给仓库拉闸');
+    buildCrane(); buildShip(); setLoading(56, '正在唤醒龙门吊与货轮');
+    buildProps(); setLoading(68, '正在点亮码头路灯');
+    buildRelays(); buildBeacon(); setLoading(76, '正在部署三处中继');
+    buildEnemies(); setLoading(84, '正在安排巡逻兵摸鱼');
+    buildGun(); buildEffects(); buildDecals(); buildRain(); setLoading(92, '正在给弹匣压入子弹');
+    buildCompass(); bindUI(); bindInput(); applyQuality(); setLoading(98, '正在校准全息瞄具');
+    setLoading(100, '行动准备完毕');
+    const wait = Math.max(0, 1400 - (performance.now() - t0));
+    await new Promise(r => setTimeout(r, wait + 30));
+    $('jm-loading').classList.add('jm-hide');
+    setTimeout(() => { $('jm-loading').hidden = true; }, 700);
+    setPhase('menu');
+    $('jm-menu').hidden = false;
+    const best = JSON.parse(localStorage.getItem('jm-best') || 'null');
+    if (best) {
+      $('jm-menu-best').hidden = false;
+      $('jm-menu-best').textContent = `最佳战绩 ${fmtTime(best.t)} · 击倒 ${best.k}`;
+    }
+    lastT = performance.now();
+    requestAnimationFrame(loop);
+  } catch (err) {
+    $('jm-loading-sub').textContent = '初始化失败:' + ((err && err.message) || err);
+    console.error(err);
   }
-  lastT = performance.now();
-  requestAnimationFrame(loop);
 }
 boot().catch(err => {
   $('jm-loading-sub').textContent = '初始化失败:' + ((err && err.message) || err);
@@ -1953,4 +2066,7 @@ boot().catch(err => {
 });
 
 /* 供自动化测试与调参使用 */
-window.__jm = { game, player, enemies, relays, keys, shoot, startReload, settings, EXTRACT };
+window.__jm = {
+  game, player, enemies, relays, keys, shoot, startReload, settings, EXTRACT, decals,
+  tick(dt = .016) { update(dt); renderer.render(scene, camera); },
+};

@@ -56,6 +56,9 @@
 .jm-stage canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
 
 .jm-stage.jm-playing .jm-back, .jm-stage.jm-playing .jm-badge { display: none; }
+/* 菜单态:背景景深模糊(仿 Saltline attract mode) */
+.jm-stage.jm-menu-open canvas { filter: blur(7px) brightness(.82) saturate(1.05); transition: filter .6s ease; }
+.jm-stage canvas { transition: filter .6s ease; }
 .jm-back {
   position: absolute; top: 14px; left: 14px; z-index: 55;
   display: inline-flex; align-items: center; gap: 7px;
@@ -101,6 +104,7 @@
 .jm-compass-tape span { position: absolute; bottom: 4px; width: 1px; height: 7px; background: rgba(255, 255, 255, .3); }
 .jm-compass-tape span.jm-tick-big { height: 11px; background: rgba(255, 255, 255, .55); }
 .jm-compass-tape b { position: absolute; top: 4px; font-size: 12px; letter-spacing: 0; color: #dfe5ea; transform: translateX(-50%); font-weight: 600; }
+.jm-compass-tape b.jm-deg { top: 7px; font-size: 9px; color: #939ead; font-weight: 500; }
 .jm-compass-tape u { position: absolute; top: 0; bottom: 0; width: 9px; transform: translateX(-50%) rotate(45deg); }
 .jm-compass-tape u.jm-mk { top: auto; bottom: 6px; width: 8px; height: 8px; border: 1.5px solid #59d7ff; background: rgba(89, 215, 255, .25); box-shadow: 0 0 8px rgba(89, 215, 255, .7); }
 .jm-compass-tape u.jm-mk-done { border-color: #52e09a; background: rgba(82, 224, 154, .3); box-shadow: 0 0 8px rgba(82, 224, 154, .7); }
@@ -239,9 +243,11 @@
 .jm-menu-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 2px; color: #9aa3ad; margin-bottom: 18px; }
 .jm-menu-meta b { color: #ffb877; border: 1px solid rgba(255, 184, 119, .45); border-radius: 4px; padding: 1px 7px; font-family: Consolas, monospace; font-size: 12px; }
 .jm-menu-meta .jm-menu-clock { border: none; padding: 0; color: #e8d5a0; letter-spacing: 2px; }
-.jm-menu-title { margin: 0; font-size: 82px; letter-spacing: 20px; color: #f2e6c8; line-height: 1.05;
-  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; font-weight: 700;
-  text-shadow: 0 6px 30px rgba(0, 0, 0, .6); }
+.jm-menu-title { margin: 0; font-size: 96px; letter-spacing: 14px; color: #f3ead4; line-height: .98;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; font-weight: 900;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, .65); }
+.jm-menu-title::after { content: ''; display: block; width: 200px; height: 4px; margin-top: 12px;
+  background: linear-gradient(90deg, #ff9e5e, rgba(255, 158, 90, 0)); }
 .jm-menu-tag { margin: 6px 0 18px; font-size: 20px; letter-spacing: 14px; color: #ff9e5e; font-weight: 600; }
 .jm-menu-brief { margin: 0 0 14px; max-width: 470px; font-size: 14px; line-height: 1.9; color: #c9d1d9; letter-spacing: 1px; }
 .jm-menu-best { font-size: 12px; letter-spacing: 2px; color: #52e09a; margin-bottom: 12px; }
@@ -267,6 +273,18 @@
 .jm-btn-primary { background: linear-gradient(180deg, #e8d5a0, #d4b976); color: #33290f; font-weight: 700; border-color: transparent; }
 .jm-btn-primary:hover { box-shadow: 0 8px 26px rgba(232, 213, 160, .25); }
 .jm-btn-ghost { color: #9aa3ad; border-color: rgba(255, 255, 255, .18); background: transparent; }
+
+/* 菜单退场:RGB 色散故障(仿 Saltline) */
+.jm-menu.jm-exit { animation: jm-menu-out .42s steps(7) forwards; }
+.jm-menu.jm-exit .jm-menu-title { animation: jm-glitch .42s steps(7); }
+@keyframes jm-menu-out { to { opacity: 0; } }
+@keyframes jm-glitch {
+  0% { text-shadow: none; transform: translateX(0); opacity: 1; }
+  20% { text-shadow: 3px 0 rgba(255, 70, 60, .8), -3px 0 rgba(90, 160, 255, .8); transform: translateX(2px); }
+  40% { text-shadow: -4px 0 rgba(255, 70, 60, .8), 4px 0 rgba(90, 160, 255, .8); transform: translateX(-3px); }
+  60% { text-shadow: 2px 0 rgba(255, 70, 60, .7), -2px 0 rgba(90, 160, 255, .7); transform: translateX(1px); opacity: 1; }
+  100% { text-shadow: 6px 0 rgba(255, 70, 60, .4), -6px 0 rgba(90, 160, 255, .4); transform: translateX(4px); opacity: 0; }
+}
 
 /* ---------- 暂停 / 结算 / 弹窗 ---------- */
 .jm-overlay { position: absolute; inset: 0; z-index: 52; display: flex; align-items: center; justify-content: center;
@@ -316,4 +334,5 @@
 @media (prefers-reduced-motion: reduce) {
   .jm-grain, .jm-timer.jm-timer-warn, .jm-ammo-warn, .jm-health.jm-low,
   .jm-obj-ext .jm-obj-dot, .jm-ammo-num b.jm-ammo-low { animation: none; }
+  .jm-menu.jm-exit .jm-menu-title { animation: none; }
 }
