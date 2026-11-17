@@ -246,13 +246,13 @@ async function deletePost(kind, slug) {
 let ED = null; // 当前编辑器状态
 async function vPostEdit(kind, slug) {
   const p = await api(`/api/posts/${enc(slug)}?type=${kind}`);
-  ED = { kind, slug, orig: p.data, data: p.data, body: p.body, assets: p.assets, origTitle: p.data.title, origDate: p.data.date, dirty: false };
+  ED = { kind, slug, orig: p.data, data: p.data, body: p.body, assets: p.assets, origTitle: p.data.title, origDate: p.data.date, dir: p.dir, dirty: false };
   const isPost = kind === 'post';
   const d = p.data;
   main().innerHTML = `
     <div class="page-head">
       <a href="${isPost ? '#/posts' : '#/drafts'}">← 返回</a>
-      <span class="muted" style="font-size:12px">${esc(p.dir)}/${esc(p.file || slug + '.md')}</span>
+      <span class="muted" style="font-size:12px" id="ed-path">${esc(p.dir)}/${esc(p.file || slug + '.md')}</span>
       <div class="spacer"></div>
       <span class="muted" id="ed-words"></span>
       <button class="ghost" onclick="togglePreview()" id="btn-preview">👁 预览中</button>
@@ -323,9 +323,19 @@ function collectForm() {
 }
 async function savePost(silent) {
   collectForm();
-  await api(`/api/posts/${enc(ED.slug)}?type=${ED.kind}`, { method: 'PUT', json: { data: ED.data, body: ED.body } });
+  const r = await api(`/api/posts/${enc(ED.slug)}?type=${ED.kind}`, { method: 'PUT', json: { data: ED.data, body: ED.body } });
   ED.dirty = false;
-  if (!silent) toast('已保存', 'ok');
+  // 标题改名后文件名随动:更新编辑器状态、地址栏与资源路径前缀
+  if (r.slug && r.slug !== ED.slug) {
+    ED.slug = r.slug;
+    history.replaceState(null, '', `#/${ED.kind === 'draft' ? 'draft' : 'post'}/${enc(r.slug)}`);
+    const pathEl = $('#ed-path');
+    if (pathEl) pathEl.textContent = `${ED.dir}/${r.slug.split('/').pop()}.md`;
+    renderAssets();
+  }
+  ED.origTitle = ED.data.title; ED.origDate = ED.data.date; checkPermalinkChange();
+  if (r.warnings && r.warnings.length) toast(r.warnings.join(' '), 'err');
+  else if (!silent) toast(r.renamed ? '已保存(md 与图片文件夹已随标题重命名)' : '已保存', 'ok');
 }
 function permalinkOf(title, date) {
   const d = String(date || '');
@@ -526,7 +536,7 @@ async function vResearch(tab = 'articles') {
       <a href="#/research/yml" class="${tab === 'yml' ? '' : 'muted'}">research.yml 原始编辑</a>
       <a href="#/research/widget" class="${tab === 'widget' ? '' : 'muted'}">侧栏 widget.yml</a></div>
     <div id="data-body"></div>`;
-  if (tab === 'yml') await vDataResearch();
+  if (tab === 'yml') { if (RA) RA.origLinks = null; await vDataResearch(); } // 原始编辑不做行内改名检测
   else if (tab === 'widget') await vDataWidget();
   else if (tab === 'bangumi') await vBangumiMigrated();
   else await vResearchArticles();
@@ -536,7 +546,9 @@ async function vResearch(tab = 'articles') {
 async function vResearchArticles() {
   const [r, posts] = await Promise.all([api('/api/data/research'), api('/api/posts')]);
   DF = { parsed: r.parsed, titles: r.titles };
-  RA = { curPi: Math.min(RA?.curPi || 0, Math.max((r.parsed.plans || []).length - 1, 0)), posts };
+  // 记住加载时的 link 快照,保存时用来识别「行内改 link = 改文章标题」
+  RA = { curPi: Math.min(RA?.curPi || 0, Math.max((r.parsed.plans || []).length - 1, 0)), posts,
+    origLinks: r.parsed.plans.map(p => (p.timeline || []).map(t => String(t.link || ''))) };
   $('#data-body').innerHTML = `
     ${r.warnings.length ? `<div class="warnbox">⚠️ 检测到 ${r.warnings.length} 条断链(link 与任何文章标题都不匹配,点条目上的「＋ 建文章」可就地补建):<br>${r.warnings.map(esc).join('<br>')}</div>` : ''}
     <div class="plan-tabs" id="ra-plan-tabs"></div>
@@ -801,8 +813,49 @@ function moveTimeline(pi, ti, d) {
   [tl[ti], tl[j]] = [tl[j], tl[ti]];
   renderPlans();
 }
+// 保存前处理行内改 link:旧 link 对应文章、新 link 不存在 → 视为「重命名文章本体」,
+// md 文件/图片文件夹/正文引用/frontmatter 标题/research.yml link 一起更新;
+// 新 link 已是其他文章标题 → 仅改条目指向(不重命名);旧 link 本来就没文章 → 纯改 link(可为预留条目)
+async function raApplyLinkRenames() {
+  if (!RA || !RA.origLinks) return;
+  const renames = [];
+  DF.parsed.plans.forEach((plan, pi) => (plan.timeline || []).forEach((t, ti) => {
+    const old = String(RA.origLinks[pi]?.[ti] ?? '').trim();
+    const cur = String(t.link || '').trim();
+    if (!old || !cur || cur === old) return;
+    const hadOld = RA.posts.some(p => p.title === old);
+    const hasNew = RA.posts.some(p => p.title === cur);
+    if (hadOld && !hasNew) renames.push({ old, cur, pi, ti });
+  }));
+  for (const r of renames) {
+    const go = confirmBox(`把文章「${r.old}」重命名为「${r.cur}」?\n确定 = 标题、md 文件、图片文件夹、正文引用一并重命名\n取消 = 仅改 link 指向,文章本体保持原名`);
+    if (!go) continue;
+    try {
+      const resp = await api('/api/research/rename', { json: { from: r.old, to: r.cur } });
+      // 内存同步:同旧 link 的其他条目/标题跟随(与后端 syncResearchLinks 一致),文章列表更新
+      DF.parsed.plans.forEach(plan => (plan.timeline || []).forEach(t => {
+        if (t && String(t.link || '').trim() === r.old) {
+          t.link = r.cur;
+          if (t.title === r.old) t.title = r.cur;
+        }
+      }));
+      const post = RA.posts.find(p => p.title === r.old);
+      if (post) { post.title = r.cur; if (resp.slug) post.slug = resp.slug; }
+      if (resp.warnings && resp.warnings.length) toast(resp.warnings.join(' '), 'err');
+      else toast(`文章已重命名:${resp.slug || r.cur}(md + 图片文件夹)`, 'ok');
+    } catch (e) {
+      // 重命名失败(如同名文章已存在):该条目 link 回退,避免指向不存在的标题
+      const t = DF.parsed.plans[r.pi]?.timeline?.[r.ti];
+      if (t) t.link = r.old;
+      renderPlanBox();
+    }
+  }
+  if (renames.length) renderPlanBox();
+}
 async function saveResearch() {
+  await raApplyLinkRenames();
   const r = await api('/api/data/research', { method: 'PUT', json: { parsed: DF.parsed } });
+  if (RA && RA.origLinks) RA.origLinks = DF.parsed.plans.map(p => (p.timeline || []).map(t => String(t.link || '')));
   const box = $('#data-warn');
   if (box) box.innerHTML = r.warnings.length
     ? `<div class="warnbox">⚠️ 存在断链(链接与文章标题不匹配):<br>${r.warnings.map(esc).join('<br>')}</div>`

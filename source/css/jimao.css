@@ -1,0 +1,319 @@
+/* ============================================================
+   几猫港区 · Jimao Port —— 浏览器 FPS 游戏页(仅 /jimao/ 引入)
+   仿 earth.css:隐藏主题页头,面板透明化,全出血
+   ============================================================ */
+#page-header.not-top-img { display: none !important; }
+#page .page-title { display: none !important; }
+#article-container {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+[data-theme="dark"] div#page,
+#page {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+#content-inner { padding-top: 66px !important; }
+
+.jimao-wrap { width: 100vw; margin-left: calc(50% - 50vw); padding: 0 0 30px; }
+[hidden] { display: none !important; }
+
+/* ---------- 页头 ---------- */
+.jimao-head {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  width: calc(100% - 44px); margin: 0 auto 14px;
+}
+.jimao-index { font-size: 15px; color: #8a93a0; letter-spacing: 1px; font-family: Consolas, monospace; }
+.jimao-title-box { display: flex; flex-direction: column; gap: 3px; margin-right: auto; }
+.jimao-title { font-size: 20px; letter-spacing: 3px; color: #e8d5a0; font-weight: 600; font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; }
+.jimao-sub { font-size: 10.5px; letter-spacing: 3px; color: #7d8590; }
+.jimao-chips { display: flex; gap: 8px; }
+.jimao-chip {
+  font-size: 11px; letter-spacing: 1.5px; color: #ffb877;
+  border: 1px solid rgba(255, 158, 90, .3); border-radius: 999px; padding: 3px 12px;
+  background: rgba(255, 158, 90, .06);
+}
+
+/* ---------- 舞台 ---------- */
+.jm-stage {
+  position: relative;
+  width: calc(100% - 44px); margin: 0 auto;
+  height: clamp(540px, 78vh, 900px);
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(255, 158, 90, .14);
+  background: #0a0c12;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  touch-action: none; user-select: none; -webkit-user-select: none;
+  cursor: default;
+}
+.jm-stage.jm-playing { cursor: none; }
+.jm-stage canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
+
+.jm-stage.jm-playing .jm-back, .jm-stage.jm-playing .jm-badge { display: none; }
+.jm-back {
+  position: absolute; top: 14px; left: 14px; z-index: 55;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 12.5px; letter-spacing: 1px; color: #cfd6dd; text-decoration: none;
+  background: rgba(8, 10, 14, .55); border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px; padding: 6px 14px; backdrop-filter: blur(6px);
+  transition: border-color .2s, color .2s;
+}
+.jm-back:hover { color: #ffd9a0; border-color: rgba(255, 158, 90, .4); }
+.jm-badge {
+  position: absolute; top: 16px; right: 16px; z-index: 55;
+  font-size: 10px; letter-spacing: 3px; color: #ffb877;
+  background: rgba(8, 10, 14, .5); border: 1px solid rgba(255, 158, 90, .25);
+  border-radius: 999px; padding: 5px 14px; backdrop-filter: blur(6px);
+}
+
+/* 全屏质感层 */
+.jm-vignette { position: absolute; inset: 0; z-index: 39; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, .52) 100%); }
+.jm-grain { position: absolute; inset: -100px; z-index: 40; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+  animation: jm-grain .38s steps(4) infinite; }
+@keyframes jm-grain {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-34px, 22px); }
+  50% { transform: translate(26px, -30px); } 75% { transform: translate(-18px, -14px); }
+  100% { transform: translate(0, 0); }
+}
+.jm-damage { position: absolute; inset: 0; z-index: 38; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(150, 12, 12, .62) 100%); }
+
+/* ---------- HUD ---------- */
+.jm-hud { position: absolute; inset: 0; z-index: 30; pointer-events: none; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+.jm-hud b, .jm-hud i { font-style: normal; }
+
+/* 罗盘 */
+.jm-compass {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  width: 340px; height: 36px; overflow: hidden;
+  background: rgba(8, 10, 14, .5); border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 8px; backdrop-filter: blur(6px);
+}
+.jm-compass-tape { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
+.jm-compass-tape span { position: absolute; bottom: 4px; width: 1px; height: 7px; background: rgba(255, 255, 255, .3); }
+.jm-compass-tape span.jm-tick-big { height: 11px; background: rgba(255, 255, 255, .55); }
+.jm-compass-tape b { position: absolute; top: 4px; font-size: 12px; letter-spacing: 0; color: #dfe5ea; transform: translateX(-50%); font-weight: 600; }
+.jm-compass-tape u { position: absolute; top: 0; bottom: 0; width: 9px; transform: translateX(-50%) rotate(45deg); }
+.jm-compass-tape u.jm-mk { top: auto; bottom: 6px; width: 8px; height: 8px; border: 1.5px solid #59d7ff; background: rgba(89, 215, 255, .25); box-shadow: 0 0 8px rgba(89, 215, 255, .7); }
+.jm-compass-tape u.jm-mk-done { border-color: #52e09a; background: rgba(82, 224, 154, .3); box-shadow: 0 0 8px rgba(82, 224, 154, .7); }
+.jm-compass-tape u.jm-mk-ext { border-color: #52e09a; background: rgba(82, 224, 154, .35); box-shadow: 0 0 10px rgba(82, 224, 154, .9); height: 10px; width: 10px; }
+.jm-compass-needle { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); width: 0; height: 0;
+  border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #ffb877; }
+
+/* 任务目标 */
+.jm-objectives {
+  position: absolute; top: 16px; left: 16px; min-width: 196px;
+  background: rgba(8, 10, 14, .5); border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 10px; padding: 10px 14px; backdrop-filter: blur(6px);
+}
+.jm-obj-head { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  font-size: 11px; letter-spacing: 2.5px; color: #8a93a0; margin-bottom: 7px; }
+.jm-timer { font-family: Consolas, "Courier New", monospace; font-size: 15px; letter-spacing: 1px; color: #e8d5a0; }
+.jm-timer.jm-timer-warn { color: #ff6b4a; animation: jm-blink 1s infinite; }
+@keyframes jm-blink { 50% { opacity: .35; } }
+.jm-obj { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #c9d1d9; padding: 3px 0; letter-spacing: 1px; }
+.jm-obj-dot { flex: none; width: 8px; height: 8px; transform: rotate(45deg);
+  border: 1.5px solid #59d7ff; background: transparent; transition: all .3s; }
+.jm-obj.jm-active .jm-obj-dot { background: rgba(89, 215, 255, .4); box-shadow: 0 0 8px rgba(89, 215, 255, .8); }
+.jm-obj.jm-done { color: #7ddba6; }
+.jm-obj.jm-done .jm-obj-dot { border-color: #52e09a; background: #52e09a; box-shadow: 0 0 8px rgba(82, 224, 154, .7); }
+.jm-obj.jm-done span { text-decoration: line-through; opacity: .75; }
+.jm-obj-ext .jm-obj-dot { border-color: #52e09a; background: rgba(82, 224, 154, .4); animation: jm-blink 1.2s infinite; }
+
+/* 生命 */
+.jm-health { position: absolute; bottom: 18px; left: 18px; display: flex; align-items: center; gap: 10px; }
+.jm-health-bar { width: 150px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+.jm-health-fill { height: 100%; width: 100%; border-radius: 3px; background: linear-gradient(90deg, #52e09a, #a8e05c); transition: width .18s; }
+.jm-health.jm-low .jm-health-fill { background: linear-gradient(90deg, #ff5f4a, #ff9e5e); }
+.jm-health.jm-low { animation: jm-blink 1.1s infinite; }
+.jm-health-num { font-family: Consolas, monospace; font-size: 15px; color: #dfe5ea; min-width: 30px; }
+
+/* 弹药 */
+.jm-ammo { position: absolute; bottom: 14px; right: 18px; text-align: right; }
+.jm-ammo-num { line-height: 1; }
+.jm-ammo-num b { font-family: Consolas, "Courier New", monospace; font-size: 42px; font-weight: 700; color: #f2f2f2; }
+.jm-ammo-num b.jm-ammo-low { color: #ff9e5e; animation: jm-blink .9s infinite; }
+.jm-ammo-num span { font-family: Consolas, monospace; font-size: 15px; color: #8a93a0; margin-left: 4px; }
+.jm-ammo-warn { font-size: 11px; letter-spacing: 3px; color: #ff9e5e; margin-top: 2px; animation: jm-blink 1s infinite; }
+.jm-ammo-name { font-size: 10.5px; letter-spacing: 3px; color: #7d8590; margin-top: 4px; }
+
+/* 准星 */
+.jm-cross { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transition: opacity .15s; }
+.jm-cross i { position: absolute; background: rgba(240, 240, 240, .92); box-shadow: 0 0 4px rgba(0, 0, 0, .8); }
+.jm-cross i:nth-child(1) { width: 2px; height: 9px; left: -1px; top: calc(-9px - var(--xh, 8px)); }
+.jm-cross i:nth-child(2) { width: 2px; height: 9px; left: -1px; top: var(--xh, 8px); }
+.jm-cross i:nth-child(3) { width: 9px; height: 2px; top: -1px; left: calc(-9px - var(--xh, 8px)); }
+.jm-cross i:nth-child(4) { width: 9px; height: 2px; top: -1px; left: var(--xh, 8px); }
+.jm-cross u { position: absolute; width: 3px; height: 3px; left: -1.5px; top: -1.5px; border-radius: 50%; background: rgba(240, 240, 240, .95); }
+
+/* 全息瞄具 */
+.jm-reticle { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 58px; height: 58px; border-radius: 50%; border: 1.5px solid rgba(255, 82, 44, .85);
+  box-shadow: 0 0 14px rgba(255, 82, 44, .35), inset 0 0 10px rgba(255, 82, 44, .18);
+  opacity: 0; transition: opacity .12s; }
+.jm-reticle i { position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px;
+  border-radius: 50%; background: rgba(255, 82, 44, .95); box-shadow: 0 0 8px rgba(255, 82, 44, .9); }
+
+/* 命中标记 */
+.jm-hitmark { position: absolute; left: 50%; top: 50%; width: 0; height: 0; opacity: 0; }
+.jm-hitmark i { position: absolute; width: 2px; height: 9px; background: #f2f2f2; box-shadow: 0 0 4px rgba(0, 0, 0, .8); }
+.jm-hitmark i:nth-child(1) { transform: translate(-8px, -14px) rotate(45deg); }
+.jm-hitmark i:nth-child(2) { transform: translate(6px, -14px) rotate(-45deg); }
+.jm-hitmark i:nth-child(3) { transform: translate(-8px, 5px) rotate(-45deg); }
+.jm-hitmark i:nth-child(4) { transform: translate(6px, 5px) rotate(45deg); }
+.jm-hitmark.jm-show { animation: jm-hm .18s ease-out; }
+.jm-hitmark.jm-kill i { background: #ff5f4a; }
+@keyframes jm-hm { 0% { opacity: 1; transform: scale(1.25); } 100% { opacity: 0; transform: scale(.9); } }
+
+/* 互动提示 */
+.jm-prompt { position: absolute; left: 50%; bottom: 27%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(8, 10, 14, .62); border: 1px solid rgba(255, 158, 90, .4);
+  border-radius: 10px; padding: 9px 16px; backdrop-filter: blur(6px); }
+.jm-prompt-key { font-family: Consolas, monospace; font-size: 13px; font-weight: 700; color: #ffb877;
+  border: 1.5px solid rgba(255, 184, 119, .7); border-radius: 5px; padding: 2px 9px; }
+.jm-prompt-text { font-size: 13.5px; letter-spacing: 2px; color: #e8ecf0; }
+.jm-prompt-bar { width: 110px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .16); overflow: hidden; }
+.jm-prompt-fill { height: 100%; width: 0; background: #ffb877; }
+
+/* 字幕 & 提示 */
+.jm-sub { position: absolute; left: 50%; bottom: 58px; transform: translateX(-50%);
+  max-width: min(660px, 88%); text-align: center; font-size: 14.5px; line-height: 1.65;
+  color: #eef1f4; background: rgba(5, 7, 10, .58); border-radius: 8px; padding: 9px 18px;
+  opacity: 0; transition: opacity .3s; letter-spacing: .5px; }
+.jm-sub.jm-show { opacity: 1; }
+.jm-sub b { color: #e8b96a; margin-right: 10px; letter-spacing: 2px; font-weight: 600; }
+.jm-tip { position: absolute; left: 50%; bottom: 118px; transform: translateX(-50%);
+  font-size: 12.5px; letter-spacing: 1.5px; color: #ffd9a0;
+  background: rgba(8, 10, 14, .55); border: 1px solid rgba(255, 184, 119, .3);
+  border-radius: 999px; padding: 6px 16px; transition: opacity .3s; }
+
+/* ---------- 触屏控件 ---------- */
+.jm-touch { position: absolute; inset: 0; z-index: 32; }
+.jm-stick-zone { position: absolute; left: 0; bottom: 0; width: 42%; height: 78%; }
+.jm-stick { position: absolute; left: 74px; bottom: 84px; width: 104px; height: 104px;
+  border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, .25);
+  background: rgba(10, 12, 18, .3); }
+.jm-stick-knob { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px;
+  border-radius: 50%; background: rgba(232, 213, 160, .5); border: 1.5px solid rgba(232, 213, 160, .8); }
+.jm-tbtns { position: absolute; right: 14px; bottom: 14px; display: grid;
+  grid-template-columns: 64px 84px; grid-auto-rows: 54px; gap: 10px; }
+.jm-tbtn {
+  appearance: none; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, .3);
+  background: rgba(10, 12, 18, .42); color: #e8ecf0; font-size: 13px; letter-spacing: 1px;
+  font-family: inherit; touch-action: none; transition: background .15s;
+}
+.jm-tbtn:active { background: rgba(232, 213, 160, .35); }
+.jm-tbtn.jm-on { background: rgba(255, 158, 90, .4); border-color: rgba(255, 184, 119, .8); }
+.jm-tbtn-fire { grid-row: span 2; height: 118px; font-size: 16px; letter-spacing: 3px;
+  background: rgba(255, 120, 70, .28); border-color: rgba(255, 158, 90, .6); }
+.jm-tbtn-pause { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px;
+  border-radius: 10px; font-size: 15px; font-weight: 700; }
+.jm-tbtn-use { position: absolute; left: -86px; bottom: 4px; width: 64px;
+  border-color: rgba(255, 184, 119, .7); color: #ffb877; }
+
+/* ---------- 加载页 ---------- */
+.jm-loading { position: absolute; inset: 0; z-index: 60; background: #0b0d12;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  transition: opacity .6s; }
+.jm-loading.jm-hide { opacity: 0; pointer-events: none; }
+.jm-loading-title { font-size: 62px; letter-spacing: 26px; padding-left: 26px; color: #f2e6c8;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; font-weight: 600; }
+.jm-loading-sub { font-size: 12px; letter-spacing: 5px; color: #8a93a0; }
+.jm-loading-bar { width: 250px; height: 2px; background: rgba(255, 255, 255, .12); border-radius: 1px; overflow: hidden; }
+.jm-loading-fill { height: 100%; width: 0; background: linear-gradient(90deg, #d4b976, #ffb877); transition: width .35s; }
+
+/* ---------- 主菜单 ---------- */
+.jm-menu { position: absolute; inset: 0; z-index: 50;
+  background: linear-gradient(100deg, rgba(6, 7, 10, .93) 8%, rgba(6, 7, 10, .62) 52%, rgba(6, 7, 10, .22) 100%); }
+.jm-menu-inner { display: flex; justify-content: space-between; align-items: stretch; height: 100%; padding: 7% 6% 5%; }
+.jm-menu-left { display: flex; flex-direction: column; justify-content: center; max-width: 560px; }
+.jm-menu-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 2px; color: #9aa3ad; margin-bottom: 18px; }
+.jm-menu-meta b { color: #ffb877; border: 1px solid rgba(255, 184, 119, .45); border-radius: 4px; padding: 1px 7px; font-family: Consolas, monospace; font-size: 12px; }
+.jm-menu-meta .jm-menu-clock { border: none; padding: 0; color: #e8d5a0; letter-spacing: 2px; }
+.jm-menu-title { margin: 0; font-size: 82px; letter-spacing: 20px; color: #f2e6c8; line-height: 1.05;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; font-weight: 700;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, .6); }
+.jm-menu-tag { margin: 6px 0 18px; font-size: 20px; letter-spacing: 14px; color: #ff9e5e; font-weight: 600; }
+.jm-menu-brief { margin: 0 0 14px; max-width: 470px; font-size: 14px; line-height: 1.9; color: #c9d1d9; letter-spacing: 1px; }
+.jm-menu-best { font-size: 12px; letter-spacing: 2px; color: #52e09a; margin-bottom: 12px; }
+.jm-menu-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.jm-menu-ver { font-size: 11px; letter-spacing: 2px; color: #6d757e; }
+.jm-menu-keys { align-self: flex-end; text-align: right; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.jm-keys-title { font-size: 11px; letter-spacing: 3px; color: #8a93a0; }
+.jm-keys-grid { display: grid; grid-template-columns: repeat(2, auto); gap: 7px 26px; justify-content: end; }
+.jm-keys-grid span { font-size: 12.5px; color: #b8c0c9; letter-spacing: 1px; }
+.jm-keys-grid b { font-family: Consolas, monospace; font-size: 11px; color: #e8e2d0;
+  border: 1px solid rgba(255, 255, 255, .28); border-radius: 4px; padding: 1px 7px; margin-right: 8px; font-weight: 600; }
+.jm-keys-touch { font-size: 11px; color: #8a93a0; letter-spacing: 1px; max-width: 300px; line-height: 1.7; }
+
+/* ---------- 按钮 ---------- */
+.jm-btn {
+  appearance: none; cursor: pointer; font-family: inherit;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 22px; border-radius: 10px; font-size: 14px; letter-spacing: 2px;
+  color: #e8d9a0; background: rgba(20, 22, 30, .6); border: 1px solid rgba(232, 217, 160, .3);
+  text-decoration: none; transition: transform .18s, border-color .18s, box-shadow .18s;
+}
+.jm-btn:hover { transform: translateY(-2px); border-color: rgba(255, 184, 119, .7); box-shadow: 0 8px 22px rgba(0, 0, 0, .4); }
+.jm-btn-primary { background: linear-gradient(180deg, #e8d5a0, #d4b976); color: #33290f; font-weight: 700; border-color: transparent; }
+.jm-btn-primary:hover { box-shadow: 0 8px 26px rgba(232, 213, 160, .25); }
+.jm-btn-ghost { color: #9aa3ad; border-color: rgba(255, 255, 255, .18); background: transparent; }
+
+/* ---------- 暂停 / 结算 / 弹窗 ---------- */
+.jm-overlay { position: absolute; inset: 0; z-index: 52; display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 5, 8, .74); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
+.jm-panel { width: min(460px, 90%); background: linear-gradient(180deg, rgba(255, 158, 90, .05), rgba(255, 158, 90, .015)), #12141c;
+  border: 1px solid rgba(255, 184, 119, .22); border-radius: 16px; padding: 30px 34px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .6); text-align: center; }
+.jm-panel-wide { width: min(560px, 92%); text-align: left; }
+.jm-panel h2 { margin: 0 0 8px; font-size: 26px; letter-spacing: 6px; color: #e8d5a0;
+  font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; }
+.jm-panel h2.jm-bad { color: #ff6b4a; }
+.jm-panel-sub { margin: 0 0 18px; font-size: 13.5px; color: #9aa3ad; line-height: 1.8; }
+.jm-panel-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.jm-result-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin: 0 0 22px; text-align: left; }
+.jm-result-stats div { background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .08); border-radius: 10px; padding: 10px 16px; }
+.jm-result-stats span { display: block; font-size: 11px; letter-spacing: 2px; color: #8a93a0; margin-bottom: 3px; }
+.jm-result-stats b { font-family: Consolas, monospace; font-size: 20px; color: #f2e6c8; }
+.jm-modal-body { font-size: 13.5px; color: #c9d1d9; line-height: 2; letter-spacing: .5px; max-height: 52vh; overflow-y: auto; padding-right: 6px; }
+.jm-modal-body h3 { margin: 14px 0 4px; font-size: 14px; color: #ffb877; letter-spacing: 2px; }
+.jm-modal-body h3:first-child { margin-top: 0; }
+.jm-modal-body b { color: #e8e2d0; }
+.jm-modal-body .jm-set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px dashed rgba(255, 255, 255, .1); }
+.jm-modal-body .jm-set-row label { flex: none; letter-spacing: 1px; }
+.jm-modal-body input[type="range"] { width: 180px; accent-color: #ff9e5e; }
+.jm-modal-body select { background: #1a1e28; color: #e8ecf0; border: 1px solid rgba(255, 255, 255, .2); border-radius: 6px; padding: 5px 10px; font-family: inherit; }
+.jm-webgl-err { position: absolute; inset: 0; z-index: 61; display: flex; align-items: center; justify-content: center;
+  color: #9aa3ad; font-size: 14px; letter-spacing: 1px; background: #0b0d12; text-align: center; padding: 20px; }
+
+.jimao-foot { margin: 16px auto 0; width: calc(100% - 44px); max-width: 1000px; font-size: 11.5px; color: #6d757e; letter-spacing: .5px; line-height: 1.8; }
+.jimao-foot a { color: #ffb877; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 860px) {
+  .jm-stage { width: calc(100% - 24px); height: clamp(480px, 72vh, 820px); }
+  .jimao-head { width: calc(100% - 24px); }
+  .jm-menu-inner { flex-direction: column; justify-content: flex-end; gap: 10px; padding: 5% 6%; }
+  .jm-menu-keys { display: none; }
+  .jm-menu-title { font-size: 52px; letter-spacing: 12px; }
+  .jm-menu-tag { font-size: 14px; letter-spacing: 8px; }
+  .jm-menu-brief { font-size: 12.5px; margin-bottom: 10px; }
+  .jm-compass { width: 220px; }
+  .jm-objectives { min-width: 160px; padding: 8px 11px; }
+  .jm-obj { font-size: 11.5px; }
+  .jm-ammo-num b { font-size: 32px; }
+  .jm-timer { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jm-grain, .jm-timer.jm-timer-warn, .jm-ammo-warn, .jm-health.jm-low,
+  .jm-obj-ext .jm-obj-dot, .jm-ammo-num b.jm-ammo-low { animation: none; }
+}

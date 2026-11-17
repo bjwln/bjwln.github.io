@@ -128,6 +128,8 @@ app.put('/api/data/moyulinks', U.wrap(async (req, res) => res.json(await datafil
 // ---------- 科研文章(按计划增删改查) ----------
 // 查询复用 GET /api/data/research + GET /api/posts;删除 = DELETE /api/posts/:slug(进回收站) + PUT /api/data/research(移除条目)
 app.post('/api/research/articles', U.wrap(async (req, res) => res.json(await research.createArticle(req.body || {}))));
+// 行内改 link = 改文章标题:文章本体(md/资源文件夹/引用/时间线 link)一并重命名
+app.post('/api/research/rename', U.wrap(async (req, res) => res.json(await research.renameArticle(req.body || {}))));
 
 // ---------- 标签/分类 ----------
 app.get('/api/taxonomy', U.wrap(async (req, res) => res.json(await taxonomy.summary())));

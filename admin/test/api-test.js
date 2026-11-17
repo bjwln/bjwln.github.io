@@ -111,6 +111,8 @@ async function main() {
   console.log('== 科研文章 ==');
   // 清理可能存在的脏数据(文章与回收站)
   await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp') + '?type=post', { method: 'DELETE' });
+  await api('/api/posts/' + encodeURIComponent('research/科研测试改名tmp') + '?type=post', { method: 'DELETE' });
+  await api('/api/posts/' + encodeURIComponent('research/科研测试改名2tmp') + '?type=post', { method: 'DELETE' });
   const trR = await api('/api/trash');
   for (const t of trR.data.filter(t => String(t.slug).includes('__test科研'))) await api('/api/trash/' + t.id, { method: 'DELETE' });
 
@@ -141,8 +143,32 @@ async function main() {
   r = await api('/api/data/research');
   check('替换未增加条目数', (r.data.parsed.plans[0].timeline || []).length === tlLen0 + 1 && r.data.parsed.plans[0].timeline[0].link === '科研测试Ztmp');
 
+  // 改标题 → md + 资源文件夹重命名、正文前缀引用改写、research.yml link 同步
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'));
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'), { method: 'PUT', json: { data: { ...r.data.data, title: '科研测试改名tmp' }, body: r.data.body + '\n![测试图](科研测试Xtmp/测试图.png)\n' } });
+  check('改标题后 md 随动重命名', r.status === 200 && r.data.renamed === true && r.data.slug === 'research/科研测试改名tmp', r.data);
+  check('返回 research.yml 同步提示', Array.isArray(r.data.warnings) && r.data.warnings.some(w => w.includes('research.yml')), r.data.warnings);
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'));
+  check('旧文件名已不存在', r.status === 404, r.status);
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试改名tmp'));
+  check('新文件名可读且标题已更新', r.status === 200 && r.data.data.title === '科研测试改名tmp', r.data.data);
+  check('正文旧文件夹前缀引用已改写', r.data.body.includes('](科研测试改名tmp/') && !r.data.body.includes('](科研测试Xtmp/'), r.data.body);
+  r = await api('/api/data/research');
+  const renamedPlan = r.data.parsed.plans.find(p => p.key === planKey);
+  check('research.yml 时间线 link 已同步新标题', renamedPlan && renamedPlan.timeline.some(t => t.link === '科研测试改名tmp' && t.title === '科研测试改名tmp'), renamedPlan && renamedPlan.timeline);
+
+  // 行内改 link = 改名接口(文章管理「保存修改」时调用)
+  r = await api('/api/research/rename', { json: { from: '科研测试改名tmp', to: '科研测试改名2tmp' } });
+  check('行内改名接口联动重命名', r.status === 200 && r.data.slug === 'research/科研测试改名2tmp', r.data);
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试改名2tmp'));
+  check('改名接口后新文件可读', r.status === 200 && r.data.data.title === '科研测试改名2tmp', r.data.data);
+  r = await api('/api/research/rename', { json: { from: '科研测试改名2tmp', to: '科研测试Ztmp' } });
+  check('撞已有标题被拒绝(409)', r.status === 409, r.status);
+  r = await api('/api/research/rename', { json: { from: '不存在的标题xyz', to: '随便' } });
+  check('找不到文章被拒绝(404)', r.status === 404, r.status);
+
   // 清理:文章进回收站→彻底删除,恢复 timeline 原状
-  r = await api('/api/posts/' + encodeURIComponent('research/科研测试Xtmp'), { method: 'DELETE' });
+  r = await api('/api/posts/' + encodeURIComponent('research/科研测试改名2tmp'), { method: 'DELETE' });
   if (r.data.id) await api('/api/trash/' + r.data.id, { method: 'DELETE' });
   r = await api('/api/posts/' + encodeURIComponent('research/科研测试Ztmp'), { method: 'DELETE' });
   if (r.data.id) await api('/api/trash/' + r.data.id, { method: 'DELETE' });

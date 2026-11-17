@@ -3,6 +3,7 @@ const path = require('path');
 const fm = require('./frontmatter');
 const U = require('./util');
 const datafiles = require('./datafiles');
+const posts = require('./posts');
 
 // 科研文章:按计划(research.yml 的 plans)一键创建文章
 // 约定与现有数据保持一致:
@@ -66,4 +67,29 @@ async function createArticle({ planKey, title, date, track, summary, label, tags
   return { ok: true, slug: FOLDER + '/' + slug, plan: plan.key || planKey, entry, warnings: saved.warnings };
 }
 
-module.exports = { createArticle, FOLDER };
+// 行内改 link = 改文章标题:把「from」标题的文章整体重命名为「to」——
+// frontmatter 标题 / md 文件 / 图片资源文件夹 / 正文引用 / research.yml 时间线 link 一次到位
+// (文件随动细节见 posts.savePost 内部的 renameWithTitle)
+async function renameArticle({ from, to }) {
+  from = String(from || '').trim();
+  to = String(to || '').trim();
+  if (!from || !to) { const e = new Error('from/to 不能为空'); e.status = 400; throw e; }
+  if (from === to) return { ok: true, renamed: false };
+  const { titles } = await datafiles.getResearch();
+  if (titles.includes(to)) {
+    const e = new Error('已存在标题为「' + to + '」的文章,科研页按标题精确匹配会混淆,请换一个标题');
+    e.status = 409; throw e;
+  }
+  const list = await posts.listPosts('post');
+  const targets = list.filter(p => p.title === from);
+  if (!targets.length) { const e = new Error('没有找到标题为「' + from + '」的文章'); e.status = 404; throw e; }
+  if (targets.length > 1) {
+    const e = new Error('存在 ' + targets.length + ' 篇标题相同的文章「' + from + '」,请先在「文章」模块手动处理');
+    e.status = 409; throw e;
+  }
+  const get = await posts.getPost('post', targets[0].slug);
+  const sv = await posts.savePost('post', targets[0].slug, { ...get.data, title: to }, get.body);
+  return { ok: true, slug: sv.slug, renamed: sv.renamed, warnings: sv.warnings };
+}
+
+module.exports = { createArticle, renameArticle, FOLDER };

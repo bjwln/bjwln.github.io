@@ -65,6 +65,26 @@ async function putResearch(parsed) {
   return { ok: true, warnings };
 }
 
+// 文章改标题后同步时间线:link 靠 title 精确匹配,不同步会断链;
+// 条目 display 标题只在「建文章」自动生成(与 link 相同)时跟随,手工起的展示名不动
+async function syncResearchLinks(oldTitle, newTitle) {
+  if (!oldTitle || !newTitle || oldTitle === newTitle) return 0;
+  const parsed = await loadYaml(RESEARCH, { plans: [] });
+  let changed = 0;
+  const plans = Array.isArray(parsed.plans) ? parsed.plans : [];
+  for (const plan of plans) {
+    const tl = Array.isArray(plan.timeline) ? plan.timeline : [];
+    for (const t of tl) {
+      if (!t || typeof t !== 'object' || t.link !== oldTitle) continue;
+      t.link = newTitle;
+      changed++;
+      if (t.title === oldTitle) t.title = newTitle;
+    }
+  }
+  if (changed) await saveYaml(RESEARCH, parsed);
+  return changed;
+}
+
 async function getBangumi() {
   const parsed = await loadYaml(BANGUMI, { items: [] });
   if (!Array.isArray(parsed.items)) parsed.items = [];
@@ -117,4 +137,4 @@ async function putMoyuLinks(parsed) {
   return { ok: true, count: parsed.links.length };
 }
 
-module.exports = { getResearch, putResearch, getBangumi, putBangumi, getWidget, putWidget, getMoyuLinks, putMoyuLinks };
+module.exports = { getResearch, putResearch, syncResearchLinks, getBangumi, putBangumi, getWidget, putWidget, getMoyuLinks, putMoyuLinks };

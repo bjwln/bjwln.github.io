@@ -3,6 +3,7 @@ const fsp = require('fs/promises');
 const path = require('path');
 const fm = require('./frontmatter');
 const U = require('./util');
+const datafiles = require('./datafiles'); // 标题改名时同步 research.yml 时间线 link
 
 // kind: 'post' → source/_posts, 'draft' → source/_drafts
 // slug 现在支持子文件夹:相对 baseDir 的路径(不含 .md),如 'research/EvoMDT'、'pizza'
@@ -152,14 +153,71 @@ async function createPost({ title, tags, categories, isDraft, folder }) {
 }
 
 // 保存:data 为完整 frontmatter 对象(未知字段由前端原样带回),body 为正文
+// 标题变化时自动同步:重命名 md 与同名资源文件夹、改写正文里带旧文件夹前缀的引用、
+// 更新 research.yml 时间线 link(科研页靠 title === link 精确匹配,不同步会断链)。
+// 重命名属 best-effort:目标文件已存在等情况下保留原文件名,以 warnings 提示,不阻塞保存。
 async function savePost(kind, slug, data, body) {
   if (!data || typeof data !== 'object') { const e = new Error('frontmatter 不能为空'); e.status = 400; throw e; }
   if (typeof body !== 'string') body = '';
   if (data.__parseError) delete data.__parseError;
-  const raw = fm.join(data, body);
-  await U.atomicWrite(mdPath(kind, slug), raw);
+  const abs = mdPath(kind, slug);
+  // 记下旧标题用于检测改名(文件不存在 = 新建,无需改名)
+  let oldTitle = null;
+  if (await U.pathExists(abs)) {
+    oldTitle = fm.trySplit(await fsp.readFile(abs, 'utf8')).data.title || null;
+  }
+  await U.atomicWrite(abs, fm.join(data, body));
   await U.ensureDir(assetDirOf(kind, slug));
-  return { ok: true };
+  const rn = await renameWithTitle(kind, slug, oldTitle, data.title)
+    .catch(e => ({ slug, renamed: false, warnings: ['文件重命名失败: ' + e.message] }));
+  return { ok: true, ...rn };
+}
+
+// 标题改名 → 文件随动;返回 { slug, renamed, warnings }
+async function renameWithTitle(kind, slug, oldTitle, newTitle) {
+  const warnings = [];
+  newTitle = String(newTitle || '').trim();
+  if (!oldTitle || typeof oldTitle !== 'string' || !newTitle || oldTitle === newTitle) {
+    return { slug, renamed: false, warnings };
+  }
+
+  // 1) research.yml 时间线 link 跟随新标题(失败只提示,不影响文章保存)
+  try {
+    const n = await datafiles.syncResearchLinks(oldTitle, newTitle);
+    if (n) warnings.push(`research.yml 已同步 ${n} 条时间线 link`);
+  } catch (e) { warnings.push('research.yml link 同步失败: ' + e.message); }
+
+  // 2) md + 同名资源文件夹重命名(Hexo :name 取文件名,标题与文件名保持一致)
+  const abs = mdPath(kind, slug);
+  const stem = path.basename(abs, '.md');
+  const next = U.slugify(newTitle);
+  if (!next || next.startsWith('.') || next.startsWith('_')) {
+    warnings.push('标题生成的文件名不合法,文件保持原名');
+    return { slug, renamed: false, warnings };
+  }
+  if (next === stem) return { slug, renamed: false, warnings };
+  const dst = path.join(path.dirname(abs), next + '.md');
+  if (await U.pathExists(dst)) {
+    warnings.push('已存在同名文章文件「' + next + '.md」,文件保持原名');
+    return { slug, renamed: false, warnings };
+  }
+  await fsp.rename(abs, dst);
+  const srcAsset = assetDirOf(kind, slug);
+  if (await U.pathExists(srcAsset)) {
+    await fsp.rename(srcAsset, path.join(path.dirname(abs), next)).catch(() => warnings.push('资源文件夹重命名失败'));
+  }
+
+  // 3) 正文里带旧文件夹前缀的引用(如 ![](旧名/图.png) 或 HTML src)改写到新前缀
+  const raw = await fsp.readFile(dst, 'utf8');
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const fixed = raw
+    .replace(new RegExp('\\]\\(' + esc(stem) + '/', 'g'), '](' + next + '/')
+    .replace(new RegExp('src="' + esc(stem) + '/', 'g'), 'src="' + next + '/')
+    .replace(new RegExp("src='" + esc(stem) + "/", 'g'), "src='" + next + "/");
+  if (fixed !== raw) await U.atomicWrite(dst, fixed);
+
+  const relDir = path.dirname(path.relative(baseDir(kind), dst)).split(path.sep).join('/');
+  return { slug: (relDir === '.' ? '' : relDir + '/') + next, renamed: true, warnings };
 }
 
 // 移动文章到另一个文件夹(md + 资源文件夹一起移动),slug 随之变为 folder/stem
@@ -226,5 +284,5 @@ async function deleteAsset(kind, slug, name) {
 
 module.exports = {
   baseDir, mdPath, assetDirOf, sanitizeSlug, sanitizeFolder,
-  listPosts, listFolders, getPost, createPost, savePost, movePost, publishDraft, uploadAsset, deleteAsset,
+  listPosts, listFolders, getPost, createPost, savePost, renameWithTitle, movePost, publishDraft, uploadAsset, deleteAsset,
 };

@@ -500,3 +500,36 @@
 @media (prefers-reduced-motion: reduce) {
   .m-earth-card .m-card-art .ea-spin, .m-earth-card .m-card-art .ea-sat, .m-earth-card .m-card-art .ea-arc { animation: none; }
 }
+
+/* ---- 几猫港区 FPS 卡(蓝星航线同级) ---- */
+.m-jimao-card {
+  background:
+    radial-gradient(420px 180px at 88% 40%, rgba(255, 158, 90, 0.08), transparent 70%),
+    linear-gradient(180deg, rgba(255, 158, 90, 0.04), rgba(255, 158, 90, 0.012)),
+    var(--m-card);
+}
+.m-jimao-card:hover { border-color: rgba(255, 158, 90, .42); }
+.m-jimao-card .m-card-tag { color: #ffb877; border-color: rgba(255, 158, 90, .35); }
+.m-jimao-card .m-card-title { color: #ffcf9e; }
+.m-jimao-card:hover .m-card-btn { box-shadow: 0 6px 20px rgba(255, 158, 90, .3) !important; }
+.m-btn-orange { background: linear-gradient(180deg, #ffd8ae, #f4a15e) !important; color: #3d2a18 !important; box-shadow: 0 2px 14px rgba(255, 158, 90, .18) !important; }
+.m-jimao-card .m-card-art svg { overflow: visible; }
+.m-jimao-card .m-card-art svg rect { fill: rgba(255, 158, 90, .06); stroke: #8a7a66; stroke-width: 1.5; }
+.m-jimao-card .m-card-art svg path, .m-jimao-card .m-card-art svg circle, .m-jimao-card .m-card-art svg line { fill: none; stroke: #6b6450; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.m-jimao-card .jp-crane path, .m-jimao-card .jp-crane rect { stroke: #c98a4b; }
+.m-jimao-card .jp-crane rect { fill: rgba(255, 158, 90, .08); }
+.m-jimao-card .jp-sun-big { stroke: rgba(255, 158, 90, .85); }
+.m-jimao-card .jp-sun-halo { stroke: rgba(255, 158, 90, .3); }
+.m-jimao-card .jp-cross { stroke: #ff9e5e; transform-box: fill-box; transform-origin: center; animation: jp-pulse 2.4s ease-in-out infinite; }
+.m-jimao-card .jp-cross circle, .m-jimao-card .jp-cross path { stroke: #ff9e5e; }
+.m-jimao-card .jp-rain line { stroke: rgba(150, 168, 190, .55); stroke-width: 1.3; }
+.m-jimao-card .jp-rain { animation: jp-rain 1.1s linear infinite; }
+.m-jimao-card .jp-trolley { transition: transform .4s; transform-box: fill-box; }
+.m-jimao-card:hover .jp-trolley { transform: translateX(10px); }
+.m-jimao-card .jp-swing { transform-box: fill-box; transform-origin: top center; transition: transform .5s; }
+.m-jimao-card:hover .jp-swing { transform: rotate(4deg); }
+@keyframes jp-pulse { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.16); opacity: 1; } }
+@keyframes jp-rain { from { transform: translateY(0); opacity: 1; } to { transform: translateY(7px); opacity: .35; } }
+@media (prefers-reduced-motion: reduce) {
+  .m-jimao-card .jp-cross, .m-jimao-card .jp-rain { animation: none; }
+}

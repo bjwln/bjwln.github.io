@@ -8,7 +8,7 @@ comment: false
 description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼小游戏
 ---
 
-<link rel="stylesheet" href="/css/moyu.css?v=20261110a">
+<link rel="stylesheet" href="/css/moyu.css?v=20261117a">
 
 <div id="moyu-app">
 
@@ -148,6 +148,50 @@ description: 忙里偷闲的角落——每日资讯、月下问运势，摸鱼�
 <path class="ea-arc" d="M128 62 C120 96 138 108 158 106"/>
 </g>
 <circle class="ea-sat" cx="105" cy="45" r="3"/>
+</svg>
+</div>
+</a>
+
+<a class="m-card m-featured m-jimao-card" href="/jimao/">
+<div class="m-card-body">
+<span class="m-card-tag">射击 · Three.js</span>
+<h2 class="m-card-title">几猫港区</h2>
+<span class="m-card-en">JIMAO PORT · FIRST-PERSON OPS</span>
+<p class="m-card-desc">雨没停,天没亮。港区防御系统失控,武装巡逻封锁了泊位——五分钟内切断堆场、仓库、码头三处中继,然后登船撤离。交火会暴露位置,枪法要快,脚步要轻。</p>
+<span class="m-card-btn m-btn-orange">开始行动 <i class="fas fa-arrow-right"></i></span>
+</div>
+<div class="m-card-art" aria-hidden="true">
+<svg class="jimao-art" viewBox="0 0 210 150" width="210" height="150">
+<g class="jp-rain">
+<line x1="26" y1="20" x2="22" y2="32"/>
+<line x1="46" y1="14" x2="42" y2="26"/>
+<line x1="66" y1="24" x2="62" y2="36"/>
+<line x1="90" y1="16" x2="86" y2="28"/>
+</g>
+<circle class="jp-sun-halo" cx="108" cy="30" r="16"/>
+<circle class="jp-sun-big" cx="108" cy="30" r="9"/>
+<g class="jp-containers">
+<rect x="16" y="78" width="52" height="16" rx="1.5"/>
+<rect x="16" y="61" width="52" height="16" rx="1.5"/>
+<rect x="22" y="44" width="40" height="16" rx="1.5"/>
+<rect x="78" y="78" width="34" height="16" rx="1.5"/>
+<rect x="78" y="61" width="34" height="16" rx="1.5"/>
+</g>
+<path d="M10 94 L200 94"/>
+<g class="jp-crane">
+<path d="M118 36 L198 36"/>
+<path d="M124 36 L124 94 M192 36 L192 94"/>
+<path d="M124 48 L192 48"/>
+<rect class="jp-trolley" x="144" y="29" width="14" height="7" rx="1"/>
+<g class="jp-swing">
+<path d="M151 36 L151 58"/>
+<rect x="137" y="58" width="30" height="13" rx="1.5"/>
+</g>
+</g>
+<g class="jp-cross">
+<circle cx="151" cy="64" r="18"/>
+<path d="M151 38 L151 45 M151 83 L151 90 M129 64 L136 64 M171 64 L178 64"/>
+</g>
 </svg>
 </div>
 </a>
