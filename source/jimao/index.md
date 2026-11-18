@@ -7,7 +7,7 @@ comment: false
 description: 浏览器第一人称射击——雨没停,天没亮。五分钟内切断堆场、仓库、码头三处中继,登船撤离
 ---
 
-<link rel="stylesheet" href="/css/jimao.css?v=20261118b">
+<link rel="stylesheet" href="/css/jimao.css?v=20261118v">
 
 <div class="jimao-wrap">
 
@@ -35,13 +35,13 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 <div class="jm-compass"><div class="jm-compass-tape" id="jm-compass-tape"></div><i class="jm-compass-needle"></i></div>
 <div class="jm-objectives">
 <div class="jm-obj-head">任务目标<span class="jm-timer" id="jm-timer">05:42</span></div>
-<div class="jm-obj" id="jm-obj-0"><i class="jm-obj-dot"></i><span>切断 · 堆场中继</span></div>
-<div class="jm-obj" id="jm-obj-1"><i class="jm-obj-dot"></i><span>切断 · 仓库中继</span></div>
-<div class="jm-obj" id="jm-obj-2"><i class="jm-obj-dot"></i><span>切断 · 码头中继</span></div>
+<div class="jm-obj" id="jm-obj-0"><i class="jm-obj-dot"></i><span>切断 · 堆场中继</span><b class="jm-obj-dist" id="jm-obj-dist-0"></b></div>
+<div class="jm-obj" id="jm-obj-1"><i class="jm-obj-dot"></i><span>切断 · 仓库中继</span><b class="jm-obj-dist" id="jm-obj-dist-1"></b></div>
+<div class="jm-obj" id="jm-obj-2"><i class="jm-obj-dot"></i><span>切断 · 码头中继</span><b class="jm-obj-dist" id="jm-obj-dist-2"></b></div>
 <div class="jm-obj jm-obj-ext" id="jm-obj-ext" hidden><i class="jm-obj-dot"></i><span>前往四号泊位 · 登船撤离</span></div>
 </div>
 <div class="jm-health" id="jm-health"><div class="jm-health-bar"><div class="jm-health-fill" id="jm-health-fill"></div></div><span class="jm-health-num" id="jm-health-num">100</span></div>
-<div class="jm-ammo"><div class="jm-ammo-num"><b id="jm-ammo-mag">30</b><span>/ <i id="jm-ammo-res">150</i></span></div><div class="jm-ammo-warn" id="jm-ammo-warn" hidden>弹药不足</div><div class="jm-ammo-name">几猫九式突击步枪</div></div>
+<div class="jm-ammo"><div class="jm-ammo-num"><b id="jm-ammo-mag">30</b><span>/ <i id="jm-ammo-res">150</i></span></div><div class="jm-ammo-warn" id="jm-ammo-warn" hidden>弹药不足</div><div class="jm-ammo-name" id="jm-ammo-name">几猫九式·改</div></div>
 <div class="jm-cross" id="jm-cross"><i></i><i></i><i></i><i></i><u></u></div>
 <div class="jm-reticle" id="jm-reticle"><i></i></div>
 <div class="jm-hitmark" id="jm-hitmark"><i></i><i></i><i></i><i></i></div>
@@ -57,6 +57,7 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 <button class="jm-tbtn jm-tbtn-fire" data-act="fire" type="button">开火</button>
 <button class="jm-tbtn" data-act="ads" type="button">瞄准</button>
 <button class="jm-tbtn" data-act="reload" type="button">换弹</button>
+<button class="jm-tbtn" data-act="swap" type="button">切换</button>
 <button class="jm-tbtn" data-act="jump" type="button">跳</button>
 <button class="jm-tbtn" data-act="crouch" type="button">蹲</button>
 <button class="jm-tbtn jm-tbtn-use" data-act="use" type="button" hidden>互动</button>
@@ -75,7 +76,7 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 <div class="jm-menu-meta"><b>B4</b><span>几猫突击小队 · 几猫港区 · 四号泊位</span><b class="jm-menu-clock">05:42</b></div>
 <h1 class="jm-menu-title">几 猫</h1>
 <div class="jm-menu-tag">3A大作</div>
-<p class="jm-menu-brief">港区防御系统失控,不明武装封锁泊位。切断堆场、仓库、码头三处中继,突破封锁,登船撤离。</p>
+<p class="jm-menu-brief">港区主控 AI「绫」凌晨倒戈,泊区防御网反转。切断堆场、仓库、码头三处中继,赶在 05:42 封港前登上撤离艇。</p>
 <div class="jm-menu-best" id="jm-menu-best" hidden></div>
 <div class="jm-menu-btns">
 <button class="jm-btn jm-btn-primary" id="jm-btn-start" type="button">开始行动</button>
@@ -137,4 +138,4 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 
 </div>
 
-<script type="module" src="/js/jimao.js?v=20261118b"></script>
+<script type="module" src="/js/jimao.js?v=20261118v"></script>

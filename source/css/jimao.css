@@ -19,16 +19,15 @@
   border: none !important;
   box-shadow: none !important;
 }
-#content-inner { padding-top: 66px !important; }
+/* 本页强制深色页面底(浅色主题下舞台边缘不再透奶油) */
+#content-inner, body { background: #0b0d12 !important; }
+#content-inner { padding: 0 !important; }
 
 .jimao-wrap { width: 100vw; margin-left: calc(50% - 50vw); padding: 0 0 30px; }
 [hidden] { display: none !important; }
 
 /* ---------- 页头 ---------- */
-.jimao-head {
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  width: calc(100% - 44px); margin: 0 auto 14px;
-}
+.jimao-head { display: none; }
 .jimao-index { font-size: 15px; color: #8a93a0; letter-spacing: 1px; font-family: Consolas, monospace; }
 .jimao-title-box { display: flex; flex-direction: column; gap: 3px; margin-right: auto; }
 .jimao-title { font-size: 20px; letter-spacing: 3px; color: #e8d5a0; font-weight: 600; font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif; }
@@ -41,16 +40,27 @@
 }
 
 /* ---------- 舞台 ---------- */
+.jimao-wrap { padding: 0; }
 .jm-stage {
-  position: relative;
-  width: calc(100% - 44px); margin: 0 auto;
-  height: clamp(540px, 78vh, 900px);
-  border-radius: 16px; overflow: hidden;
-  border: 1px solid rgba(255, 158, 90, .14);
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh; height: 100dvh;
+  margin: 0; border-radius: 0; border: none;
   background: #0a0c12;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
   touch-action: none; user-select: none; -webkit-user-select: none;
   cursor: default;
+  /* clip(而非 hidden):不产生滚动容器,聚焦/锁定引发的自动滚动被彻底杜绝 */
+  overflow: hidden;
+  overflow: clip;
+  z-index: 900;
+}
+body { overflow: hidden; background: #0b0d12 !important; }
+/* 反制主题/入场脚本对祖先的 transform:否则 stage 的 position:fixed 退化为相对定位(出现 35px 偏移) */
+#article-container, #content-inner, .layout, #page, main, .jimao-wrap {
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+  will-change: auto !important;
+  contain: none !important;
 }
 .jm-stage.jm-playing { cursor: none; }
 .jm-stage canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
@@ -124,6 +134,9 @@
 .jm-timer.jm-timer-warn { color: #ff6b4a; animation: jm-blink 1s infinite; }
 @keyframes jm-blink { 50% { opacity: .35; } }
 .jm-obj { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #c9d1d9; padding: 3px 0; letter-spacing: 1px; }
+.jm-obj-dist { margin-left: auto; padding-left: 10px; font-family: Consolas, monospace; font-size: 11.5px; color: #59d7ff; }
+.jm-obj.jm-current { color: #eef4f8; }
+.jm-obj.jm-current .jm-obj-dot { border-color: #7fe6ff; background: rgba(89, 215, 255, .45); }
 .jm-obj-dot { flex: none; width: 8px; height: 8px; transform: rotate(45deg);
   border: 1.5px solid #59d7ff; background: transparent; transition: all .3s; }
 .jm-obj.jm-active .jm-obj-dot { background: rgba(89, 215, 255, .4); box-shadow: 0 0 8px rgba(89, 215, 255, .8); }
@@ -290,7 +303,7 @@
 .jm-overlay { position: absolute; inset: 0; z-index: 52; display: flex; align-items: center; justify-content: center;
   background: rgba(4, 5, 8, .74); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
 .jm-panel { width: min(460px, 90%); background: linear-gradient(180deg, rgba(255, 158, 90, .05), rgba(255, 158, 90, .015)), #12141c;
-  border: 1px solid rgba(255, 184, 119, .22); border-radius: 16px; padding: 30px 34px;
+  border: 1px solid rgba(255, 184, 119, .22); border-radius: 16px; padding: 26px min(24px, 5vw);
   box-shadow: 0 24px 70px rgba(0, 0, 0, .6); text-align: center; }
 .jm-panel-wide { width: min(560px, 92%); text-align: left; }
 .jm-panel h2 { margin: 0 0 8px; font-size: 26px; letter-spacing: 6px; color: #e8d5a0;
@@ -302,34 +315,68 @@
 .jm-result-stats div { background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .08); border-radius: 10px; padding: 10px 16px; }
 .jm-result-stats span { display: block; font-size: 11px; letter-spacing: 2px; color: #8a93a0; margin-bottom: 3px; }
 .jm-result-stats b { font-family: Consolas, monospace; font-size: 20px; color: #f2e6c8; }
-.jm-modal-body { font-size: 13.5px; color: #c9d1d9; line-height: 2; letter-spacing: .5px; max-height: 52vh; overflow-y: auto; padding-right: 6px; }
+.jm-modal-body { font-size: 13.5px; color: #c9d1d9; line-height: 2; letter-spacing: .5px; max-height: 52vh; overflow-y: auto; overflow-x: hidden; padding-right: 6px; }
 .jm-modal-body h3 { margin: 14px 0 4px; font-size: 14px; color: #ffb877; letter-spacing: 2px; }
 .jm-modal-body h3:first-child { margin-top: 0; }
 .jm-modal-body b { color: #e8e2d0; }
-.jm-modal-body .jm-set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px dashed rgba(255, 255, 255, .1); }
-.jm-modal-body .jm-set-row label { flex: none; letter-spacing: 1px; }
-.jm-modal-body input[type="range"] { width: 180px; accent-color: #ff9e5e; }
+.jm-modal-body .jm-set-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 10px; padding: 9px 0; border-bottom: 1px dashed rgba(255, 255, 255, .1); }
+.jm-modal-body .jm-set-row label { flex: 1 1 110px; min-width: 0; letter-spacing: 1px; }
+.jm-modal-body input[type="range"] { flex: 1 1 120px; width: auto; min-width: 0; max-width: 100%; accent-color: #ff9e5e; }
+.jm-modal-body .jm-set-row b { min-width: 34px; text-align: right; white-space: nowrap; font-family: Consolas, monospace; font-weight: 600; }
 .jm-modal-body select { background: #1a1e28; color: #e8ecf0; border: 1px solid rgba(255, 255, 255, .2); border-radius: 6px; padding: 5px 10px; font-family: inherit; }
 .jm-webgl-err { position: absolute; inset: 0; z-index: 61; display: flex; align-items: center; justify-content: center;
   color: #9aa3ad; font-size: 14px; letter-spacing: 1px; background: #0b0d12; text-align: center; padding: 20px; }
 
-.jimao-foot { margin: 16px auto 0; width: calc(100% - 44px); max-width: 1000px; font-size: 11.5px; color: #6d757e; letter-spacing: .5px; line-height: 1.8; }
+.jimao-foot { display: none; }
 .jimao-foot a { color: #ffb877; }
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 860px) {
-  .jm-stage { width: calc(100% - 24px); height: clamp(480px, 72vh, 820px); }
-  .jimao-head { width: calc(100% - 24px); }
+  .jm-stage { width: 100vw; height: 100vh; height: 100dvh; }
   .jm-menu-inner { flex-direction: column; justify-content: flex-end; gap: 10px; padding: 5% 6%; }
   .jm-menu-keys { display: none; }
   .jm-menu-title { font-size: 52px; letter-spacing: 12px; }
   .jm-menu-tag { font-size: 14px; letter-spacing: 8px; }
   .jm-menu-brief { font-size: 12.5px; margin-bottom: 10px; }
-  .jm-compass { width: 220px; }
-  .jm-objectives { min-width: 160px; padding: 8px 11px; }
-  .jm-obj { font-size: 11.5px; }
-  .jm-ammo-num b { font-size: 32px; }
-  .jm-timer { font-size: 13px; }
+
+  /* --- 移动 HUD 安全区重排 --- */
+  .jm-compass { width: min(44vw, 208px); top: 10px; left: 50%; }
+  .jm-objectives { top: 56px; left: 10px; min-width: 0; max-width: 52vw;
+    padding: 6px 10px; font-size: 0; }
+  .jm-obj-head { font-size: 9.5px; margin-bottom: 4px; }
+  .jm-timer { font-size: 12px; }
+  .jm-obj { font-size: 10.5px; gap: 6px; padding: 2px 0; white-space: nowrap; }
+  .jm-obj span { overflow: hidden; text-overflow: ellipsis; max-width: 30vw; display: inline-block; }
+  .jm-obj-dist { font-size: 9.5px; padding-left: 5px; }
+  .jm-tbtn-pause { top: 10px; right: 10px; width: 44px; height: 44px; }
+
+  /* 字幕/提示抬到操控区之上 */
+  .jm-sub { bottom: calc(238px + env(safe-area-inset-bottom)); max-width: 94%; font-size: 12.5px; padding: 7px 12px; line-height: 1.5; }
+  .jm-tip { bottom: calc(300px + env(safe-area-inset-bottom)); font-size: 11.5px; }
+  .jm-prompt { bottom: 38%; }
+
+  /* 生命/弹药抬到触控区上方两侧 */
+  .jm-health { bottom: calc(210px + env(safe-area-inset-bottom)); left: 12px; }
+  .jm-health-bar { width: 108px; }
+  .jm-health-num { font-size: 13px; }
+  .jm-ammo { bottom: calc(252px + env(safe-area-inset-bottom)); right: 12px; }
+  .jm-ammo-num b { font-size: 27px; }
+  .jm-ammo-num span { font-size: 12px; }
+  .jm-ammo-name { font-size: 9px; margin-top: 2px; }
+  .jm-ammo-warn { font-size: 10px; margin-top: 1px; }
+
+  /* 触控区:完整落在安全区内,点击区 ≥44px */
+  .jm-touch { pointer-events: none; }
+  .jm-stick-zone { pointer-events: auto; }
+  .jm-tbtns { pointer-events: auto; right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    grid-template-columns: 56px 74px; grid-auto-rows: 50px; gap: 9px; }
+  .jm-tbtn { min-width: 44px; min-height: 44px; font-size: 12px; }
+  .jm-tbtn-fire { grid-column: 2; grid-row: 1 / span 2; justify-self: end; height: 109px; width: 74px; font-size: 14px; }
+  .jm-stick { left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 94px; height: 94px; }
+  .jm-stick-knob { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .jm-tbtn-use { left: -72px; bottom: 2px; width: 58px; min-height: 50px; }
+  .jm-tbtn-pause { pointer-events: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .jm-grain, .jm-timer.jm-timer-warn, .jm-ammo-warn, .jm-health.jm-low,
