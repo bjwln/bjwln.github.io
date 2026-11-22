@@ -136,3 +136,7 @@ C组`ddxplus_valid50_C`：默认沉默、有理由才发言，发言进共享记
 D组`ddxplus_valid50_D1_阶段六.json`三态共识：决策层程序化 + 证据层 LLM 评估 + safety 否决停止
 
 ![image-20261117002120259](Outputs/image-20261117002120259.png)
+
+E组`ddxplus_test500_E_终评``verifier`：
+
+![image-20261122183121572](Outputs/image-20261122183121572.png)
