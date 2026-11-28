@@ -1388,6 +1388,8 @@ const keys = {};
 let firing = false, adsHold = false, adsT = 0, touchAds = false, touchFire = false, touchUse = false, touchCrouch = false;
 let noLockMode = false; // 指针锁定不可用时(iframe/受限环境)的降级:右键拖动转视角,左键开火
 let recoilPitch = 0, recoilHeat = 0, gunKick = 0, spreadVis = .012;
+// 键盘视角/备用开火(鼠标输入被面板拦截时仍可完整游玩)
+let kbLeft = false, kbRight = false, kbUp = false, kbDown = false;
 let reloading = false, reloadT = 0;
 /* 武器系统:步枪(全自动) + 手枪(半自动副武器,Q/1/2 或触屏切换) */
 const WEAPONS = {
@@ -1694,6 +1696,11 @@ function updatePlayer(dt) {
     if (player.stepAcc > 2.4) { player.stepAcc = 0; AudioFX.step(); }
     player.bobT += dt * (sprinting ? 11 : 7.5);
   } else player.bobT *= .95;
+  // 键盘视角(方向键;鼠标输入被拦截时的备用通道)
+  if (kbLeft) player.yaw += 2.4 * dt;
+  if (kbRight) player.yaw -= 2.4 * dt;
+  if (kbUp) player.pitch = clamp(player.pitch + 1.5 * dt, -1.45, 1.45);
+  if (kbDown) player.pitch = clamp(player.pitch - 1.5 * dt, -1.45, 1.45);
   // 视高
   const eyeTarget = player.crouch ? .98 : 1.66;
   player.eyeH = lerp(player.eyeH, eyeTarget, Math.min(1, dt * 10));
@@ -2095,13 +2102,23 @@ function bindInput() {
     if (phase.cur === 'playing') {
       if (e.code === 'Space') { e.preventDefault(); touchJumpQueued = true; }
       if (e.code === 'KeyR') startReload();
+      if (e.code === 'ArrowLeft') { e.preventDefault(); kbLeft = true; }
+      if (e.code === 'ArrowRight') { e.preventDefault(); kbRight = true; }
+      if (e.code === 'ArrowUp') { e.preventDefault(); kbUp = true; }
+      if (e.code === 'ArrowDown') { e.preventDefault(); kbDown = true; }
       if (e.code === 'KeyQ' || e.code === 'Digit2') switchWeapon(curWeapon === 'rifle' ? 'pistol' : 'rifle');
       if (e.code === 'Digit1') switchWeapon('rifle');
       if (e.code === 'Escape' && !IS_TOUCH && !document.pointerLockElement) pauseGame();
     }
     if (e.code === 'Escape' && phase.cur === 'paused') resumeGame();
   });
-  window.addEventListener('keyup', e => { keys[e.code] = false; });
+  window.addEventListener('keyup', e => {
+    keys[e.code] = false;
+    if (e.code === 'ArrowLeft') kbLeft = false;
+    if (e.code === 'ArrowRight') kbRight = false;
+    if (e.code === 'ArrowUp') kbUp = false;
+    if (e.code === 'ArrowDown') kbDown = false;
+  });
 
   stage.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('mousemove', e => {
@@ -2116,8 +2133,9 @@ function bindInput() {
   document.addEventListener('mousedown', e => {
     if (phase.cur !== 'playing') return;
     if (performance.now() < touchGuardUntil) return; // 触屏按钮操作后的模拟鼠标不触发射击
-    // 触屏笔记本同样走鼠标路径:鼠标与触屏按钮共存
-    if (!document.pointerLockElement && !noLockMode) { lockPointer(); return; }
+    // 触屏笔记本同样走鼠标路径;指针锁定改为"附带尝试"——按下永远计入开火,
+    // 不再被锁定流程拦截(修复:锁定挂起/失败的环境里第一击无效 → 开不了火)
+    if (!document.pointerLockElement && !noLockMode) lockPointer();
     if (e.button === 0) firing = true;
     if (e.button === 2) adsHold = true;
   });
@@ -2395,6 +2413,7 @@ function bindUI() {
   $('jm-btn-restart').addEventListener('click', () => { AudioFX.ui(); startGame(); });
   $('jm-btn-help').addEventListener('click', () => openModal('操作说明', `
     <h3>移动</h3><b>W A S D</b> 移动 · <b>SHIFT</b> 冲刺 · <b>SPACE</b> 跳跃 · <b>C</b> 蹲伏(蹲伏更难被察觉)
+    <h3>备用通道</h3><b>← → ↑ ↓</b> 转动视角(鼠标异常时可用)
     <h3>战斗</h3><b>左键</b> 开火(全自动) · <b>右键</b> 全息瞄准 · <b>R</b> 换弹 · 爆头一枪倒地
     <h3>任务</h3>走近中继装置,按住 <b>E</b> 约 2 秒切断;切断全部三处后,前往四号泊位登船撤离。
     <h3>提示</h3>枪声会惊动 45 米内的巡逻兵;利用集装箱转角和仓库掩体周旋;05:42 内完成全部任务。`));

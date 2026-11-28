@@ -138,4 +138,4 @@ description: 浏览器第一人称射击——雨没停,天没亮。五分钟内
 
 </div>
 
-<script type="module" src="/js/jimao.js?v=20261118v"></script>
+<script type="module" src="/js/jimao.js?v=20261118y"></script>

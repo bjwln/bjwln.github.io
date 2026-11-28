@@ -1,5 +1,5 @@
 ---
-title: Prompt优化
+title: Coordination Mechanism Design
 date: 2026-11-03 00:00:00
 research: Small-pro
 research_order: 1
@@ -8,11 +8,9 @@ description: 使用统计学方法新加对比函数，并尝试进行提示词�
 
  [原文.pdf](Prompt优化\CVPR26_VideoHV_hypothesis_verification.pdf) 
 
-Wang Z., et al. Think, Then Verify: A Hypothesis–Verification Multi-Agent Framework for Long Video Understanding. *CVPR 2026.*2026 年 6 月 7 日，CVPR 2026 正式接收
-
 # Compare
 
-在优化提示词之前，首先我们要有一个比较函数用于比较优化前和优化后的程序。即改了提示词之后，程序判断这次改动是真有用，还是只是运。
+在优化之前，首先我们要有一个比较函数用于比较优化前和优化后的程序。即改了之后，程序判断这次改动是真有用，还是只是运。
 
 **比较的过程**
 
@@ -54,19 +52,19 @@ question
 
 核心功能为把一条自由文本医学题干，确定性地拆成“病例原文、结构化事实、决策问题、选项、外部证据包”，再渲染成给专家模型使用的上下文
 
-![image-20261109143918510](Prompt优化/image-20261109143918510.png)
+![image-20261109143918510](Coordination Mechanism Design/image-20261109143918510.png)
 
 ### ②实现prompt 
 
 修改`workflow`的`collect_opinions`函数
 
-![image-20261109145232392](Prompt优化/image-20261109145232392.png)
+![image-20261109145232392](Coordination Mechanism Design/image-20261109145232392.png)
 
 
 
 `collect_opinions`这个函数配合 `prompt_builder.py`和 `prompt_protocol.json`可以完成问题或回答上下文的拼接
 
-![image-20261109150035152](Prompt优化/image-20261109150035152.png)
+![image-20261109150035152](Coordination Mechanism Design/image-20261109150035152.png)
 
 `collect_opinions`中执行规则（本标题下第一张图黄框）：
 
@@ -113,7 +111,7 @@ CaseContext
 
 ### ①实现Opinion
 
-![image-20261109190910792](Prompt优化/image-20261109190910792.png)
+![image-20261109190910792](Coordination Mechanism Design/image-20261109190910792.png)
 
 本文件的内部结构
 
@@ -200,7 +198,7 @@ OpinionClaim(
 
 使之结构化医生的意见
 
-![image-20261109205233469](Prompt优化/image-20261109205233469.png)
+![image-20261109205233469](Coordination Mechanism Design/image-20261109205233469.png)
 
 ## 三、发言进共享记忆
 
@@ -227,7 +225,7 @@ OpinionClaim(
 不确定性：各人承认缺什么信息
 ```
 
-![image-20261114193159733](Prompt优化/image-20261114193159733.png)
+![image-20261114193159733](Coordination Mechanism Design/image-20261114193159733.png)
 
 ### ②加发言门控，默认沉默
 
@@ -246,19 +244,19 @@ OpinionClaim(
 原先`discuss`不使用了，变成`discuss_with_memory`，实现选择性发言讨论 + 全局记忆
 每位专家每轮只做"是否发言"的门控判断，发言带引用闭环`（refs: fact_ids + claim_ids）`，进入共享记忆且初始结构化意见全程保留
 
-![image-20261115123100114](Prompt优化/image-20261115123100114.png)
+![image-20261115123100114](Coordination Mechanism Design/image-20261115123100114.png)
 
 修改`synthesize()`（负责最终整理各agent意见，然后给出最终结论）
 
-![image-20261115123546349](Prompt优化/image-20261115123546349.png)
+![image-20261115123546349](Coordination Mechanism Design/image-20261115123546349.png)
 
 **存在的问题：也就是问题三的第二个子问题，糙（因为程序天生看不见理由所以会假共识）**
 
 数票数的只会看“答案是否一致”就停；答案一致还不够，理由也得对得上，带安全风险的争议必须聊完才能停。这个标题给共识装上“证据层体检”。
 
-![image-20261115162323411](Prompt优化/image-20261115162323411.png)
+![image-20261115162323411](Coordination Mechanism Design/image-20261115162323411.png)
 
-![image-20261115163450869](Prompt优化/image-20261115163450869.png)
+![image-20261115163450869](Coordination Mechanism Design/image-20261115163450869.png)
 
 工作流中的这五行的 `if`：只看答案票数 + 有没有安全问题。谁在讨论里说了 conflict（“我不同意你的诊断依据”）、谁说了 missing（“还缺个检查结果”）。并且 C 组输出的`json`中看结果时会发现：intermediate 样本的 `stop_reason` 基本只有两种命运——初始全票 → `consensus`；初始有分歧 → `max_rounds`。
 
@@ -278,7 +276,7 @@ OpinionClaim(
 
 ### ②修改工作流
 
-![image-20261116024055301](Prompt优化/image-20261116024055301.png)
+![image-20261116024055301](Coordination Mechanism Design/image-20261116024055301.png)
 
 `check_consensus_v2`函数干五件事
 
@@ -350,9 +348,9 @@ OpinionClaim(
 
 也就是加上因为证据不妥否决的权利
 
-![image-20261116030429459](Prompt优化/image-20261116030429459.png)
+![image-20261116030429459](Coordination Mechanism Design/image-20261116030429459.png)
 
-![image-20261116030616424](Prompt优化/image-20261116030616424.png)
+![image-20261116030616424](Coordination Mechanism Design/image-20261116030616424.png)
 
 此代码
 
@@ -393,7 +391,7 @@ OpinionClaim(
 
 要是不写的话：将来谁改坏了它，哪怕是无意的，程序照常跑、不报错。等发现时tokens 已经白烧了。
 
-![image-20261116032001766](Prompt优化/image-20261116032001766.png)
+![image-20261116032001766](Coordination Mechanism Design/image-20261116032001766.png)
 
 ## 五、优化证据可信度
 
@@ -540,19 +538,19 @@ OpinionClaim(
 
 ### ③接入流水线
 
-![image-20261117012208594](Prompt优化/image-20261117012208594.png)
+![image-20261117012208594](Coordination Mechanism Design/image-20261117012208594.png)
 
-![image-20261117012313707](Prompt优化/image-20261117012313707.png)
+![image-20261117012313707](Coordination Mechanism Design/image-20261117012313707.png)
 
-![image-20261117012704436](Prompt优化/image-20261117012704436.png)
+![image-20261117012704436](Coordination Mechanism Design/image-20261117012704436.png)
 
-![image-20261117012751702](Prompt优化/image-20261117012751702.png)
+![image-20261117012751702](Coordination Mechanism Design/image-20261117012751702.png)
 
-![image-20261117012851262](Prompt优化/image-20261117012851262.png)
+![image-20261117012851262](Coordination Mechanism Design/image-20261117012851262.png)
 
 ### ④该套保险了
 
-![image-20261117013209887](Prompt优化/image-20261117013209887.png)
+![image-20261117013209887](Coordination Mechanism Design/image-20261117013209887.png)
 
 # 成果评估
 
@@ -573,9 +571,9 @@ OpinionClaim(
 从第 301 条继续
 ```
 
-![image-20261117185221729](Prompt优化/image-20261117185221729.png)
+![image-20261117185221729](Coordination Mechanism Design/image-20261117185221729.png)
 
-![image-20261117191543597](Prompt优化/image-20261117191543597.png)
+![image-20261117191543597](Coordination Mechanism Design/image-20261117191543597.png)
 
 看日志(CTRL+C中止查看会话)
 
